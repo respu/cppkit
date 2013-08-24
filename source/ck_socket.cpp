@@ -31,12 +31,14 @@
 #include "cppkit/os/ck_time_utils.h"
 #include "cppkit/os/ck_error_msg.h"
 
-#ifndef WIN32
+#ifdef IS_LINUX
   #include <sys/errno.h>
   #include <asm-generic/errno.h>
   #include <ifaddrs.h>
   #include <poll.h>
-#else
+#endif
+
+#ifdef IS_WINDOWS
   #include <Iphlpapi.h>
 #endif
 
@@ -140,7 +142,7 @@ ck_socket::~ck_socket() noexcept
 
 void ck_socket::socket_startup()
 {
-#ifdef WIN32
+#ifdef IS_WINDOWS
     WORD wVersionRequested;
     WSADATA wsaData;
     int err;
@@ -161,7 +163,7 @@ void ck_socket::socket_startup()
 
 void ck_socket::socket_cleanup()
 {
-#ifdef WIN32
+#ifdef IS_WINDOWS
     WSACleanup();
 #endif
 }
@@ -230,7 +232,7 @@ unordered_map<string,vector<ck_string> > ck_socket::get_interface_addresses( int
 {
     unordered_map<string,vector<ck_string> > interfaceAddresses;
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
     ULONG adapterInfoBufferSize = (sizeof( IP_ADAPTER_ADDRESSES ) * 32);
     unsigned char adapterInfoBuffer[(sizeof( IP_ADAPTER_ADDRESSES ) * 32)];
     PIP_ADAPTER_ADDRESSES adapterAddress = (PIP_ADAPTER_ADDRESSES)&adapterInfoBuffer[0];
@@ -268,8 +270,8 @@ unordered_map<string,vector<ck_string> > ck_socket::get_interface_addresses( int
 
         adapterAddress = adapterAddress->Next;
     }
-#else
-
+#endif
+#ifdef IS_LINUX
     struct ifaddrs* ifaddrs = NULL, *ifa = NULL;
     int family = 0, s = 0;
     char host[NI_MAXHOST];
@@ -360,10 +362,11 @@ void ck_socket::close()
 
     _sok = 0;
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
     if( sokTemp != 0 )
         err = closesocket( sokTemp );
-#else
+#endif
+#ifdef IS_LINUX
     if( sokTemp != 0 )
         err = ::close( sokTemp );
 #endif
@@ -448,11 +451,12 @@ shared_ptr<ck_socket> ck_socket::accept( uint32_t defaultRecvBufferSize )
     int clientSok = 0;
     socklen_t addrLength = _addr.sock_addr_size();
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
     clientSok = (int)::accept( (SOCKET)_sok,
                                _addr.get_sock_addr(),
                                (int *) &addrLength );
-#else
+#endif
+#ifdef IS_LINUX
     clientSok = ::accept( _sok,
                           _addr.get_sock_addr(),
                           &addrLength );
@@ -521,7 +525,7 @@ void ck_socket::shutdown( int mode )
 
     int ret = ::shutdown( _sok, mode );
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
     if( ret < 0 )
     {
         int lastWSAError = WSAGetLastError();
@@ -531,7 +535,8 @@ void ck_socket::shutdown( int mode )
         if( _sok > 0 && lastWSAError != WSAENOTCONN )
             CK_STHROW( ck_socket_exception, ( _host, _addr.port(), "Unable to shutdown socket. %s", get_error_msg(lastWSAError).c_str() ));
     }
-#else
+#endif
+#ifdef IS_LINUX
     // On Linux, errno will be set to ENOTCONN when the client has already
     // closed the socket.
     if( _sok > 0 && errno != ENOTCONN && ret < 0 )
@@ -581,9 +586,10 @@ ssize_t ck_socket::raw_send( const void* msg, size_t msgLen )
 {
     int ret = 0;
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
     ret = ::send(_sok, (char*)msg, (int)msgLen, 0);
-#else
+#endif
+#ifdef IS_LINUX
     ret = ::send(_sok, msg, msgLen, MSG_NOSIGNAL);
 #endif
 
@@ -594,9 +600,10 @@ ssize_t ck_socket::raw_recv( void* buf, size_t msgLen )
 {
     int ret = 0;
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
     ret = ::recv(_sok, (char*)buf, (int)msgLen, 0);
-#else
+#endif
+#ifdef IS_LINUX
     ret = ::recv(_sok, buf, msgLen, 0);
 #endif
 
@@ -726,9 +733,10 @@ ck_string ck_socket::get_host() const
 
 ssize_t ck_socket::_can_recv_data( int waitMillis, int fd )
 {
-#ifdef WIN32
+#ifdef IS_WINDOWS
     ssize_t retVal = _do_select_recv(waitMillis, fd);
-#else
+#endif
+#ifdef IS_LINUX
     ssize_t retVal = _do_poll_recv(waitMillis, fd);
 #endif
     return retVal;
@@ -736,15 +744,16 @@ ssize_t ck_socket::_can_recv_data( int waitMillis, int fd )
 
 ssize_t ck_socket::_can_send_data( int waitMillis, int fd )
 {
-#ifdef WIN32
+#ifdef IS_WINDOWS
     ssize_t retVal = _do_select_send(waitMillis, fd);
-#else
+#endif
+#ifdef IS_LINUX
     ssize_t retVal = _do_poll_send(waitMillis, fd);
 #endif
     return retVal;
 }
 
-#ifndef WIN32
+#ifdef IS_LINUX
 ssize_t ck_socket::_do_poll_recv( int waitMillis, int fd )
 {
     struct pollfd fds[POLL_NFDS];
@@ -841,7 +850,7 @@ size_t ck_socket::_send( const void* msg, size_t msgLen, int sendTimeoutMillis )
 
         if( bytesJustWritten < 0 )
         {
-#ifndef WIN32
+#ifdef IS_LINUX
             if( (errno != EAGAIN) && (errno != EWOULDBLOCK) )
 #endif
             {
@@ -920,7 +929,7 @@ size_t ck_socket::_recv( void* buf, size_t msgLen, int recvTimeoutMillis )
 
             if( bytesJustReceived <= 0 )
             {
-#ifndef WIN32
+#ifdef IS_LINUX
                 if( (errno != EAGAIN) && (errno != EWOULDBLOCK) )
 #endif
                 {
@@ -1000,13 +1009,14 @@ ck_string ck_socket::get_peer_ip() const
     struct sockaddr_storage peer;
     int peerLength = sizeof(peer);
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
     if ( getpeername(_sok,(sockaddr*)&peer,&peerLength) < 0 )
     {
         CK_LOG_WARNING("Unable to get peer ip. %s", get_last_error_msg().c_str());
         return "";
     }
-#else
+#endif
+#ifdef IS_LINUX
     if ( getpeername(_sok,(sockaddr*)&peer,(socklen_t*)&peerLength) < 0 )
     {
         CK_LOG_WARNING("Unable to get peer ip: %s", get_last_error_msg().c_str());
@@ -1022,13 +1032,14 @@ ck_string ck_socket::get_local_ip() const
     struct sockaddr_storage local;
     int addrLength = sizeof(local);
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
     if ( getsockname(_sok, (sockaddr*)&local, &addrLength) < 0 )
     {
         CK_LOG_WARNING("Unable to get local ip. %s", get_last_error_msg().c_str());
         return "";
     }
-#else
+#endif
+#ifdef IS_LINUX
     if ( getsockname(_sok, (sockaddr*)&local, (socklen_t*)&addrLength) < 0 )
     {
         CK_LOG_WARNING("Unable to get local ip: %s", get_last_error_msg().c_str());

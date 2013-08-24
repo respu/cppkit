@@ -29,14 +29,15 @@ void ck_large_files_test::setup()
 
 void ck_large_files_test::teardown()
 {
-#ifdef WIN32
+#ifdef IS_WINDOWS
     if ( !DeleteFile(UNICODE_FILE.get_wide_string().data()) )
         printf("Failed to delete unicode file\n");
     if ( !DeleteFile(ASCII_FILE.get_wide_string().data()) )
         printf("Failed to delete ascii file\n");
     if ( !DeleteFile(PRE_ALLOCATED_FILE.get_wide_string().data()) )
         printf("Failed to delete pre allocated file\n");
-#else
+#endif
+#ifdef IS_LINUX
     if ( remove(ASCII_FILE.c_str()) != 0)
         printf("Failed to delete ascii file\n");
     if (remove(UNICODE_FILE.c_str()) != 0)

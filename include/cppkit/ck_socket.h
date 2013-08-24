@@ -40,7 +40,7 @@
 #include <memory>
 #include <functional>
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
   #include <WinSock2.h>
   #include <ws2tcpip.h>
 
@@ -274,7 +274,7 @@ private:
     CK_API ssize_t _do_select_recv( int waitMillis, int fd );
     CK_API ssize_t _do_select_send( int waitMillis, int fd );
 
-#ifndef WIN32
+#ifdef IS_LINUX
     CK_API ssize_t _do_poll_recv( int waitMillis, int fd );
     CK_API ssize_t _do_poll_send( int waitMillis, int fd );
 #endif

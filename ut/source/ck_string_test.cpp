@@ -2,8 +2,9 @@
 #include "framework.h"
 #include "ck_string_test.h"
 #include "cppkit/ck_string.h"
+#include "cppkit/ck_memory.h"
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
 #include "windows_compliant_unicode_constants.h"
 #else
 #include "linux_compliant_unicode_constants.h"
@@ -1143,9 +1144,9 @@ void ck_string_test::test_base64_decode()
     uint8_t buf[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
     const ck_string encodedData = "AQIDBAUGBwgJCg==";
-    shared_ptr<vector<uint8_t> > decoded = encodedData.from_base64();
+    shared_ptr<ck_memory> decoded = encodedData.from_base64();
 
-    UT_ASSERT(memcmp(buf, (uint8_t*)&((*decoded)[0]), 10) == 0);
+    UT_ASSERT(memcmp(buf, decoded->map_data().get_ptr(), 10) == 0);
 }
 
 void ck_string_test::test_find_first()

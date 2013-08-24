@@ -29,6 +29,7 @@
 
 #include "cppkit/ck_string.h"
 #include "cppkit/os/ck_sprintf.h"
+#include "cppkit/ck_memory.h"
 
 #include <algorithm>
 
@@ -606,14 +607,14 @@ ck_string ck_string::to_base64( const void* source, size_t length )
     return encoded;
 }
 
-shared_ptr<vector<uint8_t> > ck_string::from_base64() const
+shared_ptr<ck_memory> ck_string::from_base64() const
 {
     //this might be able to be bumped up to 4 since it looks like encoding
     //a single byte should result in 4 encoded bytes.  For now just do
     //enough checking to ensure that DecodeSize doesn't return a negative
     //number
     if (_storage.size() < 2)
-        return make_shared<vector<uint8_t> >(0);
+        return make_shared<ck_memory>();
 
     // This buffer size is an upper bound.
     // This value can be: N, N+1 or N+2,
@@ -621,9 +622,9 @@ shared_ptr<vector<uint8_t> > ck_string::from_base64() const
     size_t bufferSize = ((3 * _storage.size()) / 4);
 
     // Allocate some memory
-    shared_ptr<vector<uint8_t> > destBuffer = make_shared<vector<uint8_t> >(bufferSize);
+    shared_ptr<ck_memory> destBuffer = make_shared<ck_memory>();
 
-    uint8_t* pData = (uint8_t*)&((*destBuffer)[0]);
+    uint8_t* pData = destBuffer->extend_data(bufferSize).get_ptr();
     uint8_t* src = (uint8_t*)_storage.c_str();
     size_t cursor = 0;
     size_t decodeLen = 0;
@@ -662,7 +663,7 @@ shared_ptr<vector<uint8_t> > ck_string::from_base64() const
             break;
         default:
             // This should never happen. Return an empty object.
-            return make_shared<vector<uint8_t> >(0);
+            return make_shared<ck_memory>();
         }
 
         // If we haven't hit an '=' sign keep going
@@ -695,8 +696,10 @@ shared_ptr<vector<uint8_t> > ck_string::from_base64() const
     // Copy the memory into a smaller buffer so we know its actual size.
     if ( decodeLen < destBuffer->size() )
     {
-        shared_ptr<vector<uint8_t> > tempBuffer = make_shared<vector<uint8_t> >(decodeLen);
-        memcpy((uint8_t*)&((*tempBuffer)[0]),(uint8_t*)&((*destBuffer)[0]),decodeLen);
+        shared_ptr<ck_memory> tempBuffer = make_shared<ck_memory>();
+        memcpy( tempBuffer->extend_data(decodeLen).get_ptr(),
+                destBuffer->map_data().get_ptr(),
+                decodeLen );
         destBuffer = tempBuffer;
     }
 

@@ -8,10 +8,12 @@
 #include <time.h>
 #include <ctime>
 
-#ifndef WIN32
+#ifdef IS_LINUX
 #include <sys/time.h>
 #include <unistd.h>
-#else
+#endif
+
+#ifdef IS_WINDOWS
 #include <winsock2.h>
 #endif
 

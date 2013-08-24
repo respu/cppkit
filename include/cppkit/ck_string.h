@@ -56,6 +56,7 @@ static const char base64_encoding_table[64] =
 };
 
 class ck_exception;
+class ck_memory;
 
 class ck_string
 {
@@ -237,7 +238,7 @@ public:
 
     /// base64 functionality
     CK_API static ck_string to_base64( const void* source, size_t length );
-    CK_API std::shared_ptr<std::vector<uint8_t> > from_base64() const;
+    CK_API std::shared_ptr<ck_memory> from_base64() const;
 
     // See RFC 3986
     CK_API ck_string uri_encode() const;

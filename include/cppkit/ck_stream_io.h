@@ -34,7 +34,7 @@
 
 #include <functional>
 
-#ifdef WIN32
+#ifdef IS_WINDOWS
   #include <BaseTsd.h>
   #define ssize_t SSIZE_T
 #endif
