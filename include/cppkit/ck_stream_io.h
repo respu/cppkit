@@ -122,12 +122,6 @@ public:
     /// Returns true if a raw_send() would not block.
     CK_API virtual bool ready_to_send()=0;
 
-    CK_API virtual ck_string get_host() const=0;
-
-    CK_API virtual uint32_t get_host_port() const=0;
-
-    CK_API virtual ck_string get_peer_ip() const=0;
-
     CK_API virtual void close()=0;
 };
 

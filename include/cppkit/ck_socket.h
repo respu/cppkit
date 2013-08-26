@@ -234,12 +234,12 @@ public:
     CK_API virtual bool ready_to_send();
 
     /// Get Host used for connect
-    CK_API virtual ck_string get_host() const;
-    CK_API virtual uint32_t get_host_port() const;
+    CK_API ck_string get_host() const;
+    CK_API uint32_t get_host_port() const;
 
-    CK_API virtual ck_string get_peer_ip() const;
+    CK_API ck_string get_peer_ip() const;
 
-    CK_API virtual ck_string get_local_ip() const;
+    CK_API ck_string get_local_ip() const;
 
     /// Do Socket Startup for Application
     CK_API static void socket_startup();
