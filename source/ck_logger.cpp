@@ -541,4 +541,3 @@ ck_log::static_init::static_init()
 }
 
 const ck_log::static_init _static_init;
-
