@@ -26,5 +26,9 @@ add_library(cppkit SHARED source/ck_byte_ptr.cpp
                           source/ck_string.cpp
                           source/ck_time_utils.cpp)
 
+if(${UNIX})
+target_link_libraries(cppkit pthread)
+endif(${UNIX})
+
 install(TARGETS cppkit LIBRARY DESTINATION lib COMPONENT library)
 install(DIRECTORY include/${PROJECT_NAME} DESTINATION include)
