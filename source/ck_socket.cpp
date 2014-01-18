@@ -122,7 +122,7 @@ ck_socket::ck_socket( ck_socket_type type )
             if (type == IPV6_WITH_IPV4)
                 ipv6only = 0;
             if (setsockopt(_sok, IPPROTO_IPV6, IPV6_V6ONLY, (char*)&ipv6only, sizeof(ipv6only)) != 0)
-                CK_THROW(("Failed to set IPV6_V6ONLY socket option. %s\n\n", get_last_error_msg().c_str()));
+                CK_THROW(("Failed to set IPV6_V6ONLY socket option. %s\n\n", ck_get_last_error_msg().c_str()));
         }
         else
             CK_LOG_WARNING("ck_socket: IPV6_V6ONLY socket option not supported on this platform");
@@ -188,7 +188,7 @@ vector<ck_string> ck_socket::get_addresses_by_hostname( const ck_string& hostnam
     hints.ai_flags = AI_CANONNAME;
     int err = getaddrinfo(hostname.c_str(), 0, &hints, &addrInfo);
     if( err )
-        CK_STHROW( ck_socket_exception, (hostname, -1, "Failed to get address by hostname: %s", get_error_msg(err).c_str()) );
+        CK_STHROW( ck_socket_exception, (hostname, -1, "Failed to get address by hostname: %s", ck_get_error_msg(err).c_str()) );
 
     for( struct addrinfo* cur = addrInfo; cur != 0; cur = cur->ai_next )
     {
@@ -211,7 +211,7 @@ std::vector<ck_string> ck_socket::resolve( int type, const ck_string& name )
 
     int err = getaddrinfo( name.c_str(), 0, &hints, &addrInfo );
     if (err)
-        CK_STHROW( ck_socket_exception, (name, -1, "Failed to resolve address by hostname: %s", get_error_msg(err).c_str()) );
+        CK_STHROW( ck_socket_exception, (name, -1, "Failed to resolve address by hostname: %s", ck_get_error_msg(err).c_str()) );
 
     for( struct addrinfo* cur = addrInfo; cur != 0; cur = cur->ai_next )
     {
@@ -244,7 +244,7 @@ unordered_map<string,vector<ck_string> > ck_socket::get_interface_addresses( int
                                     &adapterInfoBufferSize );
 
     if( err != ERROR_SUCCESS )
-        CK_STHROW( ck_socket_exception, ("Unable to query available network interfaces. %s", get_error_msg(err).c_str() ));
+        CK_STHROW( ck_socket_exception, ("Unable to query available network interfaces. %s", ck_get_error_msg(err).c_str() ));
 
     while( adapterAddress )
     {
@@ -277,7 +277,7 @@ unordered_map<string,vector<ck_string> > ck_socket::get_interface_addresses( int
     char host[NI_MAXHOST];
 
     if( getifaddrs( &ifaddrs ) == -1 )
-        CK_STHROW( ck_socket_exception, ( "Unable to query network interfaces: %s", get_last_error_msg().c_str() ));
+        CK_STHROW( ck_socket_exception, ( "Unable to query network interfaces: %s", ck_get_last_error_msg().c_str() ));
 
     for( ifa = ifaddrs; ifa != NULL; ifa = ifa->ifa_next )
     {
@@ -313,7 +313,7 @@ unordered_map<string,vector<ck_string> > ck_socket::get_interface_addresses( int
             interfaceAddresses.find(key)->second.push_back( val );
         }
         else
-            CK_LOG_WARNING("Failed on call to getnameinfo(). %s", get_error_msg(s).c_str());
+            CK_LOG_WARNING("Failed on call to getnameinfo(). %s", ck_get_error_msg(s).c_str());
     }
 
     freeifaddrs( ifaddrs );
@@ -330,14 +330,14 @@ void ck_socket::create(unsigned int addrFamily)
     _sok = (SOCKET)::socket(addrFamily, SOCK_STREAM, 0);
 
     if( _sok <= 0 )
-        CK_LOG_WARNING("Unable to create socket resource: %s", get_last_error_msg().c_str());
+        CK_LOG_WARNING("Unable to create socket resource: %s", ck_get_last_error_msg().c_str());
 
     int on = 1;
 
     int err = (int)::setsockopt( (SOCKET)_sok, SOL_SOCKET, SO_REUSEADDR, (const char *)&on, sizeof(int) );
 
     if( err < 0 )
-        CK_STHROW( ck_socket_exception, ( "Unable to configure socket: %s", get_last_error_msg().c_str()));
+        CK_STHROW( ck_socket_exception, ( "Unable to configure socket: %s", ck_get_last_error_msg().c_str()));
 }
 
 bool ck_socket::valid()
@@ -372,7 +372,7 @@ void ck_socket::close()
 #endif
 
     if( err < 0)
-        CK_LOG_WARNING("Failed to close socket: %s", get_last_error_msg().c_str());
+        CK_LOG_WARNING("Failed to close socket: %s", ck_get_last_error_msg().c_str());
 }
 
 int ck_socket::get_sok_id() const
@@ -408,7 +408,7 @@ int ck_socket::bind_ephemeral( const ck_string& ip )
 
     err = ::bind( _sok, _addr.get_sock_addr(), _addr.sock_addr_size() );
     if( err < 0 )
-        CK_STHROW( ck_socket_exception, ( ck_string("INADDR_ANY"), _addr.port(), "Unable to bind: %s", get_last_error_msg().c_str()));
+        CK_STHROW( ck_socket_exception, ( ck_string("INADDR_ANY"), _addr.port(), "Unable to bind: %s", ck_get_last_error_msg().c_str()));
 
     sockaddr_in addr;
     int size = sizeof(addr);
@@ -427,7 +427,7 @@ void ck_socket::bind( int port, const ck_string& ip )
     err = ::bind( _sok, _addr.get_sock_addr(), _addr.sock_addr_size() );
 
     if( err < 0 )
-        CK_STHROW( ck_socket_exception, ( ip, port, "Unable to bind to given port and IP: %s", get_last_error_msg().c_str()));
+        CK_STHROW( ck_socket_exception, ( ip, port, "Unable to bind to given port and IP: %s", ck_get_last_error_msg().c_str()));
 }
 
 void ck_socket::listen()
@@ -438,7 +438,7 @@ void ck_socket::listen()
     int err = ::listen( _sok, MAX_CONNECTIONS );
 
     if( err < 0 )
-        CK_STHROW( ck_socket_exception, ( _host, _addr.port(), "Unable to listen on bound port: %s", get_last_error_msg().c_str()));
+        CK_STHROW( ck_socket_exception, ( _host, _addr.port(), "Unable to listen on bound port: %s", ck_get_last_error_msg().c_str()));
 }
 
 shared_ptr<ck_socket> ck_socket::accept( uint32_t defaultRecvBufferSize )
@@ -465,7 +465,7 @@ shared_ptr<ck_socket> ck_socket::accept( uint32_t defaultRecvBufferSize )
     // Since the socket can be closed by another thread while we were waiting in accept(),
     // we only throw here if _sok is still a valid fd.
     if( _sok > 0 && clientSok <= 0 )
-        CK_STHROW( ck_socket_exception, ( _host, _addr.port(), "Unable to accept inbound connection: %s", get_last_error_msg().c_str()));
+        CK_STHROW( ck_socket_exception, ( _host, _addr.port(), "Unable to accept inbound connection: %s", ck_get_last_error_msg().c_str()));
 
     clientSocket->_sok = clientSok;
 
@@ -491,10 +491,10 @@ bool ck_socket::query_connect(const ck_string& host, int port, int connectTimeou
 
 
     if (setsockopt (_sok, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout,sizeof(timeout)) < 0)
-        CK_STHROW( ck_socket_exception, ( host, port, "Failed to set receive timeout on socket: %s", get_last_error_msg().c_str()));
+        CK_STHROW( ck_socket_exception, ( host, port, "Failed to set receive timeout on socket: %s", ck_get_last_error_msg().c_str()));
 
     if (setsockopt (_sok, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
-        CK_STHROW( ck_socket_exception, ( host, port, "Failed to set send timeout on socket: %s", get_last_error_msg().c_str()));
+        CK_STHROW( ck_socket_exception, ( host, port, "Failed to set send timeout on socket: %s", ck_get_last_error_msg().c_str()));
 
     _host = host;
     _hostPort = port;
@@ -506,7 +506,7 @@ bool ck_socket::query_connect(const ck_string& host, int port, int connectTimeou
 
     if( err < 0 )
     {
-       CK_LOG_WARNING("Failed to connect on socket in query_connect(%s, %d): %s",host.c_str(),port,get_last_error_msg().c_str());
+       CK_LOG_WARNING("Failed to connect on socket in query_connect(%s, %d): %s",host.c_str(),port,ck_get_last_error_msg().c_str());
         return false;
     }
 
@@ -533,7 +533,7 @@ void ck_socket::shutdown( int mode )
         // Proper shutdown of a socket on windows is interestingly complicated. For now,
         // we're taking the easy way out and ignoring not connected errors....
         if( _sok > 0 && lastWSAError != WSAENOTCONN )
-            CK_STHROW( ck_socket_exception, ( _host, _addr.port(), "Unable to shutdown socket. %s", get_error_msg(lastWSAError).c_str() ));
+            CK_STHROW( ck_socket_exception, ( _host, _addr.port(), "Unable to shutdown socket. %s", ck_get_error_msg(lastWSAError).c_str() ));
     }
 #endif
 #ifdef IS_LINUX
@@ -1012,14 +1012,14 @@ ck_string ck_socket::get_peer_ip() const
 #ifdef IS_WINDOWS
     if ( getpeername(_sok,(sockaddr*)&peer,&peerLength) < 0 )
     {
-        CK_LOG_WARNING("Unable to get peer ip. %s", get_last_error_msg().c_str());
+        CK_LOG_WARNING("Unable to get peer ip. %s", ck_get_last_error_msg().c_str());
         return "";
     }
 #endif
 #ifdef IS_LINUX
     if ( getpeername(_sok,(sockaddr*)&peer,(socklen_t*)&peerLength) < 0 )
     {
-        CK_LOG_WARNING("Unable to get peer ip: %s", get_last_error_msg().c_str());
+        CK_LOG_WARNING("Unable to get peer ip: %s", ck_get_last_error_msg().c_str());
         return "";
     }
 #endif
@@ -1035,14 +1035,14 @@ ck_string ck_socket::get_local_ip() const
 #ifdef IS_WINDOWS
     if ( getsockname(_sok, (sockaddr*)&local, &addrLength) < 0 )
     {
-        CK_LOG_WARNING("Unable to get local ip. %s", get_last_error_msg().c_str());
+        CK_LOG_WARNING("Unable to get local ip. %s", ck_get_last_error_msg().c_str());
         return "";
     }
 #endif
 #ifdef IS_LINUX
     if ( getsockname(_sok, (sockaddr*)&local, (socklen_t*)&addrLength) < 0 )
     {
-        CK_LOG_WARNING("Unable to get local ip: %s", get_last_error_msg().c_str());
+        CK_LOG_WARNING("Unable to get local ip: %s", ck_get_last_error_msg().c_str());
         return "";
     }
 #endif

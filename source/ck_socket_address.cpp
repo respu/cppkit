@@ -129,7 +129,7 @@ unsigned int ck_socket_address::get_address_family(const ck_string& address, str
     //hint.ai_flags = AI_NUMERICHOST;  // Uncomment this to disable DNS lookup
     int ret = getaddrinfo(isolate_address(address).c_str(), 0, &hint, &info);
     if (ret) {
-        CK_THROW(("ck_socket_address::get_address_family: Failed to determine address info for \'%s\'. %s", address.c_str(), get_error_msg(ret).c_str()));
+        CK_THROW(("ck_socket_address::get_address_family: Failed to determine address info for \'%s\'. %s", address.c_str(), ck_get_error_msg(ret).c_str()));
     }
     unsigned int family = info->ai_family;
     if (saddr)
@@ -208,7 +208,7 @@ ck_string ck_socket_address::address_to_string(const struct sockaddr* addr, cons
        CK_THROW(("ck_socket_address::address_to_string(): Unknown address family (%d)", addr->sa_family));
 
     if (WSAAddressToStringW((struct sockaddr*)&sa, len, 0, buf, &blen))
-        CK_THROW(("ck_socket_address::address_to_string(): %s", get_last_error_msg().c_str()));
+        CK_THROW(("ck_socket_address::address_to_string(): %s", ck_get_last_error_msg().c_str()));
     result = buf;
 #else
     char tmp[INET6_ADDRSTRLEN];
@@ -221,7 +221,7 @@ ck_string ck_socket_address::address_to_string(const struct sockaddr* addr, cons
         CK_THROW(("ck_socket_address::address_to_string(): Unknown address family (%d)", addr->sa_family));
     const char* s = inet_ntop(addr->sa_family, pa, tmp, INET6_ADDRSTRLEN);
     if (!s)
-        CK_THROW(("ck_socket_address::address_to_string(): %s", get_last_error_msg().c_str()));
+        CK_THROW(("ck_socket_address::address_to_string(): %s", ck_get_last_error_msg().c_str()));
     result = s;
 #endif
 

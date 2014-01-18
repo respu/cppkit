@@ -1,16 +1,12 @@
 
 cppkit todo
 
-assert
 bitsy
-uuid conversion
 cache
 command queue
 xml parsing
 dynamic libraries
-variant
 easy weak ref
-json
 memory map
 nullable types
 path

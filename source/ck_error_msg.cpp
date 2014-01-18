@@ -32,16 +32,16 @@
 namespace cppkit
 {
 
-ck_string get_last_error_msg()
+ck_string ck_get_last_error_msg()
 {
 #ifdef IS_WINDOWS
-    return get_error_msg(GetLastError());
+    return ck_get_error_msg(GetLastError());
 #else
-    return get_error_msg(errno);
+    return ck_get_error_msg(errno);
 #endif
 }
 
-ck_string get_error_msg(int error)
+ck_string ck_get_error_msg(int error)
 {
 #ifdef IS_WINDOWS
     LPVOID str = 0;

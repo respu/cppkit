@@ -38,10 +38,10 @@ namespace cppkit
 
 /// Returns a string describing the last system error that occurred. The error is taken from 'errno' on
 /// Linux, or GetLastError() on Windows.
-CK_API ck_string get_last_error_msg();
+CK_API ck_string ck_get_last_error_msg();
 
 /// Returns a string describing the specified error code.
-CK_API ck_string get_error_msg(int error);
+CK_API ck_string ck_get_error_msg(int error);
 
 }
 
