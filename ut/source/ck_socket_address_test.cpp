@@ -19,6 +19,7 @@ void ck_socket_address_test::teardown()
 
 void ck_socket_address_test::test_constructor()
 {
+
     UT_ASSERT_NO_THROW( ck_socket_address(0) );
     UT_ASSERT_NO_THROW( ck_socket_address(-1) );
     UT_ASSERT_NO_THROW( ck_socket_address(65535) );
@@ -66,6 +67,7 @@ void ck_socket_address_test::test_constructor()
         UT_ASSERT( a4.port() == 4242 );
         UT_ASSERT( a4.address() == "127.0.0.1" );
     }
+
     {
         ck_socket_address addr(4242, "dead::beef");
         UT_ASSERT_NO_THROW( ck_socket_address(addr.get_sock_addr(), addr.sock_addr_size()) );
@@ -74,6 +76,7 @@ void ck_socket_address_test::test_constructor()
         UT_ASSERT( a6.port() == 4242 );
         UT_ASSERT( a6.address() == "dead::beef" );
     }
+
 }
 
 void ck_socket_address_test::test_get_set_port_num()
@@ -93,6 +96,7 @@ void ck_socket_address_test::test_get_set_port_num()
 
 void ck_socket_address_test::test_get_set_address()
 {
+
     {
         // Test default address
         ck_socket_address addr(0);
@@ -121,8 +125,10 @@ void ck_socket_address_test::test_get_set_address()
         UT_ASSERT( addr.address() == "ff05::4242" );
 
         ck_string prev = addr.address();
+
         UT_ASSERT_THROWS( addr.set_address("NoSuchAddress_75006DD5-D829-464a-8E8C-7AC4628ECDCE"), ck_exception );
         UT_ASSERT( addr.address() == prev ); // Make sure the address didn't change b/c of error.
+
     }
 }
 
@@ -195,6 +201,7 @@ void ck_socket_address_test::test_sock_addr_cast()
         UT_ASSERT( sin->sin6_addr.s6_addr[14] == 0xbe );
         UT_ASSERT( sin->sin6_addr.s6_addr[15] == 0xef );
     }
+
 }
 
 void ck_socket_address_test::test_comparisons()
@@ -283,6 +290,7 @@ void ck_socket_address_test::test_comparisons()
         UT_ASSERT( (xsa != ss) == false );
         UT_ASSERT( (xsa != xsa_same) == false );
     }
+
 }
 
 void ck_socket_address_test::test_static_get_address_family()
@@ -324,12 +332,14 @@ void ck_socket_address_test::test_static_get_address_family()
         UT_ASSERT( addr6->sin6_addr.s6_addr[14] == 0x1e );
         UT_ASSERT( addr6->sin6_addr.s6_addr[15] == 0x55 );
     }
+
 }
 
 void ck_socket_address_test::test_static_get_sock_addr_size()
 {
     UT_ASSERT( ck_socket_address::sock_addr_size( AF_INET ) == sizeof(struct sockaddr_in) );
     UT_ASSERT( ck_socket_address::sock_addr_size( AF_INET6 ) == sizeof(struct sockaddr_in6) );
+
 }
 
 void ck_socket_address_test::test_static_address_to_string()
@@ -342,6 +352,7 @@ void ck_socket_address_test::test_static_address_to_string()
         ck_socket_address addr(0, "fe08:110::a5f0:f0a5");
         UT_ASSERT( ck_socket_address::address_to_string(addr.get_sock_addr(), addr.sock_addr_size()).contains("fe08:110::a5f0:f0a5") );
     }
+
 }
 
 void ck_socket_address_test::test_static_string_to_address()
@@ -376,6 +387,7 @@ void ck_socket_address_test::test_static_string_to_address()
         UT_ASSERT( addr6->sin6_addr.s6_addr[14] == 0x1e );
         UT_ASSERT( addr6->sin6_addr.s6_addr[15] == 0x55 );
     }
+
 }
 
 void ck_socket_address_test::test_isolate_address()
@@ -387,6 +399,7 @@ void ck_socket_address_test::test_isolate_address()
     UT_ASSERT( ck_socket_address::isolate_address("127.0.0.1") == "127.0.0.1" );
     UT_ASSERT( ck_socket_address::isolate_address("f782::3259:aad9") == "f782::3259:aad9" );
     UT_ASSERT( ck_socket_address::isolate_address("[f782::3259:aad9]:4242") == "f782::3259:aad9" );
+
 }
 
 void ck_socket_address_test::test_address_type_methods()
@@ -491,6 +504,7 @@ void ck_socket_address_test::test_address_type_methods()
         UT_ASSERT( ck_socket_address::is_ipv4_mapped_to_ipv6( ck_socket_address(0, "::ffff:127.0.0.1").get_sock_addr(), sizeof(sockaddr_in6), &addr ) == true );
         UT_ASSERT( addr == "127.0.0.1" );
     }
+
 }
 
 void ck_socket_address_test::test_is_wildcard_address()
@@ -508,6 +522,7 @@ void ck_socket_address_test::test_is_wildcard_address()
     UT_ASSERT( ck_socket_address(0, "::").is_wildcard_address() == true );
     UT_ASSERT( ck_socket_address(0, "[f782::3259:aad9]:4242").is_wildcard_address() == false );
     UT_ASSERT( ck_socket_address(0, "[::]:4242").is_wildcard_address() == true );
+
 }
 
 void ck_socket_address_test::test_is_hostname()
@@ -596,4 +611,5 @@ void ck_socket_address_test::test_is_hostname()
     UT_ASSERT(  ck_socket_address::is_hostname("hello.a-a") );
     UT_ASSERT(  ck_socket_address::is_hostname("hello.a-1") );
     UT_ASSERT( !ck_socket_address::is_hostname("hello.1-a") );
+
 }

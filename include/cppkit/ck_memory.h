@@ -48,7 +48,9 @@ public:
 
     CK_API ck_memory& operator=(const ck_memory& obj);
 
-    CK_API ck_byte_ptr map();
+    CK_API void clear();
+
+    CK_API ck_byte_ptr map() const;
     CK_API size_t size() const;
     CK_API void resize(size_t size);
 

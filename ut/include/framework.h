@@ -106,8 +106,8 @@ private:
 };
 
 #define UT_ASSERT(a) if( !(a) ) { ut_fail_exception e; e.set_msg(#a); e.set_throw_point(__LINE__,__FILE__); throw e; }
-#define UT_ASSERT_THROWS(a,b) try { bool threw = false; try { (a); } catch( b& ex ) { threw=true; } if(!threw) throw false; } catch(...) {ut_fail_exception e; e.set_msg("Test failed to throw expected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;}
-#define UT_ASSERT_NO_THROW(a) { bool threw = false; try { (a); } catch( ... ) { threw=true; } if(threw) {ut_fail_exception e; e.set_msg("Test threw unexpected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;} }
+#define UT_ASSERT_THROWS(thing_that_throws,what_is_thrown) try { bool threw = false; try { do { (thing_that_throws); } while( false ); } catch( what_is_thrown& ex ) { threw=true; } if(!threw) throw false; } catch(...) {ut_fail_exception e; e.set_msg("Test failed to throw expected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;}
+#define UT_ASSERT_NO_THROW(thing_that_doesnt_throw) { bool threw = false; try { do { (thing_that_doesnt_throw); } while( false ); } catch( ... ) { threw=true; } if(threw) {ut_fail_exception e; e.set_msg("Test threw unexpected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;} }
 
 extern std::recursive_mutex _test_fixtures_lock;
 

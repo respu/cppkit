@@ -54,7 +54,12 @@ ck_memory& ck_memory::operator=(const ck_memory& obj)
     _data_sentry=obj._data_sentry;
 }
 
-ck_byte_ptr ck_memory::map()
+void ck_memory::clear()
+{
+    set_data_size( 0 );
+}
+
+ck_byte_ptr ck_memory::map() const
 {
     return ck_byte_ptr(&_bits[0], _bits.size());
 }

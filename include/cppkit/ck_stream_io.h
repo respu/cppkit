@@ -49,10 +49,6 @@ typedef bool (*timeout_handler)( void* opaque );
 class ck_stream_io
 {
 public:
-    CK_API ck_stream_io() {}
-
-    CK_API virtual ~ck_stream_io() noexcept {}
-
     /// Whether this ck_stream_io is valid to use (i.e. is open and ready to be used).
     CK_API virtual bool valid()=0;
 
