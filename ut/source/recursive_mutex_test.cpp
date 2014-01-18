@@ -69,7 +69,7 @@ void recursive_mutex_test::test_simple()
 
 void recursive_mutex_test::test_lock_twice()
 {
-    // This test utilizes a very short sleep (about 1ms) to let work be done on another thread. I don't
+    // This test utilizes a very short sleep (about 10ms) to let work be done on another thread. I don't
     // love this, but was unable to think of an alternative for this test. Open to suggestions!
 
     recursive_mutex lok;
@@ -84,7 +84,9 @@ void recursive_mutex_test::test_lock_twice()
         lok.unlock();
     });
 
-    ck_usleep(1000); // we sleep here long enough for above future to start.
+    t.detach();
+
+    ck_usleep(100000); // we sleep here long enough for above future to start.
 
     lok.unlock();
 
@@ -92,11 +94,9 @@ void recursive_mutex_test::test_lock_twice()
 
     lok.unlock(); // future should now run.
 
-    ck_usleep(1000);
+    ck_usleep(100000);
 
     UT_ASSERT(val == 42);
-
-    t.join();
 }
 
 void recursive_mutex_test::test_lots_of_locks()
@@ -115,6 +115,8 @@ void recursive_mutex_test::test_lots_of_locks()
         lok.unlock();
     });
 
+    t.detach();
+
     for( int i = 0; i < 999; i++ )
         lok.lock();
 
@@ -131,9 +133,9 @@ void recursive_mutex_test::test_lots_of_locks()
 
     lok.unlock(); // final release...
 
-    ck_usleep( 1000 ); // give worker time to acquire lok and modify val...
+    ck_usleep( 100000 ); // give worker time to acquire lok and modify val...
 
     UT_ASSERT( val == 42 );
 
-    t.join();
+//    t.join();
 }

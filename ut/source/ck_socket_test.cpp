@@ -19,7 +19,10 @@ REGISTER_TEST_FIXTURE(ck_socket_test);
 {                            \
     int tries = 0;           \
     while(!a && (tries < b)) \
+    {                        \
+        ck_usleep(100000);   \
         tries++;             \
+    }                        \
 }
 
 void ck_socket_test::setup()
@@ -66,6 +69,7 @@ void ck_socket_test::test_connect()
                 val+=1;
                 connected->send(&val, 4);
             });
+            t.detach();
 
             unsigned int val = 41;
             ck_socket client_sok;
@@ -84,8 +88,6 @@ void ck_socket_test::test_connect()
             client_sok.set_recv_timeout( 500 );
             client_sok.recv( &val, 4 );
             UT_ASSERT( val == 42 );
-
-            t.join();
         }
     }
     catch( cppkit::ck_exception& )
@@ -119,6 +121,8 @@ void ck_socket_test::test_dual_protocol_server()
                 connected->send( &val, 4 );
             });
 
+            t.detach();
+
             ck_socket client_sok;
             TRY_N_TIMES(client_sok.query_connect("127.0.0.1", port, 1), 10);
 
@@ -127,8 +131,6 @@ void ck_socket_test::test_dual_protocol_server()
             client_sok.set_recv_timeout( 500 );
             client_sok.recv( &val, 4 );
             UT_ASSERT( val == 42 );
-
-            t.join();
 
             // IPv6
             UT_ASSERT_THROWS( client_sok.connect( "::1", port ), ck_socket_exception );
@@ -152,6 +154,8 @@ void ck_socket_test::test_dual_protocol_server()
                 connected->send( &val, 4 );
             });
 
+            t.detach();
+
             ck_socket client_sok;
 
             // IPv4
@@ -160,8 +164,6 @@ void ck_socket_test::test_dual_protocol_server()
             client_sok.set_recv_timeout( 500 );
             client_sok.recv( &val, 4 );
             UT_ASSERT( val == 42 );
-
-            t.join();
 
             // IPv6
             UT_ASSERT_THROWS( client_sok.connect( "127.0.0.1", port ), ck_socket_exception );
@@ -203,14 +205,14 @@ void ck_socket_test::test_dual_protocol_server()
                     connected->send( &val, 4 );
                 });
 
+                t.detach();
+
                 ck_socket client_sok;
                 TRY_N_TIMES(client_sok.query_connect(addrs[ii], port, 1), 10);
                 client_sok.send( &val, 4 );
                 client_sok.set_recv_timeout( 500 );
                 client_sok.recv( &val, 4 );
                 UT_ASSERT( val == 42 );
-
-                t.join();
             }
         }
         else

@@ -27,7 +27,8 @@ add_library(cppkit SHARED source/ck_byte_ptr.cpp
                           source/ck_time_utils.cpp
                           source/ck_uuid_utils.cpp
                           source/ck_variant.cpp
-                          source/ck_json.cpp)
+                          source/ck_json.cpp
+                          source/ck_nullable.cpp)
 
 if(${UNIX})
 target_link_libraries(cppkit pthread)

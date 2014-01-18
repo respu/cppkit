@@ -14,7 +14,6 @@ set(CMAKE_SHARED_LINKER_FLAGS "-rdynamic")
 
 include_directories(include)
 
-
 add_executable(ut source/framework.cpp
                   source/chrono_test.cpp
                   source/ck_byte_ptr_test.cpp
@@ -27,6 +26,7 @@ add_executable(ut source/framework.cpp
                   source/condition_variable_test.cpp
                   source/recursive_mutex_test.cpp
                   source/ck_variant_test.cpp
-                  source/ck_json_test.cpp)
+                  source/ck_json_test.cpp
+                  source/ck_nullable_test.cpp)
 
 target_link_libraries(ut cppkit)
