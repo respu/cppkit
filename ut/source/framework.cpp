@@ -5,8 +5,7 @@
 
 using namespace std;
 
-recursive_mutex _test_fixtures_lock;
-list<shared_ptr<test_fixture> > _test_fixtures;
+list<test_fixture*> _test_fixtures;
 
 static char* _failure_messages[] = { (char*)"Go fix your code!", (char*)"Yay, one less bug found by a customer!", (char*)"Don't even think about commenting this test out!", (char*)"Checking in broken code is worse than a broken test.", (char*)"A little pain now means less pain in the future.", (char*)"Remember, its doing what you told it to.", (char*)"Go for a walk and think about something else for a while. The answer will come to you.", (char*)"Check your assumptions.", (char*)"Wow, you really expected THAT to work?", (char*)"You should try asking about this on StackOverflow.com.", (char*)"One less field issue.", (char*)"Try asking someone.", (char*)"Trust me, it could be a lot worse!", (char*)"Try running the tests under valgrind.", (char*)"Believe me, I've seen a lot worse.", (char*)"You're contributing to the entropy of the universe." };
 
@@ -52,11 +51,10 @@ int main( int argc, char* argv[] )
         fixture_name = argv[1];
 
     srand( time(0) );
-    lock_guard<recursive_mutex> g( _test_fixtures_lock );
 
     bool something_failed = false;
 
-    auto i = _test_fixtures.begin();
+    list<test_fixture*>::iterator i = _test_fixtures.begin();
     for( ; i != _test_fixtures.end(); i++ )
     {
         if( fixture_name.length() > 0 )
@@ -80,6 +78,16 @@ int main( int argc, char* argv[] )
     {
         printf("\nFailure. ");
         printf("%s\n",_failure_messages[random()%(sizeof(_failure_messages)/sizeof(_failure_messages[0]))]);
+    }
+
+    i = _test_fixtures.begin();
+    while( i != _test_fixtures.end() )
+    {
+        test_fixture* p = *i;
+
+        delete p;
+
+        i++;
     }
 
     return 0;

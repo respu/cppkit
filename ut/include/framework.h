@@ -1,20 +1,43 @@
 
-#ifndef cppkit_ut_framework_h
-#define cppkit_ut_framework_h
+#ifndef ut_framework_h
+#define ut_framework_h
 
 #include <list>
-#include <memory>
-#include <mutex>
 #include <exception>
-#include <functional>
-#include <mutex>
-#include <condition_variable>
+#include <string>
 #include <stdio.h>
+
+#ifdef WIN32
+#define SNPRINTF _snprintf
+#else
+#define SNPRINTF snprintf
+#endif
 
 void ut_usleep(unsigned int usec);
 
+/// Normally, you will use TEST_SUITE like this:
+///
+/// TEST_SUITE(MyTestFixture);
+///     TEST(MyTestFixture::TestFoo);
+///     TEST(MyTestFixture::TestBar);
+/// TEST_SUITE_END();
+///
+/// But if your fixture has its own member variables that you really need to initialize in its constructor
+/// you can do so like this (note the slightly different starting macro, and the presence of TEST_SUITE_BEGIN()).
+///
+/// TEST_SUITE_INIT(MyTestFixture)
+///     _lok(),
+///     _cond(_lok)
+/// TEST_SUITE_BEGIN()
+///     TEST(MyTestFixture::TestFoo);
+///     TEST(MyTestFixture::TestBar);
+/// TEST_SUITE_END()
+
 #define TEST_SUITE(a) \
         a() : test_fixture(#a) {
+
+#define TEST_SUITE_INIT(a) a() : test_fixture(#a),
+#define TEST_SUITE_BEGIN() {
 
 #define TEST(a) \
         add_test((void (test_fixture::*)())&a,#a)
@@ -53,7 +76,7 @@ public:
     {
     }
 
-    virtual ~ut_fail_exception() noexcept
+    virtual ~ut_fail_exception() throw()
     {
     }
 
@@ -72,7 +95,7 @@ public:
         _msg = msg;
 
         char line_num_msg[36];
-        snprintf(line_num_msg,36,"%d",_line_num);
+        SNPRINTF(line_num_msg,36,"%d",_line_num);
 
         _what_msg = _msg + " in file " + _src_file + " at line " + line_num_msg;
     }
@@ -83,7 +106,7 @@ public:
         _src_file = file;
 
         char line_num_msg[36];
-        snprintf(line_num_msg,36,"%d",_line_num);
+        SNPRINTF(line_num_msg,36,"%d",_line_num);
 
         _what_msg = _msg + " in file " + _src_file + " at line " + line_num_msg;
     }
@@ -105,11 +128,19 @@ private:
     std::string _msg;
 };
 
-#define UT_ASSERT(a) if( !(a) ) { ut_fail_exception e; e.set_msg(#a); e.set_throw_point(__LINE__,__FILE__); throw e; }
-#define UT_ASSERT_THROWS(thing_that_throws,what_is_thrown) try { bool threw = false; try { do { (thing_that_throws); } while( false ); } catch( what_is_thrown& ex ) { threw=true; } if(!threw) throw false; } catch(...) {ut_fail_exception e; e.set_msg("Test failed to throw expected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;}
-#define UT_ASSERT_NO_THROW(thing_that_doesnt_throw) { bool threw = false; try { do { (thing_that_doesnt_throw); } while( false ); } catch( ... ) { threw=true; } if(threw) {ut_fail_exception e; e.set_msg("Test threw unexpected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;} }
+#define UT_ASSERT(a) do{ if( !(a) ) { ut_fail_exception e; e.set_msg(#a); e.set_throw_point(__LINE__,__FILE__); throw e; } } while(false)
 
-extern std::recursive_mutex _test_fixtures_lock;
+#define UT_ASSERT_EQUAL(a,b) do{ if( !(a==b) ) { ut_fail_exception e; e.set_msg(#a); e.set_throw_point(__LINE__,__FILE__); throw e; } } while(false)
+
+#define UT_ASSERT_EQUAL_MESSAGE(message,a,b) do{ if( !(a==b) ) { ut_fail_exception e; e.set_msg(message); e.set_throw_point(__LINE__,__FILE__); throw e; } } while(false)
+
+#define UT_ASSERT_MESSAGE(message,a) do{ if( !(a) ) { ut_fail_exception e; e.set_msg(message); e.set_throw_point(__LINE__,__FILE__); throw e; } } while(false)
+
+#define UT_ASSERT_THROWS(thing_that_throws,what_is_thrown) do { try { bool threw = false; try { thing_that_throws; } catch( what_is_thrown& ex ) { threw=true; } if(!threw) throw false; } catch(...) {ut_fail_exception e; e.set_msg("Test failed to throw expected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;} } while(false)
+
+#define UT_ASSERT_THROWS_MESSAGE(message,thing_that_throws,what_is_thrown) do { try { bool threw = false; try { thing_that_throws; } catch( what_is_thrown& ex ) { threw=true; } if(!threw) throw false; } catch(...) {ut_fail_exception e; e.set_msg(message); e.set_throw_point(__LINE__,__FILE__); throw e;} } while(false)
+
+#define UT_ASSERT_NO_THROW(thing_that_doesnt_throw) do { { bool threw = false; try { thing_that_doesnt_throw; } catch( ... ) { threw=true; } if(threw) {ut_fail_exception e; e.set_msg("Test threw unexpected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;} } } while(false)
 
 class test_fixture
 {
@@ -121,22 +152,20 @@ public:
     {
     }
 
-    virtual ~test_fixture() noexcept
+    virtual ~test_fixture() throw()
     {
     }
 
     void run_tests()
     {
-        std::lock_guard<std::recursive_mutex> g(_test_fixtures_lock);
-
-        auto i = _tests.begin();
+        std::list<struct test_container>::iterator i = _tests.begin();
         for( ; i != _tests.end(); i++ )
         {
             setup();
 
             try
             {
-                printf("%-64s [",(*i).test_name.c_str());
+                printf("%-50s [",(*i).test_name.c_str());
                 ((*i).fixture->*(*i).test)();
                 (*i).passed = true;
                 printf("P]\n");
@@ -166,9 +195,7 @@ public:
 
     void print_failures()
     {
-        std::lock_guard<std::recursive_mutex> g(_test_fixtures_lock);
-
-        auto i = _tests.begin();
+        std::list<struct test_container>::iterator i = _tests.begin();
         for( ; i != _tests.end(); i++ )
         {
             if(!(*i).passed)
@@ -187,7 +214,6 @@ protected:
     virtual void teardown() {}
     void add_test( void (test_fixture::*test)(), std::string name )
     {
-        std::lock_guard<std::recursive_mutex> g(_test_fixtures_lock);
         struct test_container tc;
         tc.test = test;
         tc.test_name = name;
@@ -200,14 +226,14 @@ protected:
     std::string _fixture_name;
 };
 
-extern std::list<std::shared_ptr<test_fixture> > _test_fixtures;
+extern std::list<test_fixture*> _test_fixtures;
 
 #define REGISTER_TEST_FIXTURE(a) \
 class a##_static_init \
 { \
 public: \
     a##_static_init() { \
-        _test_fixtures.push_back(make_shared<a>()); \
+        _test_fixtures.push_back(new a()); \
     } \
 }; \
 a##_static_init a##_static_init_instance;

@@ -72,7 +72,8 @@ ck_socket::ck_socket( uint32_t defaultRecvBufferSize )
       _hostPort(80),
       _recvBuffer( defaultRecvBufferSize ),
       _bufferedBytes( 0 ),
-      _recvPos( 0 )
+      _recvPos( 0 ),
+      _delayClose( 0 )
 {
     // Lock for socket startup and count increment
     lock_guard<recursive_mutex> g( _sokLock );
@@ -97,7 +98,8 @@ ck_socket::ck_socket( ck_socket_type type )
       _hostPort(80),
       _recvBuffer( DEFAULT_RECV_BUFFER_SIZE ),
       _bufferedBytes( 0 ),
-      _recvPos( 0 )
+      _recvPos( 0 ),
+      _delayClose( 0 )
 {
     // Lock for socket startup and count increment
     lock_guard<recursive_mutex> g( _sokLock );
@@ -357,6 +359,11 @@ void ck_socket::close()
     // The solution here is this: First, cache our current FD on the stack. Second, set our
     // FD member to 0. Third, call close on the cached FD.
 
+    if( _delayClose > 0 )
+    {
+        wait_recv( _delayClose );
+    }
+
     int sokTemp = _sok;
     int err = 0;
 
@@ -373,6 +380,35 @@ void ck_socket::close()
 
     if( err < 0)
         CK_LOG_WARNING("Failed to close socket: %s", ck_get_last_error_msg().c_str());
+}
+
+/// Let me now spin for you now a tale of woe so dark it may make you question your sanity. I will begin with
+/// a simple question: Do you know how to close a socket? Of course you say... what kind of programmer doesn't
+/// understand how to properly close a socket! Well, me apparently. You see, I was under the mistaken
+/// impression that all you really needed to do was call close() to close a socket. Oh how wrong I was.
+/// If a server calls close() immediately after writing its response 2 bad things may happen: 1) It's likely
+/// the tcp stack was not actually done sending all of the data you wrote to the client. 2) The server will
+/// almost certainly be the initiator of the close (fin,fin/ack,ack), and the initator of a close will see
+/// his sockets accumulate in the TIME_WAIT state. If said server is being hammered by requests, then it is
+/// very likely that the server will run out of sockets (especially if connected to by lots of slow links, as a
+/// socket may sit in TIME_WAIT state for up to 2 times the MSL!). How can you detect this?
+///   netstat -anp | grep PORT_NUMBER. (Note: don't grep by process name as sockets in time_wait wont show up).
+/// What the server really needs to do is delay its close until the client has closed it's end (perhaps with
+/// some sort of max wait). Luckily, their is a way to do this: If the server calls recv() (or in XSocket's
+/// case RawRecv()) after writing its response repeatedly in a loop, a return value of 0 will indicate the
+/// client has closed his end of the socket. Additionally, select() and poll() will return upon receipt of a
+/// close() from the client so an ever better approach is to wait in a select() (which btw, also gets you a way
+/// to have a clean max wait time). So, what about the case of crazy clients that never call close? Well, if
+/// you set Linger(0) on your server client socket, a close will cause a RST (instead of the normal fin/ack
+/// sequence) which will bypass the TIME_WAIT state.
+/// So, is this the ultimate server close? Nope. Even better one would work like this: Linux and Windows both
+/// have a means of querying how much application data is waiting in the tcp buffer to be sent. A even better
+/// method would call WaitRecv() in a loop as long as that value was getting smaller (so if you had a really
+/// HUGE send buffer, and were connected to by really slow clients, you wouldn't cut off their reads).
+
+void ck_socket::enable_auto_server_close( int timeout )
+{
+    _delayClose = timeout;
 }
 
 int ck_socket::get_sok_id() const
@@ -397,6 +433,16 @@ void ck_socket::take_over_sok_id( SOCKET sok )
     this->close();
 
     _sok = sok;
+}
+
+void ck_socket::linger( uint16_t lingerSeconds )
+{
+    struct linger l;
+    l.l_onoff = 1;
+    l.l_linger = lingerSeconds;
+    int err = (int)::setsockopt( (SOCKET)_sok, SOL_SOCKET, SO_LINGER, (const char *)&l, sizeof(struct linger) );
+    if( err != 0 )
+        CK_STHROW( ck_socket_exception, ("Unable to set SO_LINGER socket option.") );
 }
 
 int ck_socket::bind_ephemeral( const ck_string& ip )

@@ -5,6 +5,7 @@
 
 #include <mutex>
 #include <thread>
+#include <condition_variable>
 
 using namespace std;
 using namespace cppkit;

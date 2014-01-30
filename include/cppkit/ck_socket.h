@@ -127,6 +127,11 @@ public:
     /// Release this sockets file descriptor...
     CK_API virtual void close();
 
+    /// If enabled, causes default close() to wait_recv() UP TO timeout millis for the client to
+    /// disconnect first. Client first disconnection avoids TIME_WAIT issues on the server and guarantees
+    /// the data has been read by the client.
+    CK_API void enable_auto_server_close( int timeout );
+
     /// Return the sockets ID.
     CK_API virtual int get_sok_id() const;
 
@@ -135,6 +140,9 @@ public:
 
     /// Causes socket object to take over the specified underlying OS socket resource.
     CK_API void take_over_sok_id( SOCKET sok );
+
+    /// Causes socket option SO_LINGER to be set.
+    CK_API void linger( uint16_t lingerSeconds = 30 );
 
     /// Bind this socket to a particular port.
     /// \param port The port to bind to.
@@ -295,6 +303,8 @@ private:
     std::vector<uint8_t> _recvBuffer;
     uint32_t _bufferedBytes;
     uint32_t _recvPos;
+
+    int _delayClose;
 };
 
 class ck_socket_exception : public ck_exception
