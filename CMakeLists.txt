@@ -28,10 +28,12 @@ add_library(cppkit SHARED source/ck_byte_ptr.cpp
                           source/ck_uuid_utils.cpp
                           source/ck_variant.cpp
                           source/ck_json.cpp
-                          source/ck_nullable.cpp)
+                          source/ck_nullable.cpp
+                          source/ck_dynamic_library.cpp
+                          source/ck_library_id.cpp)
 
 if(${UNIX})
-target_link_libraries(cppkit pthread)
+target_link_libraries(cppkit pthread rt dl)
 endif(${UNIX})
 
 install(TARGETS cppkit LIBRARY DESTINATION lib COMPONENT library)

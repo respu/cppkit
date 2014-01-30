@@ -27,6 +27,7 @@ add_executable(ut source/framework.cpp
                   source/recursive_mutex_test.cpp
                   source/ck_variant_test.cpp
                   source/ck_json_test.cpp
-                  source/ck_nullable_test.cpp)
+                  source/ck_nullable_test.cpp
+                  source/ck_dynamic_library_test.cpp)
 
 target_link_libraries(ut cppkit)
