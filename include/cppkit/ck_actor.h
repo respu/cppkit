@@ -44,15 +44,7 @@ class actor
     typedef std::unique_lock<std::recursive_mutex> guard;
 
 public:
-    actor() :
-        _thread(),
-        _lock(),
-        _cond(),
-        _queue(),
-        _started( false )
-    {
-    }
-
+    actor() = default;
     actor( const actor& ) = delete;
 
     virtual ~actor() noexcept
