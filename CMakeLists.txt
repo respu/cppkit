@@ -31,7 +31,8 @@ add_library(cppkit SHARED source/ck_library_id.cpp
                           source/ck_json.cpp
                           source/ck_nullable.cpp
                           source/ck_dynamic_library.cpp
-                          source/ck_actor.cpp)
+                          source/ck_actor.cpp
+                          source/ck_command_queue.cpp)
 
 if(${UNIX})
 target_link_libraries(cppkit pthread rt dl)

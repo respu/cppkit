@@ -27,39 +27,37 @@
 /// Project.
 /// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=--=-=-=-=-=-
 
-#ifndef cppkit_actor_h
-#define cppkit_actor_h
+#ifndef cppkit_command_queue_h
+#define cppkit_command_queue_h
 
 #include <mutex>
 #include <condition_variable>
-#include <future>
 #include <list>
 
 namespace cppkit
 {
 
-template<class CMD, class RESULT>
-class actor
+template<class CMD>
+class command_queue
 {
     typedef std::unique_lock<std::recursive_mutex> guard;
 
 public:
-    actor() = default;
-    actor( const actor& ) = delete;
+    command_queue() = default;
+    command_queue( const command_queue& ) = delete;
 
-    virtual ~actor() noexcept
+    virtual ~command_queue() noexcept
     {
         if( started() )
             stop();
     }
 
-    actor& operator = ( const actor& ) = delete;
+    command_queue& operator = ( const command_queue& ) = delete;
 
     void start()
     {
         guard g( _lock );
         _started = true;
-        _thread = std::thread( &actor<CMD,RESULT>::_entry_point, this );
     }
 
     inline bool started() const
@@ -69,56 +67,38 @@ public:
 
     void stop()
     {
-        if( started() )
-        {
-            {
-                guard g( _lock );
-                _started = false;
-                _cond.notify_one();
-                _queue.clear();
-            }
-
-            _thread.join();
-        }
-    }
-
-    std::future<RESULT> post( const CMD& cmd )
-    {
         guard g( _lock );
-
-        std::promise<RESULT> p;
-        auto waiter = p.get_future();
-
-        _queue.push_front( std::pair<CMD,std::promise<RESULT>>( cmd, std::move( p ) ) );
+        _started = false;
+        _queue.clear();
 
         _cond.notify_one();
-
-        return waiter;
     }
 
-    virtual RESULT process( const CMD& cmd ) = 0;
-
-protected:
-    void _entry_point()
+    void post( const CMD& cmd )
     {
-        while( _started )
-        {
-            guard g( _lock );
-
-            _cond.wait( g, [this](){return !this->_queue.empty() ? true : !this->_started;} );
-
-            if( !_started )
-                continue;
-
-            _queue.back().second.set_value( process( _queue.back().first ) );
-            _queue.pop_back();
-        }
+        guard g( _lock );
+        _queue.push_front( cmd );
+        _cond.notify_one();
     }
 
-    std::thread _thread;
+    void wait()
+    {
+        guard g( _lock );
+        _cond.wait( g, [this](){return !this->_queue.empty() ? true : !this->_started;} );
+    }
+
+    CMD pop()
+    {
+        guard g( _lock );
+        auto val = _queue.back();
+        _queue.pop_back();
+        return val;
+    }
+
+private:
     std::recursive_mutex _lock;
     std::condition_variable_any _cond;
-    std::list<std::pair<CMD,std::promise<RESULT>>> _queue;
+    std::list<CMD> _queue;
     bool _started = false;
 };
 

@@ -29,6 +29,7 @@ add_executable(ut source/framework.cpp
                   source/ck_json_test.cpp
                   source/ck_nullable_test.cpp
                   source/ck_dynamic_library_test.cpp
-                  source/ck_actor_test.cpp)
+                  source/ck_actor_test.cpp
+                  source/ck_command_queue_test.cpp)
 
 target_link_libraries(ut cppkit)
