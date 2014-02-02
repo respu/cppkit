@@ -13,7 +13,8 @@ set(CMAKE_CXX_FLAGS ${CUSTOM_FLAGS})
 set(CMAKE_SHARED_LINKER_FLAGS "-rdynamic")
 
 include_directories(include)
-add_library(cppkit SHARED source/ck_byte_ptr.cpp
+add_library(cppkit SHARED source/ck_library_id.cpp
+                          source/ck_byte_ptr.cpp
                           source/ck_error_msg.cpp
                           source/ck_exception.cpp
                           source/ck_large_files.cpp
@@ -30,7 +31,7 @@ add_library(cppkit SHARED source/ck_byte_ptr.cpp
                           source/ck_json.cpp
                           source/ck_nullable.cpp
                           source/ck_dynamic_library.cpp
-                          source/ck_library_id.cpp)
+                          source/ck_actor.cpp)
 
 if(${UNIX})
 target_link_libraries(cppkit pthread rt dl)
