@@ -4,7 +4,6 @@ cppkit todo
 bitsy
 cache
 easy weak ref
-memory map
 path
 ssl sockets
 statistics
