@@ -38,28 +38,33 @@
 namespace cppkit
 {
 
+/// An object that inherits from ck_actor is an entity with a thread that responds to commands
+/// sent to it (in the order they were sent) producing some kind of result. ck_actor is a template
+/// class that parameterizes both the command and result types. In addition, ck_actor returns a
+/// std::future<> from post(), thus allowing clients the freedom to choose whether to block until
+/// their command has a response or keep running until it does.
 template<class CMD, class RESULT>
-class actor
+class ck_actor
 {
-    typedef std::unique_lock<std::recursive_mutex> guard;
+    typedef std::unique_lock<std::mutex> guard;
 
 public:
-    actor() = default;
-    actor( const actor& ) = delete;
+    ck_actor() = default;
+    ck_actor( const ck_actor& ) = delete;
 
-    virtual ~actor() noexcept
+    virtual ~ck_actor() noexcept
     {
         if( started() )
             stop();
     }
 
-    actor& operator = ( const actor& ) = delete;
+    ck_actor& operator = ( const ck_actor& ) = delete;
 
     void start()
     {
         guard g( _lock );
         _started = true;
-        _thread = std::thread( &actor<CMD,RESULT>::_entry_point, this );
+        _thread = std::thread( &ck_actor<CMD,RESULT>::_main_loop, this );
     }
 
     inline bool started() const
@@ -99,13 +104,13 @@ public:
     virtual RESULT process( const CMD& cmd ) = 0;
 
 protected:
-    void _entry_point()
+    void _main_loop()
     {
         while( _started )
         {
             guard g( _lock );
 
-            _cond.wait( g, [this](){return !this->_queue.empty() ? true : !this->_started;} );
+            _cond.wait( g, [this] () { return !this->_queue.empty() || !this->_started; } );
 
             if( !_started )
                 continue;
@@ -116,8 +121,8 @@ protected:
     }
 
     std::thread _thread;
-    std::recursive_mutex _lock;
-    std::condition_variable_any _cond;
+    std::mutex _lock;
+    std::condition_variable _cond;
     std::list<std::pair<CMD,std::promise<RESULT>>> _queue;
     bool _started = false;
 };

@@ -40,7 +40,7 @@ namespace cppkit
 template<class CMD>
 class command_queue
 {
-    typedef std::unique_lock<std::recursive_mutex> guard;
+    typedef std::unique_lock<std::mutex> guard;
 
 public:
     command_queue() = default;
@@ -84,7 +84,7 @@ public:
     void wait()
     {
         guard g( _lock );
-        _cond.wait( g, [this](){return !this->_queue.empty() ? true : !this->_started;} );
+        _cond.wait( g, [this] () { return !this->_queue.empty() || !this->_started; } );
     }
 
     CMD pop()
@@ -96,8 +96,8 @@ public:
     }
 
 private:
-    std::recursive_mutex _lock;
-    std::condition_variable_any _cond;
+    std::mutex _lock;
+    std::condition_variable _cond;
     std::list<CMD> _queue;
     bool _started = false;
 };

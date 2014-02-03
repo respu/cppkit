@@ -11,7 +11,7 @@ REGISTER_TEST_FIXTURE(ck_actor_test);
 /// adder_actor is an actor that add's the int's in the pair sent to it and returns
 /// the result...
 
-class adder_actor : public actor<std::pair<int,int>,int>
+class adder_actor : public ck_actor<std::pair<int,int>,int>
 {
 public:
     virtual int process( const std::pair<int,int>& cmd ) override
