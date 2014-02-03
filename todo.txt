@@ -3,12 +3,8 @@ cppkit todo
 
 bitsy
 cache
-command queue
-xml parsing
-dynamic libraries
 easy weak ref
 memory map
-nullable types
 path
 ssl sockets
 statistics

@@ -34,6 +34,7 @@
 #include <condition_variable>
 #include <future>
 #include <list>
+#include "cppkit/ck_logger.h"
 
 namespace cppkit
 {
@@ -43,6 +44,7 @@ namespace cppkit
 /// class that parameterizes both the command and result types. In addition, ck_actor returns a
 /// std::future<> from post(), thus allowing clients the freedom to choose whether to block until
 /// their command has a response or keep running until it does.
+
 template<class CMD, class RESULT>
 class ck_actor
 {
@@ -115,7 +117,24 @@ protected:
             if( !_started )
                 continue;
 
-            _queue.back().second.set_value( process( _queue.back().first ) );
+            // Call process() and attach any thrown exceptions to the result std::promise
+
+            try
+            {
+                _queue.back().second.set_value( process( _queue.back().first ) );
+            }
+            catch( ... )
+            {
+                try
+                {
+                    _queue.back().second.set_exception( std::current_exception() );
+                }
+                catch( ... )
+                {
+                    CK_LOG_NOTICE( "Failed to attach unknown exception to std::promise<>" );
+                }
+            }
+
             _queue.pop_back();
         }
     }
