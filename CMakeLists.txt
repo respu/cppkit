@@ -33,7 +33,8 @@ add_library(cppkit SHARED source/ck_library_id.cpp
                           source/ck_dynamic_library.cpp
                           source/ck_actor.cpp
                           source/ck_command_queue.cpp
-                          source/ck_memory_map.cpp)
+                          source/ck_memory_map.cpp
+                          source/ck_path.cpp)
 
 if(${UNIX})
 target_link_libraries(cppkit pthread rt dl)
