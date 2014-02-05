@@ -38,9 +38,9 @@ add_library(cppkit SHARED source/ck_library_id.cpp
                           source/ck_udp_sender.cpp
                           source/ck_udp_receiver.cpp)
 
-if(${UNIX})
+if(CMAKE_SYSTEM MATCHES "Linux-")
 target_link_libraries(cppkit pthread rt dl)
-endif(${UNIX})
+endif(CMAKE_SYSTEM MATCHES "Linux-")
 
 if(CMAKE_SYSTEM MATCHES "Windows")
 target_link_libraries(cppkit DbgHelp ws2_32 iphlpapi)
