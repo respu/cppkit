@@ -50,7 +50,7 @@ public:
 
     CK_API ck_exception(const char* msg, ...);
 
-    CK_API virtual ~ck_exception() noexcept;
+    CK_API virtual ~ck_exception() throw();
 
     CK_API virtual const char* what() const throw();
 

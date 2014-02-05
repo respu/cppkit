@@ -76,7 +76,7 @@ public:
         TEST(ck_string_test::test_find_last_unicode);
     TEST_SUITE_END();
 
-    virtual ~ck_string_test() noexcept {}
+    virtual ~ck_string_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

@@ -46,7 +46,7 @@ ck_path::ck_path( const ck_string& glob ) :
     open_dir( glob );
 }
 
-ck_path::~ck_path() noexcept
+ck_path::~ck_path() throw()
 {
 #ifdef IS_WINDOWS
     if( _handle != 0 )

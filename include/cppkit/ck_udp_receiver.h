@@ -27,7 +27,7 @@ public:
 
     CK_API ck_udp_receiver( const ck_udp_receiver& ) = delete;
 
-    CK_API virtual ~ck_udp_receiver() noexcept;
+    CK_API virtual ~ck_udp_receiver() throw();
 
     CK_API ck_udp_receiver& operator = ( const ck_udp_receiver& ) = delete;
 

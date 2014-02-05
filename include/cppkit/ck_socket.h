@@ -119,7 +119,7 @@ public:
     CK_API ck_socket( ck_socket_type type );
 
     /// Close and destroy this object.
-    CK_API virtual ~ck_socket() noexcept;
+    CK_API virtual ~ck_socket() throw();
 
     /// A socket is valid if it is connected and no critical system calls have returned any errors.
     CK_API virtual bool valid();
@@ -312,7 +312,7 @@ class ck_socket_exception : public ck_exception
 public:
     CK_API ck_socket_exception();
 
-    CK_API virtual ~ck_socket_exception() noexcept;
+    CK_API virtual ~ck_socket_exception() throw();
 
     CK_API ck_socket_exception(const char* msg, ...);
 

@@ -65,7 +65,7 @@ public:
                           const ck_string& localInterfaceIP = "",
                           int localPort = 0 );
 
-    CK_API virtual ~ck_udp_sender() noexcept;
+    CK_API virtual ~ck_udp_sender() throw();
 
     CK_API ck_udp_sender& operator = ( const ck_udp_sender& ) = delete;
 
@@ -79,7 +79,7 @@ public:
 
 private:
     void _configure();
-    void _close() noexcept;
+    void _close() throw();
 
     SOCKET _sok;
     ck_socket_address _addr;

@@ -139,7 +139,7 @@ public:
         _storage = convert_wide_string_to_multi_byte_string(value);
     }
 
-    CK_API ~ck_string() noexcept {}
+    CK_API ~ck_string() throw() {}
 
     /// cppkit::ck_string implicitly casts to std::string& so that
     /// it can be used as a std::string without overhead.

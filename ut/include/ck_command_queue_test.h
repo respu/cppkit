@@ -10,7 +10,7 @@ public:
         TEST(ck_command_queue_test::test_full_queue);
     TEST_SUITE_END();
 
-    virtual ~ck_command_queue_test() noexcept {}
+    virtual ~ck_command_queue_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

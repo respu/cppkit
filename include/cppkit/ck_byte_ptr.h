@@ -131,7 +131,7 @@ public:
     {
     }
 
-    CK_API ~ck_byte_ptr() noexcept
+    CK_API ~ck_byte_ptr() throw()
     {
     }
 

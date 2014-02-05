@@ -44,7 +44,7 @@ ck_memory::ck_memory(const ck_memory& obj) :
 {
 }
 
-ck_memory::~ck_memory() noexcept
+ck_memory::~ck_memory() throw()
 {
 }
 

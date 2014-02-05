@@ -10,7 +10,7 @@ public:
         TEST(ck_actor_test::test_adder);
     TEST_SUITE_END();
 
-    virtual ~ck_actor_test() noexcept {}
+    virtual ~ck_actor_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

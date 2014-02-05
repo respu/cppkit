@@ -54,7 +54,7 @@ ck_dynamic_library::ck_dynamic_library(const ck_string& libraryName) :
 {
 }
 
-ck_dynamic_library::~ck_dynamic_library() noexcept
+ck_dynamic_library::~ck_dynamic_library() throw()
 {
     if( _libraryInstance != 0 )
         unload();

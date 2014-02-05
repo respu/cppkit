@@ -69,7 +69,7 @@ public:
     /// @param len The length of 'addr'
     CK_API ck_socket_address(const struct sockaddr* addr, const socklen_t len);
 
-    CK_API virtual ~ck_socket_address() noexcept;
+    CK_API virtual ~ck_socket_address() throw();
 
     CK_API int port() const { return _port; }
     CK_API void set_port_num(int port); // Can't be SetPort b/c of stupid Window macro of same name

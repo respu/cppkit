@@ -133,7 +133,7 @@ ck_socket::ck_socket( ck_socket_type type )
         create(AF_INET);
 }
 
-ck_socket::~ck_socket() noexcept
+ck_socket::~ck_socket() throw()
 {
     this->close();
 
@@ -1103,7 +1103,7 @@ ck_socket_exception::ck_socket_exception()
 {
 }
 
-ck_socket_exception::~ck_socket_exception() noexcept
+ck_socket_exception::~ck_socket_exception() throw()
 {
 }
 

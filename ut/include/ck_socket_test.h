@@ -16,7 +16,7 @@ public:
       TEST(ck_socket_test::test_get_interface_addresses);
     TEST_SUITE_END();
 
-    virtual ~ck_socket_test() noexcept {}
+    virtual ~ck_socket_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

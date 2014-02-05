@@ -70,7 +70,7 @@ class ck_path
     CK_API ck_path( const ck_string& glob );
     CK_API ck_path( const ck_path& ) = delete;
 
-    CK_API virtual ~ck_path() noexcept;
+    CK_API virtual ~ck_path() throw();
 
     CK_API ck_path& operator = ( const ck_path& ) = delete;
 

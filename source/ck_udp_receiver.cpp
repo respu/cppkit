@@ -126,7 +126,7 @@ ck_udp_receiver::ck_udp_receiver( int destinationPort,
     }
 }
 
-ck_udp_receiver::~ck_udp_receiver() noexcept
+ck_udp_receiver::~ck_udp_receiver() throw()
 {
     close();
 }

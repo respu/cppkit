@@ -54,7 +54,7 @@ public:
     ck_actor() = default;
     ck_actor( const ck_actor& ) = delete;
 
-    virtual ~ck_actor() noexcept
+    virtual ~ck_actor() throw()
     {
         if( started() )
             stop();

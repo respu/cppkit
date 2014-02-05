@@ -46,7 +46,7 @@ public:
     command_queue() = default;
     command_queue( const command_queue& ) = delete;
 
-    virtual ~command_queue() noexcept
+    virtual ~command_queue() throw()
     {
         if( started() )
             stop();

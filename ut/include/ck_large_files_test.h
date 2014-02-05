@@ -14,7 +14,7 @@ public:
       TEST(ck_large_files_test::test_pre_allocated_file);
     TEST_SUITE_END();
 
-    virtual ~ck_large_files_test() noexcept {}
+    virtual ~ck_large_files_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

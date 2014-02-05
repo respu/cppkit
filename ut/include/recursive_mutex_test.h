@@ -11,7 +11,7 @@ public:
       TEST(recursive_mutex_test::test_lots_of_locks);
     TEST_SUITE_END();
 
-    virtual ~recursive_mutex_test() noexcept {}
+    virtual ~recursive_mutex_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

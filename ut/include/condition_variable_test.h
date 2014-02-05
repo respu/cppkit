@@ -11,7 +11,7 @@ public:
       TEST(condition_variable_test::test_wait_for);
     TEST_SUITE_END();
 
-    virtual ~condition_variable_test() noexcept {}
+    virtual ~condition_variable_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

@@ -12,7 +12,7 @@ public:
         TEST(ck_random_test::test_mersenne_twister_with_floating_point_distribution);
     TEST_SUITE_END();
 
-    virtual ~ck_random_test() noexcept {}
+    virtual ~ck_random_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

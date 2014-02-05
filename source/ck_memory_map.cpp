@@ -106,7 +106,7 @@ ck_memory_map::ck_memory_map( int fd,
 #endif
 }
 
-ck_memory_map::~ck_memory_map() noexcept
+ck_memory_map::~ck_memory_map() throw()
 {
 #ifdef IS_WINDOWS
     UnmapViewOfFile( _mem );

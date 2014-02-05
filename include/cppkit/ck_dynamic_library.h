@@ -52,7 +52,7 @@ public:
     CK_API ck_dynamic_library();
     CK_API ck_dynamic_library( const ck_string& libraryName );
     CK_API ck_dynamic_library( const ck_dynamic_library& ) = delete;
-    CK_API virtual ~ck_dynamic_library() noexcept;
+    CK_API virtual ~ck_dynamic_library() throw();
 
     ck_dynamic_library& operator = ( const ck_dynamic_library& ) = delete;
 

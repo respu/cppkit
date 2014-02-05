@@ -24,7 +24,7 @@ public:
       TEST(ck_socket_address_test::test_is_hostname);
     TEST_SUITE_END();
 
-    virtual ~ck_socket_address_test() noexcept {}
+    virtual ~ck_socket_address_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

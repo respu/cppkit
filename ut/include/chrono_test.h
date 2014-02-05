@@ -10,7 +10,7 @@ public:
       TEST(chrono_test::test_duration_addition);
     TEST_SUITE_END();
 
-    virtual ~chrono_test() noexcept {}
+    virtual ~chrono_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

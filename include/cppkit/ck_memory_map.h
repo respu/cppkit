@@ -74,7 +74,7 @@ public:
                           uint32_t prot,
                           uint32_t flags );
 
-    CK_API virtual ~ck_memory_map() noexcept;
+    CK_API virtual ~ck_memory_map() throw();
 
     CK_API ck_memory_map& operator = ( const ck_memory_map& ) = delete;
 

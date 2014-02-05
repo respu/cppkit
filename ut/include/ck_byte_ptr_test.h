@@ -19,7 +19,7 @@ public:
         TEST(ck_byte_ptr_test::test_bulk_write);
     TEST_SUITE_END();
 
-    virtual ~ck_byte_ptr_test() noexcept {}
+    virtual ~ck_byte_ptr_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

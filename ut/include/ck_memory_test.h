@@ -18,7 +18,7 @@ public:
         TEST(ck_memory_test::test_size_data);
     TEST_SUITE_END();
 
-    virtual ~ck_memory_test() noexcept {}
+    virtual ~ck_memory_test() throw() {}
 
     virtual void setup();
     virtual void teardown();

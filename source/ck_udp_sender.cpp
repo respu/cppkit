@@ -45,7 +45,7 @@ ck_udp_sender::ck_udp_sender( const ck_string& targetIP,
     _configure();
 }
 
-ck_udp_sender::~ck_udp_sender() noexcept
+ck_udp_sender::~ck_udp_sender() throw()
 {
     _close();
 }
@@ -101,7 +101,7 @@ void ck_udp_sender::_configure()
                   ck_get_last_error_msg().c_str() ));
 }
 
-void ck_udp_sender::_close() noexcept
+void ck_udp_sender::_close() throw()
 {
 #ifdef IS_WINDOWS
     if( _sok != 0 )

@@ -44,7 +44,7 @@ public:
     CK_API ck_memory(size_t size=0);
     CK_API ck_memory(const ck_memory& obj);
 
-    CK_API virtual ~ck_memory() noexcept;
+    CK_API virtual ~ck_memory() throw();
 
     CK_API ck_memory& operator=(const ck_memory& obj);
 
