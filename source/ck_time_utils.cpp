@@ -28,7 +28,7 @@
 /// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=--=-=-=-=-=-
 
 #include "cppkit/os/ck_time_utils.h"
-
+#include "cppkit/ck_string.h"
 #include <ctype.h>
 #include <string.h>
 
@@ -39,7 +39,7 @@ namespace cppkit
 
 // The second argument is only here for compatibility. On Unix, the second argument is a now deprecated
 // struct timezone*.
-X_API int ck_win32_gettimeofday( struct timeval* tv, void* obsolete )
+CK_API int ck_win32_gettimeofday( struct timeval* tv, void* obsolete )
 {
     FILETIME ft;
     unsigned __int64 tmpres = 0;
@@ -97,7 +97,7 @@ static const char *am_pm[2] = {
      "AM", "PM"
 };
 
-X_API char* ck_win32_strptime( const char *buf, const char *fmt, struct tm *tm )
+CK_API char* ck_win32_strptime( const char *buf, const char *fmt, struct tm *tm )
 {
     char c;
     const char *bp;
@@ -112,9 +112,9 @@ X_API char* ck_win32_strptime( const char *buf, const char *fmt, struct tm *tm )
         alt_format = 0;
 
         /* Eat up white-space. */
-        if (XString::IsSpace(c))
+        if (ck_string::is_space(c))
         {
-            while (XString::IsSpace(*bp))
+            while (ck_string::is_space(*bp))
                 bp++;
 
             fmt++;
@@ -152,43 +152,43 @@ again:        switch (c = *fmt++)
              */
             case 'c': /* Date and time, using the locale's format. */
                 LEGAL_ALT(ALT_E);
-                if (!(bp = win32_strptime(bp, "%x %X", tm)))
+                if (!(bp = ck_win32_strptime(bp, "%x %X", tm)))
                     return (0);
                 break;
 
             case 'D': /* The date as "%m/%d/%y". */
                 LEGAL_ALT(0);
-                if (!(bp = win32_strptime(bp, "%m/%d/%y", tm)))
+                if (!(bp = ck_win32_strptime(bp, "%m/%d/%y", tm)))
                     return (0);
                 break;
 
             case 'R': /* The time as "%H:%M". */
                 LEGAL_ALT(0);
-                if (!(bp = win32_strptime(bp, "%H:%M", tm)))
+                if (!(bp = ck_win32_strptime(bp, "%H:%M", tm)))
                     return (0);
                 break;
 
             case 'r': /* The time in 12-hour clock representation. */
                 LEGAL_ALT(0);
-                if (!(bp = win32_strptime(bp, "%I:%M:%S %p", tm)))
+                if (!(bp = ck_win32_strptime(bp, "%I:%M:%S %p", tm)))
                     return (0);
                 break;
 
             case 'T': /* The time as "%H:%M:%S". */
                 LEGAL_ALT(0);
-                if (!(bp = win32_strptime(bp, "%H:%M:%S", tm)))
+                if (!(bp = ck_win32_strptime(bp, "%H:%M:%S", tm)))
                     return (0);
                 break;
 
             case 'X': /* The time, using the locale's format. */
                 LEGAL_ALT(ALT_E);
-                if (!(bp = win32_strptime(bp, "%H:%M:%S", tm)))
+                if (!(bp = ck_win32_strptime(bp, "%H:%M:%S", tm)))
                     return (0);
                 break;
 
             case 'x': /* The date, using the locale's format. */
                 LEGAL_ALT(ALT_E);
-                if (!(bp = win32_strptime(bp, "%m/%d/%y", tm)))
+                if (!(bp = ck_win32_strptime(bp, "%m/%d/%y", tm)))
                     return (0);
                 break;
 
@@ -387,7 +387,7 @@ again:        switch (c = *fmt++)
             case 'n': /* Any kind of white-space. */
             case 't':
                 LEGAL_ALT(0);
-                while (XString::IsSpace(*bp))
+                while (ck_string::is_space(*bp))
                     bp++;
                 break;
 

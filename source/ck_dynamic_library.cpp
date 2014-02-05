@@ -36,6 +36,7 @@ using namespace cppkit;
 using namespace std;
 
 #ifdef IS_WINDOWS
+	#include "Windows.h"
     #include "DbgHelp.h"
 #else
     #include <cxxabi.h>
@@ -133,14 +134,14 @@ void ck_dynamic_library::load( const ck_string& libraryName )
     else CK_THROW(("Library name is empty"));
 }
 
-FARPROC ck_dynamic_library::resolve_symbol( const ck_string& symbolName )
+void* ck_dynamic_library::resolve_symbol( const ck_string& symbolName )
 {
-    FARPROC symPtr = 0;
+    void* symPtr = 0;
 
     if( false == symbolName.empty() )
     {
 #ifdef IS_WINDOWS
-        symPtr = ::GetProcAddress( _libraryInstance, symbolName.c_str() );
+        symPtr = ::GetProcAddress( (HMODULE)_libraryInstance, symbolName.c_str() );
 #else
         symPtr = dlsym( _libraryInstance, symbolName.c_str() );
 #endif
@@ -154,7 +155,7 @@ void ck_dynamic_library::unload()
     if( _libraryInstance != 0 )
     {
 #ifdef IS_WINDOWS
-        ::FreeLibrary( _libraryInstance );
+        ::FreeLibrary( (HMODULE)_libraryInstance );
 #else
         dlclose( _libraryInstance );
 #endif

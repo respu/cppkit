@@ -1,4 +1,5 @@
 
+#include "cppkit/ck_types.h"
 #include "cppkit/ck_udp_receiver.h"
 #include "cppkit/os/ck_platform.h"
 #include "cppkit/os/ck_time_utils.h"
@@ -62,7 +63,7 @@ ck_udp_receiver::ck_udp_receiver( int destinationPort,
         // [tdistler] Required b/c binding to multicast addr on Windows is an error.
         ck_socket_address addr( destinationPort, _addr.address_family() == AF_INET6 ? ip6_addr_any : ip4_addr_any );
 
-        if( bind( _sok, addr.get_sock_addr(), addr.sock_addr_size() ) < 0 )
+        if( ::bind( _sok, addr.get_sock_addr(), addr.sock_addr_size() ) < 0 )
             CK_THROW(( "ck_udp_receiver: Unable to bind to local interface. %s",
                        ck_get_last_error_msg().c_str() ));
 #else
@@ -73,7 +74,7 @@ ck_udp_receiver::ck_udp_receiver( int destinationPort,
     }
     else
     {
-        if( bind( _sok, _addr.get_sock_addr(), _addr.sock_addr_size()) < 0 )
+        if( ::bind( _sok, _addr.get_sock_addr(), _addr.sock_addr_size()) < 0 )
             CK_THROW(( "ck_udp_receiver: Unable to bind to local interface. %s",
                        ck_get_last_error_msg().c_str() ));
     }
