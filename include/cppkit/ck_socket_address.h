@@ -27,7 +27,7 @@
 /// Project.
 /// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=--=-=-=-=-=-
 
-#ifndef cppkit_socket_address_h
+#ifndef cppkit_socket_address_h_
 #define cppkit_socket_address_h_
 
 #include "cppkit/os/ck_exports.h"

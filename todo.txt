@@ -4,10 +4,6 @@ cppkit todo
 bitsy
 cache
 easy weak ref
-path
 ssl sockets
 statistics
 stop watch
-udp
-
-
