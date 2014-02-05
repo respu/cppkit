@@ -32,7 +32,7 @@
 
 #include <cstdio>
 #include <cctype>
-
+#include "cppkit/ck_types.h"
 #include "cppkit/ck_string.h"
 
 #ifdef IS_WINDOWS
@@ -44,7 +44,7 @@
 namespace cppkit
 {
 #ifdef IS_LINUX
-	int ck_printf(const char* format...)
+  int ck_printf(const char* format...);
 #elif defined(IS_WINDOWS)
   #define ck_printf printf
 #else
