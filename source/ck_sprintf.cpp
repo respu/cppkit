@@ -28,6 +28,8 @@
 using namespace std;
 using namespace cppkit;
 
+#ifndef IS_WINDOWS
+
 static void fix_format(ck_string* format)
 {
     if(format->find("I32") == string::npos && format->find("I64") == string::npos)
@@ -110,3 +112,5 @@ int cppkit::ck_sscanf(const char* str, const char* format...)
 
     return retval;
 }
+
+#endif

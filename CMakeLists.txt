@@ -42,5 +42,5 @@ if(${UNIX})
 target_link_libraries(cppkit pthread rt dl)
 endif(${UNIX})
 
-install(TARGETS cppkit LIBRARY DESTINATION lib COMPONENT library)
+install(TARGETS cppkit LIBRARY DESTINATION lib ARCHIVE DESTINATION lib COMPONENT library)
 install(DIRECTORY include/${PROJECT_NAME} DESTINATION include)

@@ -43,8 +43,9 @@
 
 namespace cppkit
 {
-
-#ifdef IS_WINDOWS
+#ifdef IS_LINUX
+	int ck_printf(const char* format...)
+#elif defined(IS_WINDOWS)
   #define ck_printf printf
 #else
   int ck_printf(const char* format...);
@@ -59,7 +60,7 @@ namespace cppkit
 #ifdef IS_WINDOWS
   inline int ck_vsnprintf(char* str, size_t size, ck_string format, va_list args)
   {
-    return x_vsnprintf(str, size, format.c_str(), args);
+    return ck_vsnprintf(str, size, format.c_str(), args);
   }
 
   inline int ck_vsnprintf(char* str, size_t size, char* format, va_list args)

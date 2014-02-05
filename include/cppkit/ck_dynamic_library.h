@@ -41,11 +41,6 @@
 namespace cppkit
 {
 
-#ifdef IS_LINUX
-    typedef void* FARPROC;
-    typedef void* HINSTANCE;
-#endif
-
 class ck_dynamic_library
 {
 public:
@@ -59,11 +54,11 @@ public:
     CK_API void load();
     CK_API void load( const ck_string& libraryName );
 
-    CK_API FARPROC resolve_symbol( const ck_string& symbolName );
+    CK_API void* resolve_symbol( const ck_string& symbolName );
     CK_API void unload();
 
 private:
-    HINSTANCE _libraryInstance;
+    void* _libraryInstance;
     ck_string _libraryName;
 };
 

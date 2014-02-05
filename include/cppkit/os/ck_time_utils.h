@@ -27,27 +27,27 @@ namespace cppkit
     #define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
   #endif
 
-  X_API int ck_win32_gettimeofday( struct timeval* tv, void* obsolete );
+  CK_API int ck_win32_gettimeofday( struct timeval* tv, void* obsolete );
 
   #define timeradd(a, b, result) \
-    X_MACRO_BEGIN \
+    CK_MACRO_BEGIN \
       (result)->tv_sec = (a)->tv_sec + (b)->tv_sec; \
       (result)->tv_usec = (a)->tv_usec + (b)->tv_usec; \
       if ((result)->tv_usec >= 1000000) { \
         ++(result)->tv_sec; \
         (result)->tv_usec -= 1000000; \
       } \
-    X_MACRO_END
+    CK_MACRO_END
 
   #define timersub(a, b, result) \
-    X_MACRO_BEGIN \
+    CK_MACRO_BEGIN \
       (result)->tv_sec = (a)->tv_sec - (b)->tv_sec; \
       (result)->tv_usec = (a)->tv_usec - (b)->tv_usec; \
       if ((result)->tv_usec < 0) { \
         --(result)->tv_sec; \
         (result)->tv_usec += 1000000; \
       } \
-  X_MACRO_END
+    CK_MACRO_END
 
   #define TIMEVAL_TO_TIMESPEC(tv, ts) { \
     (ts)->tv_sec = (tv)->tv_sec; \
@@ -59,16 +59,16 @@ namespace cppkit
 /// Calculates the difference between 2 timevals in microseconds.
 /// 'result' is a long. Can be negative, if b > a.
 #define timerdiff(a, b, result) \
-  X_MACRO_BEGIN \
+  CK_MACRO_BEGIN \
     (result) =  ((a)->tv_sec * 1000000) + (a)->tv_usec; \
     (result) -= ((b)->tv_sec * 1000000) + (b)->tv_usec; \
-  X_MACRO_END
+  CK_MACRO_END
 
 #define timercopy(dst, src) \
-  X_MACRO_BEGIN \
+  CK_MACRO_BEGIN \
     (dst)->tv_sec  = (src)->tv_sec; \
     (dst)->tv_usec = (src)->tv_usec; \
-  X_MACRO_END
+  CK_MACRO_END
 
 /// Converts a logical clock from one time-scale to another.
 /// @note This method exists because it is frequently convenient to work with
@@ -146,7 +146,7 @@ inline void ck_sleep(const XDuration& duration)
 
 #ifdef IS_WINDOWS
 
-X_API char* ck_win32_strptime( const char *buf, const char *fmt, struct tm *tm );
+CK_API char* ck_win32_strptime( const char *buf, const char *fmt, struct tm *tm );
 
 inline char* ck_strptime( const char* time, const char* format, struct tm* tm )
 {
