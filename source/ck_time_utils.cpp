@@ -56,7 +56,7 @@ CK_API int ck_win32_gettimeofday( struct timeval* tv, void* obsolete )
 
         tmpres -= DELTA_EPOCH_IN_MICROSECS;
 
-        tv->tv_sec = (time_t)(tmpres / 1000000UL);
+        tv->tv_sec = (long)(time_t)(tmpres / 1000000UL);
         tv->tv_usec = (int)(tmpres % 1000000UL);
 
         return 0;

@@ -57,9 +57,15 @@ CK_API int ck_filecommit( FILE* file )
     return err;
 }
 
+#ifdef IS_WINDOWS
+#define FILENO _fileno
+#else
+#define FILENO fileno
+#endif
+
 CK_API int ck_fallocate( FILE* file, int64_t size )
 {
-    return ( _chsize_s( fileno( file ), size ) == 0) ? 0 : -1;
+    return ( _chsize_s( FILENO( file ), size ) == 0) ? 0 : -1;
 }
 
 #else

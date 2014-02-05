@@ -78,7 +78,7 @@ namespace cppkit
 #endif
 
 #ifdef IS_WINDOWS
-  #define ck_sscanf sscanf
+  #define ck_sscanf sscanf_s
 #else
   int ck_sscanf(const char* str, const char* format...);
 #endif

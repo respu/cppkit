@@ -324,9 +324,15 @@ bool ck_log::write(const char* module, const LOG_LEVEL level, const int line, co
             // Prepend the time
             if(_curr_log_flags & kLogTimestamp)
             {
-                time_t now = time(0);
-                string t = ctime(&now);
+				char timeBuf[1024];
 
+                time_t now = time(0);
+#ifdef IS_WINDOWS
+				ctime_s( timeBuf, 1024, &now );
+				string t = timeBuf;
+#else
+                string t = ctime(&now);
+#endif
                 if(!t.empty())
                     t.erase(t.size()-1); //ctime appends a newline
                 else
