@@ -52,6 +52,7 @@ ck_memory& ck_memory::operator=(const ck_memory& obj)
 {
     _bits=obj._bits;
     _data_sentry=obj._data_sentry;
+	return *this;
 }
 
 void ck_memory::clear()

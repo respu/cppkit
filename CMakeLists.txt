@@ -42,5 +42,9 @@ if(${UNIX})
 target_link_libraries(cppkit pthread rt dl)
 endif(${UNIX})
 
+if(CMAKE_SYSTEM MATCHES "Windows")
+target_link_libraries(cppkit DbgHelp ws2_32 iphlpapi)
+endif(CMAKE_SYSTEM MATCHES "Windows")
+
 install(TARGETS cppkit LIBRARY DESTINATION lib ARCHIVE DESTINATION lib COMPONENT library)
 install(DIRECTORY include/${PROJECT_NAME} DESTINATION include)

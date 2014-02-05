@@ -60,7 +60,10 @@ namespace cppkit
 #ifdef IS_WINDOWS
   inline int ck_vsnprintf(char* str, size_t size, ck_string format, va_list args)
   {
-    return ck_vsnprintf(str, size, format.c_str(), args);
+	  if (str == NULL || size == 0)
+		  return _vscprintf(format.c_str(), args);
+	  else
+		  return _vsnprintf(str, size, format.c_str(), args);
   }
 
   inline int ck_vsnprintf(char* str, size_t size, char* format, va_list args)

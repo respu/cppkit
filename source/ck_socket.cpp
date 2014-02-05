@@ -64,10 +64,10 @@ ck_socket::ck_socket( uint32_t defaultRecvBufferSize )
       _addr(0),
       _recvTimeoutMilliseconds( DEFAULT_RECV_TIMEOUT ),
       _recvTimeoutHandler(),
-      _recvTimeoutHandlerOpaque( NULL ),
+      _recvTimeoutHandlerOpaque( nullptr ),
       _sendTimeoutMilliseconds( DEFAULT_SEND_TIMEOUT ),
       _sendTimeoutHandler(),
-      _sendTimeoutHandlerOpaque( NULL ),
+      _sendTimeoutHandlerOpaque( nullptr ),
       _host(),
       _hostPort(80),
       _recvBuffer( defaultRecvBufferSize ),
@@ -89,11 +89,11 @@ ck_socket::ck_socket( ck_socket_type type )
       _sok(0),
       _addr(0),
       _recvTimeoutMilliseconds( DEFAULT_RECV_TIMEOUT ),
-      _recvTimeoutHandler( NULL ),
-      _recvTimeoutHandlerOpaque( NULL ),
+      _recvTimeoutHandler( nullptr ),
+      _recvTimeoutHandlerOpaque( nullptr ),
       _sendTimeoutMilliseconds( DEFAULT_SEND_TIMEOUT ),
-      _sendTimeoutHandler( NULL ),
-      _sendTimeoutHandlerOpaque( NULL ),
+      _sendTimeoutHandler( nullptr ),
+      _sendTimeoutHandlerOpaque( nullptr ),
       _host(),
       _hostPort(80),
       _recvBuffer( DEFAULT_RECV_BUFFER_SIZE ),
@@ -206,7 +206,7 @@ std::vector<ck_string> ck_socket::resolve( int type, const ck_string& name )
 {
     vector<ck_string> addresses;
 
-    struct addrinfo hints, *addrInfo = NULL;
+    struct addrinfo hints, *addrInfo = nullptr;
     memset( &hints, 0, sizeof( hints ) );
     hints.ai_family = AF_UNSPEC;
     hints.ai_flags = AI_CANONNAME;// | AI_NUMERICHOST;
@@ -255,7 +255,7 @@ unordered_map<string,vector<ck_string> > ck_socket::get_interface_addresses( int
 
         if( WSAAddressToStringW( (LPSOCKADDR)adapterAddress->FirstUnicastAddress->Address.lpSockaddr,
                                  adapterAddress->FirstUnicastAddress->Address.iSockaddrLength,
-                                 NULL,
+                                 nullptr,
                                  ipstringbuffer,
                                  &ipbufferlength ) == 0 )
         {
@@ -274,16 +274,16 @@ unordered_map<string,vector<ck_string> > ck_socket::get_interface_addresses( int
     }
 #endif
 #ifdef IS_LINUX
-    struct ifaddrs* ifaddrs = NULL, *ifa = NULL;
+    struct ifaddrs* ifaddrs = nullptr, *ifa = nullptr;
     int family = 0, s = 0;
     char host[NI_MAXHOST];
 
     if( getifaddrs( &ifaddrs ) == -1 )
         CK_STHROW( ck_socket_exception, ( "Unable to query network interfaces: %s", ck_get_last_error_msg().c_str() ));
 
-    for( ifa = ifaddrs; ifa != NULL; ifa = ifa->ifa_next )
+    for( ifa = ifaddrs; ifa != nullptr; ifa = ifa->ifa_next )
     {
-        if( ifa->ifa_addr == NULL )
+        if( ifa->ifa_addr == nullptr )
         continue;
 
         family = ifa->ifa_addr->sa_family;
@@ -298,7 +298,7 @@ unordered_map<string,vector<ck_string> > ck_socket::get_interface_addresses( int
                              sizeof( struct sockaddr_in6 ),
                          host,
                          NI_MAXHOST,
-                         NULL,
+                         nullptr,
                          0,
                          NI_NUMERICHOST );
 
@@ -853,7 +853,7 @@ ssize_t ck_socket::_do_select_recv( int waitMillis, int fd )
     recvTimeout.tv_sec = (waitMillis / 1000);
     recvTimeout.tv_usec = ((waitMillis % 1000) * 1000);
 
-    int selectRet = select( fd+1, &recvFileDescriptors, NULL, NULL, &recvTimeout );
+    int selectRet = select( fd+1, &recvFileDescriptors, nullptr, nullptr, &recvTimeout );
 
     return selectRet;
 }
@@ -870,7 +870,7 @@ ssize_t ck_socket::_do_select_send( int waitMillis, int fd )
     sendTimeout.tv_sec = (waitMillis / 1000);
     sendTimeout.tv_usec = ((waitMillis % 1000) * 1000);
 
-    int selectRet = select( fd+1, NULL, &sendFileDescriptors, NULL, &sendTimeout );
+    int selectRet = select( fd+1, nullptr, &sendFileDescriptors, nullptr, &sendTimeout );
 
     return selectRet;
 }
