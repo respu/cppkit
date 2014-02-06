@@ -17,7 +17,7 @@ REGISTER_TEST_FIXTURE(ck_dynamic_library_test);
 cppkit::ck_string VALID_DYNAMIC_LIB = "cppkit.dll";
 cppkit::ck_string INVALID_DYNAMIC_LIB = "invalid.dll";
 #else
-cppkit::ck_string VALID_DYNAMIC_LIB = "/usr/local/lib/libcppkit.so";
+cppkit::ck_string VALID_DYNAMIC_LIB = "../../../devel_artifacts/lib/libcppkit.so";
 cppkit::ck_string INVALID_DYNAMIC_LIB = "invalid.so";
 #endif
 
