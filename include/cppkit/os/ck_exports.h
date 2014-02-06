@@ -32,52 +32,26 @@
 
 #include "cppkit/ck_types.h"
 
-// Do we have both exporting and importing macros defined?
-#if (defined(CK_API_EXPORT) && defined(CK_API_IMPORT))
-  // Report an error - it does not make sense to define both macros
-  #error Cannot define both CK_API_EXPORT and CK_API_IMPORT
-#endif
-
 // Make sure the macros set the thhis header are cleared
 #undef CK_API
 #undef DLLIMPORT
 #undef DLLEXPORT
 
-// Is this being compiled for Windows?
-#if (defined(IS_WINDOWS))
-  // Is the module configured to default to export
-  // mode or are we temporarily switching to export mode?
-  #if (defined(CK_API_EXPORT) && !defined(_CK_API_IGNORE_DEFAULT_)) || defined(_CK_API_SWITCH_TO_EXPORT_)
-    // Setup to export all X_API functions/methods
+#ifdef IS_WINDOWS
     #define CK_API __declspec(dllexport)
-  // Is the module configured to default to import mode or are we temporarily switching to import mode?
-  #elif (defined(CK_API_IMPORT) && !defined(_CK_API_IGNORE_DEFAULT_)) || defined(_CK_API_SWITCH_TO_IMPORT_)
-    // Setup to import all CK_API functions/methods
-    #define CK_API __declspec(dllimport)
-  #endif
-
-  // Define some import/export macros that will
-  // not be modified by the cppkit specific macros
-  #ifndef DLLIMPORT
     #define DLLIMPORT __declspec(dllimport)
-  #endif
-  #ifndef DLLEXPORT
     #define DLLEXPORT __declspec(dllexport)
-  #endif
-#endif
-
-// On *nix, CK_API et al. expand into nothingness...
-
-#if (!defined(CK_API))
-  #define CK_API
-#endif
-
-#if (!defined(DLLIMPORT))
-  #define DLLIMPORT
-#endif
-
-#if (!defined(DLLEXPORT))
-  #define DLLEXPORT
+#else
+    // On *nix, CK_API et al. expand into nothingness...
+    #if (!defined(CK_API))
+        #define CK_API
+    #endif
+    #if (!defined(DLLIMPORT))
+        #define DLLIMPORT
+    #endif
+    #if (!defined(DLLEXPORT))
+        #define DLLEXPORT
+    #endif
 #endif
 
 #endif
