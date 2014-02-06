@@ -81,19 +81,19 @@ void ck_udp_receiver_test::test_send_multicast()
     // The bamboo test boxes don't always seem to give us "Local Area Connection"
     // and have at least 2 - 4.
     if( interfaceAddresses.find( "Local Area Connection") != interfaceAddresses.end() )
-        ipAddress = interfaceAddresses.find("Local Area Connection")->front();
+        ipAddress = interfaceAddresses["Local Area Connection"].front();
     else if( interfaceAddresses.find("Local Area Connection 1") != interfaceAddresses.end() )
-        ipAddress = interfaceAddresses.find("Local Area Connection 1")->front();
+        ipAddress = interfaceAddresses["Local Area Connection 1"].front();
     else if( interfaceAddresses.find("Local Area Connection 2") != interfaceAddresses.end() )
-        ipAddress = interfaceAddresses.find("Local Area Connection 2")->front();
+        ipAddress = interfaceAddresses["Local Area Connection 2"].front();
     else if( interfaceAddresses.find("Local Area Connection 3") != interfaceAddresses.end() )
-        ipAddress = interfaceAddresses.find("Local Area Connection 3")->front();
+        ipAddress = interfaceAddresses["Local Area Connection 3"].front();
     else if( interfaceAddresses.find("Local Area Connection 4") != interfaceAddresses.end() )
-        ipAddress = interfaceAddresses.find("Local Area Connection 4")->front();
+        ipAddress = interfaceAddresses["Local Area Connection 4"].front();
     else if( interfaceAddresses.find("Local Area Connection 5") != interfaceAddresses.end() )
-        ipAddress = interfaceAddresses.find("Local Area Connection 5")->front();
+        ipAddress = interfaceAddresses["Local Area Connection 5"].front();
     else if( interfaceAddresses.find("Local Area Connection 6") != interfaceAddresses.end() )
-        ipAddress = interfaceAddresses.find("Local Area Connection 6")->front();
+        ipAddress = interfaceAddresses["Local Area Connection 6"].front();
 #else
     if( interfaceAddresses.find("eth0") != interfaceAddresses.end() )
         ipAddress = interfaceAddresses["eth0"].front();

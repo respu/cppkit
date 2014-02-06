@@ -1,6 +1,7 @@
 
 #include "framework.h"
 #include "ck_random_test.h"
+#include "cppkit/ck_types.h"
 #include <random>
 
 using namespace std;

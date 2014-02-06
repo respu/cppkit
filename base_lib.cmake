@@ -1,22 +1,53 @@
 
+
 # First, append our compile options...
 #
 
 if(CMAKE_SYSTEM MATCHES "Linux-")
-    set(CUSTOM_FLAGS ${CUSTOM_FLAGS} "-std=c++11 -DLINUX_OS -fPIC")
-    set(CMAKE_SHARED_LINKER_FLAGS "-rdynamic")
+    set(CMAKE_CXX_FLAGS_RELEASE "-std=c++11 -O3 -DNDEBUG -fthreadsafe-statics -fPIC ${CUSTOM_FLAGS}")
+    set(CMAKE_CXX_FLAGS_DEBUG "-std=c++11 -ggdb -fthreadsafe-statics -fPIC ${CUSTOM_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS -rdynamic)
+    add_definitions(-D_LINUX)
+    add_definitions(-DLINUX_OS)
+    add_definitions(-D_REENTRANT)
 elseif(CMAKE_SYSTEM MATCHES "Windows")
-    set(CUSTOM_FLAGS ${CUSTOM_FLAGS} "")
+    add_definitions(-DWIN32)
+    add_definitions(-D_USE_32BIT_TIME_T)
+    add_definitions(-DUNICODE)
+    add_definitions(-D_UNICODE)
+    add_definitions(-DNOMINMAX)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
+    add_definitions(-D__inline__=__inline)
+    add_definitions(-D_SCL_SECURE_NO_WARNINGS)
+    macro(add_compiler_flag CONFIG FLAG)
+        if("${CONFIG}" STREQUAL "Both")
+            set(CMAKE_CXX_FLAGS "${FLAG} ${CMAKE_CXX_FLAGS}")
+        elseif("${CONFIG}" STREQUAL "Debug")
+            set(CMAKE_CXX_FLAGS_DEBUG "${FLAG} ${CMAKE_CXX_FLAGS_DEBUG}")
+        elseif("${CONFIG}" STREQUAL "Release")
+            set(CMAKE_CXX_FLAGS_RELEASE "${FLAG} ${CMAKE_CXX_FLAGS_RELEASE}")
+        else()
+            message(FATAL_ERROR "The CONFIG argument to add_compiler_flag must be \"Both\", \"Debug\", or \"Release\"")
+        endif()
+    endmacro()
+    add_compiler_flag(Both /GF)    # Enable read-only string pooling.
+    add_compiler_flag(Both /EHsc)  # Make sure that destructors get executed when exceptions exit C++ code.
+    add_compiler_flag(Debug /ZI)   # Generate pdb files which support Edit and Continue Debugging
+    add_compiler_flag(Debug /Gm)   # Enable minimal rebuild
+    add_compiler_flag(Debug /FR)   # Create an .sbr file with complete symbolic information.
+    SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 endif(CMAKE_SYSTEM MATCHES "Linux-")
-string(REPLACE ';' ' ' CUSTOM_FLAGS ${CUSTOM_FLAGS})
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${CUSTOM_FLAGS})
 
-# Now, setup our artifact install root
+
+# Now, setup our artifact install root and add our default header and lib paths.
 #
 
 set(DEVEL_INSTALL_PATH "../../devel_artifacts")
 set(CMAKE_INSTALL_PREFIX ${DEVEL_INSTALL_PATH})
-include_directories(include ${DEVEL_INSTALL_PATH})
+include_directories(include ${DEVEL_INSTALL_PATH}/include)
+get_filename_component(ABSOLUTE_LIB_DIR ${DEVEL_INSTALL_PATH}/lib ABSOLUTE)
+link_directories(${ABSOLUTE_LIB_DIR})
 
 
 # Define our target name and build both SHARED and STATIC libs.

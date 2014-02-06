@@ -172,14 +172,14 @@ void ck_socket_test::test_dual_protocol_server()
         // Test both IPv4 and IPv6
         // [tdistler] Windows XP doesn't support IPV6_V6ONLY option... detect XP and skip if necessary
         bool ipv6_only_supported = true;
-#ifdef IS_WINDOWS
-        OSVERSIONINFO version;
-        memset(&version, 0, sizeof(OSVERSIONINFO));
-        version.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-        GetVersionEx(&version);
-        if (version.dwMajorVersion < 6)
-            ipv6_only_supported = false; // XP or earlier
-#endif
+//#ifdef IS_WINDOWS
+//        OSVERSIONINFO version;
+//        memset(&version, 0, sizeof(OSVERSIONINFO));
+//        version.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+//        GetVersionEx(&version);
+//        if (version.dwMajorVersion < 6)
+//            ipv6_only_supported = false; // XP or earlier
+//#endif
         if (ipv6_only_supported)
         {
             const char addrs[][32] = { "127.0.0.1", "localhost", "::1" };

@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 #ifdef WIN32
-#define SNPRINTF _snprintf
+#define SNPRINTF _snprintf_s
 #else
 #define SNPRINTF snprintf
 #endif
@@ -136,9 +136,9 @@ private:
 
 #define UT_ASSERT_MESSAGE(message,a) do{ if( !(a) ) { ut_fail_exception e; e.set_msg(message); e.set_throw_point(__LINE__,__FILE__); throw e; } } while(false)
 
-#define UT_ASSERT_THROWS(thing_that_throws,what_is_thrown) do { try { bool threw = false; try { thing_that_throws; } catch( what_is_thrown& ex ) { threw=true; } if(!threw) throw false; } catch(...) {ut_fail_exception e; e.set_msg("Test failed to throw expected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;} } while(false)
+#define UT_ASSERT_THROWS(thing_that_throws,what_is_thrown) do { try { bool threw = false; try { thing_that_throws; } catch( what_is_thrown& ) { threw=true; } if(!threw) throw false; } catch(...) {ut_fail_exception e; e.set_msg("Test failed to throw expected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;} } while(false)
 
-#define UT_ASSERT_THROWS_MESSAGE(message,thing_that_throws,what_is_thrown) do { try { bool threw = false; try { thing_that_throws; } catch( what_is_thrown& ex ) { threw=true; } if(!threw) throw false; } catch(...) {ut_fail_exception e; e.set_msg(message); e.set_throw_point(__LINE__,__FILE__); throw e;} } while(false)
+#define UT_ASSERT_THROWS_MESSAGE(message,thing_that_throws,what_is_thrown) do { try { bool threw = false; try { thing_that_throws; } catch( what_is_thrown& ) { threw=true; } if(!threw) throw false; } catch(...) {ut_fail_exception e; e.set_msg(message); e.set_throw_point(__LINE__,__FILE__); throw e;} } while(false)
 
 #define UT_ASSERT_NO_THROW(thing_that_doesnt_throw) do { { bool threw = false; try { thing_that_doesnt_throw; } catch( ... ) { threw=true; } if(threw) {ut_fail_exception e; e.set_msg("Test threw unexpected exception."); e.set_throw_point(__LINE__,__FILE__); throw e;} } } while(false)
 
