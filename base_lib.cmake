@@ -1,5 +1,4 @@
 
-
 # First, append our compile options...
 #
 
@@ -28,7 +27,7 @@ if(CMAKE_SYSTEM MATCHES "Linux-")
     set(CMAKE_EXE_LINKER_FLAGS -rdynamic)
 elseif(CMAKE_SYSTEM MATCHES "Windows")
     add_definitions(-DWIN32)
-    add_definitions(-D_USE_32BIT_TIME_T)
+#    add_definitions(-D_USE_32BIT_TIME_T)
     add_definitions(-DUNICODE)
     add_definitions(-D_UNICODE)
     add_definitions(-DNOMINMAX)
@@ -58,22 +57,19 @@ link_directories(${ABSOLUTE_LIB_DIR})
 # Define our target name and build both SHARED and STATIC libs.
 #
 
-set(SHARED_TARGET_NAME ${PROJECT_NAME})
-set(STATIC_TARGET_NAME ${PROJECT_NAME}S)
-
-add_library(${SHARED_TARGET_NAME} SHARED ${SOURCES})
-add_library(${STATIC_TARGET_NAME} STATIC ${SOURCES})
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
+add_library(${PROJECT_NAME}S STATIC ${SOURCES})
 
 
 # Add platform appropriate libraries correct targets...
 #
 
 if(CMAKE_SYSTEM MATCHES "Windows")
-    target_link_libraries(${SHARED_TARGET_NAME} ${WINDOWS_LIBS} ${COMMON_LIBS})
-    target_link_libraries(${STATIC_TARGET_NAME} ${WINDOWS_LIBS} ${COMMON_LIBS})
+    target_link_libraries(${PROJECT_NAME} ${WINDOWS_LIBS} ${COMMON_LIBS})
+    target_link_libraries(${PROJECT_NAME}S ${WINDOWS_LIBS} ${COMMON_LIBS})
 elseif(CMAKE_SYSTEM MATCHES "Linux")
-    target_link_libraries(${SHARED_TARGET_NAME} ${LINUX_LIBS} ${COMMON_LIBS})
-    target_link_libraries(${STATIC_TARGET_NAME} ${LINUX_LIBS} ${COMMON_LIBS})
+    target_link_libraries(${PROJECT_NAME} ${LINUX_LIBS} ${COMMON_LIBS})
+    target_link_libraries(${PROJECT_NAME}S ${LINUX_LIBS} ${COMMON_LIBS})
 endif(CMAKE_SYSTEM MATCHES "Windows")
 
 
@@ -89,12 +85,19 @@ set(CMAKE_INSTALL_RPATH "./libs" ${DEVEL_INSTALL_PATH})
 # Define our installation rules
 #
 
-install(TARGETS ${SHARED_TARGET_NAME} LIBRARY DESTINATION "lib"
-                                      ARCHIVE DESTINATION "lib"
-                                      RUNTIME DESTINATION "lib"
-                                      COMPONENT library)
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION "lib"
+                                ARCHIVE DESTINATION "lib"
+                                RUNTIME DESTINATION "lib"
+                                COMPONENT library)
 
-install(TARGETS ${STATIC_TARGET_NAME} ARCHIVE DESTINATION "lib"
-                                      COMPONENT library)
+# if we're on MSVC, install our .pdb files as well (for debugging)
+if(MSVC)
+    INSTALL( FILES ${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}.pdb
+                 DESTINATION lib
+                 CONFIGURATIONS Debug )
+endif(MSVC)
+
+install(TARGETS ${PROJECT_NAME}S ARCHIVE DESTINATION "lib"
+                                 COMPONENT library)
 
 install(DIRECTORY include/${PROJECT_NAME} DESTINATION include)

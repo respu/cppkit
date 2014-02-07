@@ -142,7 +142,7 @@ void ck_path::open_dir( const ck_string& glob )
 bool ck_path::read_dir( ck_string& fileName )
 {
     if( _done )
-        CK_THROW(("Attempting to iterate past last file in read_dir()."));
+        return false;
 
 #ifdef IS_WINDOWS
 

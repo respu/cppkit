@@ -30,17 +30,17 @@ void ck_path_test::setup()
     _mkdir( "foo" );
     FILE* regularFile = fopen("foo\\bar","w");
     _mkdir( "foobar" );
-    _wmkdir(L"树上开花");
-    FILE* unicodeFile = _wfopen(L"树上开花\\Чернобыльской",L"w");
-    _wmkdir(L"走为上");
+    _wmkdir(L"上开花");
+    FILE* unicodeFile = _wfopen(L"上开花\\Чернобыльской",L"w");
+    _wmkdir(L"走上");
 #else
     mkdir( "foo", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
     FILE* regularFile = fopen("foo/bar","w");
     mkdir( "foobar", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 
-    mkdir("树上开花", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
-    FILE* unicodeFile = fopen("树上开花/Чернобыльской","w");
-    mkdir("走为上", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
+    mkdir("上开花", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
+    FILE* unicodeFile = fopen("上开花/Чернобыльской","w");
+    mkdir("走上", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 #endif
 
     unsigned char buf[128];
@@ -55,14 +55,14 @@ void ck_path_test::teardown()
 {
 #ifdef IS_WINDOWS
     UNLINK( "foo\\bar" );
-    _wunlink(L"树上开花\\Чернобыльской");
-    _wrmdir(L"树上开花");
-    _wrmdir(L"走为上");
+    _wunlink(L"上开花\\Чернобыльской");
+    _wrmdir(L"上开花");
+    _wrmdir(L"走上");
 #else
     UNLINK( "foo/bar" );
-    UNLINK("树上开花/Чернобыльской");
-    RMDIR("树上开花");
-    RMDIR("走为上");
+    UNLINK("上开花/Чернобыльской");
+    RMDIR("上开花");
+    RMDIR("走上");
 #endif
     RMDIR( "foo" );
     RMDIR( "foobar" );
@@ -71,7 +71,7 @@ void ck_path_test::teardown()
 void ck_path_test::test_constructor()
 {
     ck_path path( "foo" );
-    ck_path path2( L"树上开花" );
+    ck_path path2( L"上开花" );
 }
 
 void ck_path_test::test_open_path()
@@ -85,7 +85,7 @@ void ck_path_test::test_open_path()
         UT_ASSERT( fileName == "bar" );
     }
     {
-        ck_path path( L"树上开花" );
+        ck_path path( L"上开花" );
 
         ck_string fileName;
         bool ok = path.read_dir( fileName );
@@ -97,26 +97,26 @@ void ck_path_test::test_open_path()
 void ck_path_test::test_is_path()
 {
     UT_ASSERT( ck_path::is_dir( "foo" ) == true );
-    UT_ASSERT( ck_path::is_dir( L"树上开花" ) == true );
+    UT_ASSERT( ck_path::is_dir( L"上开花" ) == true );
 #ifdef IS_WINDOWS
     UT_ASSERT( ck_path::is_dir( "foo\\bar" ) == false );
-    UT_ASSERT( ck_path::is_dir( L"树上开花\\Чернобыльской" ) == false );
+    UT_ASSERT( ck_path::is_dir( L"上开花\\Чернобыльской" ) == false );
 #else
     UT_ASSERT( ck_path::is_dir( "foo/bar" ) == false );
-    UT_ASSERT( ck_path::is_dir( L"树上开花/Чернобыльской" ) == false );
+    UT_ASSERT( ck_path::is_dir( L"上开花/Чернобыльской" ) == false );
 #endif
 }
 
 void ck_path_test::test_is_reg()
 {
     UT_ASSERT( ck_path::is_reg( "foo" ) == false );
-    UT_ASSERT( ck_path::is_reg( L"树上开花" ) == false );
+    UT_ASSERT( ck_path::is_reg( L"上开花" ) == false );
 #ifdef IS_WINDOWS
     UT_ASSERT( ck_path::is_reg( "foo\\bar" ) == true );
-    UT_ASSERT( ck_path::is_reg( L"树上开花\\Чернобыльской" ) == true );
+    UT_ASSERT( ck_path::is_reg( L"上开花\\Чернобыльской" ) == true );
 #else
     UT_ASSERT( ck_path::is_reg( "foo/bar" ) == true );
-    UT_ASSERT( ck_path::is_reg( L"树上开花/Чернобыльской" ) == true );
+    UT_ASSERT( ck_path::is_reg( L"上开花/Чернобыльской" ) == true );
 #endif
 }
 
@@ -126,25 +126,26 @@ void ck_path_test::test_exists()
     UT_ASSERT( ck_path::exists( "SomeFile.dat" ) == false );
 #ifdef IS_WINDOWS
     UT_ASSERT( ck_path::exists( "blah\\foo" ) == false );
-    UT_ASSERT( ck_path::exists( L"树花\\ыльской" ) == false );
+    UT_ASSERT( ck_path::exists( L"花\\ыльской" ) == false );
 #else
     UT_ASSERT( ck_path::exists( "blah/foo" ) == false );
-    UT_ASSERT( ck_path::exists( L"树花/Черноской" ) == false );
+    UT_ASSERT( ck_path::exists( L"花/Черноской" ) == false );
 #endif
 
     UT_ASSERT( ck_path::exists( "foo" ) == true );
-    UT_ASSERT( ck_path::exists( L"树上开花" ) == true );
+    UT_ASSERT( ck_path::exists( L"上开花" ) == true );
 #ifdef IS_WINDOWS
     UT_ASSERT( ck_path::exists( "foo\\bar" ) == true );
-    UT_ASSERT( ck_path::exists( L"树上开花\\Чернобыльской" ) == true );
+    UT_ASSERT( ck_path::exists( L"上开花\\Чернобыльской" ) == true );
 #else
     UT_ASSERT( ck_path::exists( "foo/bar" ) == true );
-    UT_ASSERT( ck_path::exists( L"树上开花/Чернобыльской" ) == true );
+    UT_ASSERT( ck_path::exists( L"上开花/Чернобыльской" ) == true );
 #endif
 }
 
 void ck_path_test::test_iter()
 {
+
     {
         ck_path path( "foo" );
 
@@ -154,6 +155,7 @@ void ck_path_test::test_iter()
 
         UT_ASSERT( i == 1 );
     }
+
     {
         ck_path path( "foo" );
 
@@ -162,8 +164,9 @@ void ck_path_test::test_iter()
 
         UT_ASSERT( fileName == "bar" );
     }
+
     {
-        ck_path path( L"树上开花" );
+        ck_path path( L"上开花" );
 
         ck_string fileName;
         int i = 0;
@@ -172,7 +175,7 @@ void ck_path_test::test_iter()
         UT_ASSERT( i == 1 );
     }
     {
-        ck_path path( L"树上开花" );
+        ck_path path( L"上开花" );
 
         ck_string fileName;
         path.read_dir( fileName );

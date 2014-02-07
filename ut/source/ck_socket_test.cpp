@@ -280,7 +280,9 @@ void ck_socket_test::test_get_interface_addresses()
         ipAddress = interfaceAddresses["Local Area Connection 5"].front();
     else if(interfaceAddresses.find("Local Area Connection 6")!=interfaceAddresses.end())
         ipAddress = interfaceAddresses["Local Area Connection 6"].front();
-
+	else if (interfaceAddresses.find("Local Area Connection* 15") != interfaceAddresses.end())
+		ipAddress = interfaceAddresses["Local Area Connection* 15"].front();
+	else CK_THROW(("interface name not found."));
     // TODO: Find out if we need this. Buildboxes do not have this interface.
     if(interfaceAddresses.find("Loopback Pseudo-Interface 1")!=interfaceAddresses.end())
     {

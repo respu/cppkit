@@ -12,29 +12,36 @@ cppkit ecosystem
 cppkit aims to be the base library in an ecosystem of C++11 libraries and attempts to set some conventions to make
 downstream use of the ecosystem easier. First and foremost, cppkit and all downstream libs should use cmake.
 
-    - cppkit (and downstream libraries) will install their headers and libraries to a directory at the same level as the
-      cppkit project called "devel_artifacts".
+cppkit (and downstream libraries) will install their headers 
+and libraries to a directory at the same level as the cppkit
+project called "devel_artifacts". Headers for each library will
+go into their own subdirectory under "devel_artifacts/include".
+For example, a downstream library called "foo" would put it's
+headers in "devel_artifacts/include/foo".
 
-    - Headers for each library will go into their own subdirectory under "devel_artifacts/include". For example, a
-      downstream library called "foo" would put it's headers in "devel_artifacts/include/foo".
+Libraries for all downstream projects will install into
+"devel_artifacts/lib".
 
-    - Libraries for all downstream projects will install into "devel_artifacts/lib".
+cppkit will install build support files into 
+"devel_artifacts/build". Downstream projects should only have to
+define a few variables and then include the appropriate build
+support cmake file to get all of the default ecosystem
+behaviour.
 
-    - cppkit will install build support files into "devel_artifacts/build". Downstream projects should only have to
-      define a few variables and then include the appropriate build support cmake file to get all of the default
-      ecosystem behaviour.
-
-    - By using the common build support files downstream libraries will automatically have "devel_artifacts/include"
-      added to their compilers include search path. They will also have "devel_artifacts/lib" added to their library
-      search path. Projects should include the headers of other projects like this:
+By using the common build support files downstream libraries
+will automatically have "devel_artifacts/include" added to their
+compilers include search path. They will also have
+"devel_artifacts/lib" added to their library search path.
+Projects should include the headers of other projects like this:
 
           #include "cppkit/ck_dynamic_library.h"
 
-      IMHO, this sort of header namespacing makes it nice and obvious where everything is coming from (and avoids naming
-      conflicts).
+IMHO, this sort of header namespacing makes it nice and obvious
+where everything is coming from (and avoids naming conflicts).
 
-    - Downstream libraries should define their own C++ namespace, and (unless they have VERY good reason not to) confine
-      all of their symbols to their own namespace.
+Downstream libraries should define their own C++ namespace, and
+(unless they have VERY good reason not to) confine all of their
+symbols to their own namespace.
 
 
 

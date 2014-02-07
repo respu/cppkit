@@ -24,6 +24,6 @@ set(SOURCES source/framework.cpp
             source/ck_udp_sender_test.cpp)
 
 set(COMMON_LIBS cppkit)
-set(WINDOWS_LIBS ws2_32)
+set(WINDOWS_LIBS DbgHelp ws2_32 iphlpapi)
 
 include(../../devel_artifacts/build/base_ut.cmake)

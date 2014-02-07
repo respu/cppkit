@@ -94,6 +94,9 @@ void ck_udp_receiver_test::test_send_multicast()
         ipAddress = interfaceAddresses["Local Area Connection 5"].front();
     else if( interfaceAddresses.find("Local Area Connection 6") != interfaceAddresses.end() )
         ipAddress = interfaceAddresses["Local Area Connection 6"].front();
+    else if( interfaceAddresses.find("Local Area Connection* 15") != interfaceAddresses.end() )
+        ipAddress = interfaceAddresses["Local Area Connection* 15"].front();
+    else CK_THROW(( "Unknown interface name." ));
 #else
     if( interfaceAddresses.find("eth0") != interfaceAddresses.end() )
         ipAddress = interfaceAddresses["eth0"].front();

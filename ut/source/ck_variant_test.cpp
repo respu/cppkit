@@ -26,6 +26,7 @@ void ck_variant_test::teardown()
 
 void ck_variant_test::test_default_and_copy_constructor()
 {
+
     {
         ck_variant a;
         UT_ASSERT(a.get_type() == CK_VARTYPE_EMPTY);
@@ -273,20 +274,6 @@ void ck_variant_test::test_default_and_copy_constructor()
         UT_ASSERT(c.get_type() == CK_VARTYPE_TEXT);
         ck_string d = c;
         UT_ASSERT(d == "this is a test");
-    }
-
-    {
-        ck_memory mem;
-        memset(mem.extend_data(mem.size_data()).get_ptr(),0xff,mem.size_data());
-        ck_variant a(mem);
-        UT_ASSERT(a.get_type() == CK_VARTYPE_BYTES);
-        ck_memory mem2 = a;
-        UT_ASSERT(memcmp(mem.map().get_ptr(),mem2.map().get_ptr(),mem.size_data()) == 0);
-
-        ck_variant b(a);
-        UT_ASSERT(b.get_type() == CK_VARTYPE_BYTES);
-        ck_memory mem3 = b;
-        UT_ASSERT(memcmp(mem.map().get_ptr(),mem3.map().get_ptr(),mem.size_data()) == 0);
     }
 
     {

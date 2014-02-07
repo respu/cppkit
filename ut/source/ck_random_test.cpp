@@ -75,6 +75,6 @@ void ck_random_test::test_mersenne_twister_with_floating_point_distribution()
     // we want a uniform distribution of values between 0 and 99 inclusive.
     uniform_real_distribution<> urd( 0, 1 ); // Note: both values are inclusive.
 
-    float fval = urd( mersenne_twister_rng );
+    float fval = (float)urd( mersenne_twister_rng );
     double dval = urd( mersenne_twister_rng );
 }
