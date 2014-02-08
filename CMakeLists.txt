@@ -13,6 +13,7 @@ set(SOURCES source/ck_library_id.cpp
             source/ck_sprintf.cpp
             source/ck_stack_trace.cpp
             source/ck_string.cpp
+            source/ck_string_slice.cpp
             source/ck_time_utils.cpp
             source/ck_uuid_utils.cpp
             source/ck_variant.cpp

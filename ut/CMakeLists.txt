@@ -21,7 +21,8 @@ set(SOURCES source/framework.cpp
             source/ck_memory_map_test.cpp
             source/ck_path_test.cpp
             source/ck_udp_receiver_test.cpp
-            source/ck_udp_sender_test.cpp)
+            source/ck_udp_sender_test.cpp
+            source/ck_string_slice_test.cpp)
 
 set(COMMON_LIBS cppkit)
 set(WINDOWS_LIBS DbgHelp ws2_32 iphlpapi)
