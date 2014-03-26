@@ -48,10 +48,20 @@ endif(CMAKE_SYSTEM MATCHES "Linux-")
 # and then set include and lib dir compile options...
 #
 
+<<<<<<< HEAD
 get_filename_component(DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE "../devel_artifacts" ABSOLUTE)
 set(CMAKE_INSTALL_PREFIX ${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE})
 include_directories(include "${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE}/include")
 link_directories("${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE}/lib")
+=======
+set(DEVEL_INSTALL_PATH "../../devel_artifacts")
+set(CMAKE_INSTALL_PREFIX ${DEVEL_INSTALL_PATH})
+get_filename_component(ABSOLUTE_INC_DIR ../devel_artifacts/include ABSOLUTE)
+include_directories(include ${ABSOLUTE_INC_DIR})
+get_filename_component(ABSOLUTE_LIB_DIR ../devel_artifacts/lib ABSOLUTE)
+link_directories(${ABSOLUTE_LIB_DIR})
+
+>>>>>>> f389b3429cdff80006648e72c8364afa73d9d2c0
 
 # Define our target name and build both SHARED and STATIC libs.
 #

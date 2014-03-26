@@ -13,9 +13,9 @@ class ck_udp_sender_test : public test_fixture
 {
 public:
     TEST_SUITE(ck_udp_sender_test);
-        TEST(ck_udp_sender_test::TestSend);
-        TEST(ck_udp_sender_test::TestAim);
-        TEST(ck_udp_sender_test::TestGetSetSendBufferSize);
+        TEST(ck_udp_sender_test::test_send);
+        TEST(ck_udp_sender_test::test_aim);
+        TEST(ck_udp_sender_test::test_get_set_send_buffer_size);
     TEST_SUITE_END();
 
     virtual ~ck_udp_sender_test() throw()
@@ -26,9 +26,9 @@ public:
 
 protected:
 
-    void TestSend();
-    void TestAim();
-    void TestGetSetSendBufferSize();
+    void test_send();
+    void test_aim();
+    void test_get_set_send_buffer_size();
 
 private:
     int _val;

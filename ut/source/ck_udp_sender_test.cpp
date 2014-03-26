@@ -24,7 +24,7 @@ void ck_udp_sender_test::teardown()
 {
 }
 
-void ck_udp_sender_test::TestSend()
+void ck_udp_sender_test::test_send()
 {
     const char addrs[][32] = { "127.0.0.1", "::1" };
 
@@ -64,7 +64,7 @@ void ck_udp_sender_test::TestSend()
     }
 }
 
-void ck_udp_sender_test::TestAim()
+void ck_udp_sender_test::test_aim()
 {
     const char addrs[][32] = { "127.0.0.1", "::1" };
 
@@ -107,7 +107,7 @@ void ck_udp_sender_test::TestAim()
     }
 }
 
-void ck_udp_sender_test::TestGetSetSendBufferSize()
+void ck_udp_sender_test::test_get_set_send_buffer_size()
 {
     {
         ck_udp_sender s("127.0.0.1", 0);
