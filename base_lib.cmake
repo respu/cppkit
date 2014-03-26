@@ -44,15 +44,14 @@ elseif(CMAKE_SYSTEM MATCHES "Windows")
 endif(CMAKE_SYSTEM MATCHES "Linux-")
 
 
-# Now, setup our artifact install root and add our default header and lib paths.
+# Now, convert the relative path to "devel_artifacts" into an absolute path, use that as our CMAKE_INSTALL_PREFIX
+# and then set include and lib dir compile options...
 #
 
-set(DEVEL_INSTALL_PATH "../../devel_artifacts")
-set(CMAKE_INSTALL_PREFIX ${DEVEL_INSTALL_PATH})
-include_directories(include "../devel_artifacts/include")
-get_filename_component(ABSOLUTE_LIB_DIR ${DEVEL_INSTALL_PATH}/lib ABSOLUTE)
-link_directories(${ABSOLUTE_LIB_DIR})
-
+get_filename_component(DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE "../devel_artifacts" ABSOLUTE)
+set(CMAKE_INSTALL_PREFIX ${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE})
+include_directories(include "${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE}/include")
+link_directories("${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE}/lib")
 
 # Define our target name and build both SHARED and STATIC libs.
 #
@@ -92,12 +91,12 @@ install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION "lib"
 
 # if we're on MSVC, install our .pdb files as well (for debugging)
 if(MSVC)
-    INSTALL( FILES ${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}.pdb
+    INSTALL(FILES ${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}.pdb
                  DESTINATION lib
-                 CONFIGURATIONS Debug )
+                 CONFIGURATIONS Debug)
 endif(MSVC)
 
 install(TARGETS ${PROJECT_NAME}S ARCHIVE DESTINATION "lib"
                                  COMPONENT library)
 
-install(DIRECTORY include/${PROJECT_NAME} DESTINATION include)
+install(DIRECTORY include/${PROJECT_NAME} DESTINATION include USE_SOURCE_PERMISSIONS)
