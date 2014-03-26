@@ -49,7 +49,7 @@ endif(CMAKE_SYSTEM MATCHES "Linux-")
 
 set(DEVEL_INSTALL_PATH "../../devel_artifacts")
 set(CMAKE_INSTALL_PREFIX ${DEVEL_INSTALL_PATH})
-include_directories(include ${DEVEL_INSTALL_PATH}/include)
+include_directories(include "../devel_artifacts/include")
 get_filename_component(ABSOLUTE_LIB_DIR ${DEVEL_INSTALL_PATH}/lib ABSOLUTE)
 link_directories(${ABSOLUTE_LIB_DIR})
 

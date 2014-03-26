@@ -47,7 +47,7 @@ endif(CMAKE_SYSTEM MATCHES "Linux-")
 # Now, setup our artifact install root and add our default header and lib paths.
 #
 
-set(DEVEL_INSTALL_PATH "../../devel_artifacts")
+set(DEVEL_INSTALL_PATH "../devel_artifacts")
 set(CMAKE_INSTALL_PREFIX ${DEVEL_INSTALL_PATH})
 include_directories(include ${DEVEL_INSTALL_PATH}/include)
 get_filename_component(ABSOLUTE_LIB_DIR ${DEVEL_INSTALL_PATH}/lib ABSOLUTE)
