@@ -63,7 +63,7 @@ cppkit uses cmake. To compile and install the library type the following from th
        cd build
        cmake ..
        make
-       sudo make install
+       make install
 
 To build and run the unit tests type the following from the "ut" directory:
 
