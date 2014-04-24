@@ -2,6 +2,10 @@
 # First, append our compile options...
 #
 
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE Debug)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
 macro(add_compiler_flag CONFIG FLAG)
     if("${CONFIG}" STREQUAL "Both")
         set(CMAKE_CXX_FLAGS "${FLAG} ${CMAKE_CXX_FLAGS}")
@@ -20,6 +24,7 @@ if(CMAKE_SYSTEM MATCHES "Linux-")
     add_compiler_flag(Release -O3)
     add_compiler_flag(Release -DNDEBUG)
     add_compiler_flag(Debug -ggdb)
+    add_compiler_flag(Debug -O0)
     add_compiler_flag(Both -std=c++11)
     add_definitions(-D_LINUX)
     add_definitions(-DLINUX_OS)
