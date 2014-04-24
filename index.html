@@ -33,11 +33,65 @@
 
 <p>The main idea of cppkit is that we are willing to sacrifice a little performance to gain usability. The end result will be a library that won't work for those who need the utmost performance, but will be a joy to use for everyone else. cppkit is an opinionated library that won't be right for everyone, and we think that's perfectly OK.</p>
 
-<h3>
-<a name="the-cppkit-ecosystem" class="anchor" href="#the-cppkit-ecosystem"><span class="octicon octicon-link"></span></a>The cppkit ecosystem</h3>
+<h3><a name="the-cppkit-ecosystem" class="anchor" href="#the-cppkit-ecosystem"><span class="octicon octicon-link"></span></a>cppkit will be offensive to some.</h3>
 
-<p>cppkit aims to be the base library in an ecosystem of C++11 libraries and attempts to set some conventions to make downstream use of the ecosystem easier. First and foremost, cppkit and all downstream libs should use cmake.</p>
+<p>First and foremost, we try to be pragmatic. Because of this, cppkit will sometimes do unpopular things:</p>
+<br />
+<pre>
+  ck_string v1 = "10.5";
+  ck_string v2 = "10.5";
+  ck_string sum = ck_string::from_double( v1.to_double() + v2.to_double() );
+  
+  // the cppkit string class has ALL of the functions of std::string, plus a bunch more that are totally useful.
+  
+  ck_string formatted = ck_string::format( "Oh Noes! A string class! With a format() member! The horror... The sum is %s.", sum.c_str() );
 
+  vector&lt;ck_string&gt; parts = formatted.split( "horror" );
+</pre>
+<p>If this code makes you want to gag, that is OK. But you might not want to see any more.</p>
+<br />
+<p>We think the actor model is pretty great combined with C++11 std::future.</p>
+<pre>
+class adder_actor : public ck_actor<std::pair<int,int>,int>
+{
+public:
+    virtual int process( const std::pair<int,int>& cmd ) override
+    {
+        return cmd.first + cmd.second;
+    }
+};
+
+void ck_actor_test::test_adder()
+{
+    adder_actor a;
+    a.start();
+    future<int> result = a.post( make_pair<int,int>( 21, 21 ) );
+    result.wait();
+    UT_ASSERT( result.get() == 42 );
+    a.stop();
+}
+</pre>
+<br />
+<p>We propose that there should be room in the world for a bit of the Ruby on Rails "Convention over Configuration" within C++. To that end, we include a CMake based build ecosystem. With our build system, a new library can be defined like so:</p>
+<pre>
+cmake_minimum_required(VERSION 2.8)
+project(hyper)
+
+set(SOURCES source/hyper_exception.cpp
+            source/hyper_utils.cpp
+            source/uri.cpp
+            source/url.cpp
+            source/client_request.cpp
+            source/client_response.cpp
+            source/server_request.cpp
+            source/server_response.cpp
+            source/methods.cpp)
+
+set(COMMON_LIBS cppkit)
+
+include(../devel_artifacts/build/base_lib.cmake NO_POLICY_SCOPE)
+</pre>
+<p>The above cmake configuration file defines a project called "hyper" that is dependant on cppkit.</p>
 <ul>
 <li>cppkit (and downstream libraries) will install their headers and libraries to a directory at the same level as the cppkit project called "devel_artifacts".</li>
 <li>Headers for each library will go into their own subdirectory under "devel_artifacts/include". For example, a downstream library called "foo" would put it's headers in "devel_artifacts/include/foo".</li>
