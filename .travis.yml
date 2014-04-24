@@ -1,23 +1,34 @@
 language: cpp
+
 compiler:
-  - clang
+  - gcc
+
 before_install:
   - sudo apt-get install cmake
+
+  # g++4.8.1
+  - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+
+  # clang 3.4
+  - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
+
+  - sudo apt-get update -qq
+
+install:
+  # g++4.8.1
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
+
+  # clang 3.4
+  - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.4; fi
+  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.4"; fi
+
 before_script:
   - mkdir ./build
+
 script:
   - cd ./build
   - cmake ..
   - teapot -c travis fetch
   - teapot -c travis run variant-debug compiler-clang-3.2
-install:
-# libstdc++-4.8-dev
-  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-# clang++-3.2
-  - sudo add-apt-repository --yes ppa:h-rayflood/llvm
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install libstdc++-4.8-dev clang-3.2
-# ruby 2.0 and teapot
-  - rvm use 2.0 --install --binary --fuzzy
-  - gem install teapot
 
