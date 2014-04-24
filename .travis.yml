@@ -29,6 +29,5 @@ before_script:
 script:
   - cd ./build
   - cmake ..
-  - teapot -c travis fetch
-  - teapot -c travis run variant-debug compiler-clang-3.2
+  - make
 
