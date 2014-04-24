@@ -2,6 +2,7 @@ language: cpp
 
 compiler:
   - gcc
+  - glang
 
 before_install:
   - sudo apt-get install cmake
