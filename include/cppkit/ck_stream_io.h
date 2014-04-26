@@ -42,6 +42,8 @@
 namespace cppkit
 {
 
+typedef std::function<bool()> timeout_callback;
+
 class ck_stream_io
 {
 public:
