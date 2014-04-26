@@ -54,7 +54,7 @@ entire dependancy tree. This project would of course be optional (it would be pe
 eco system described above and write your own higher level build infrastructure).
 
 
-building cppkit
+building cppkit - Linux
 ===============
 
 cppkit uses cmake. To compile and install the library type the following from the top level cppkit directory:
@@ -72,4 +72,12 @@ To build and run the unit tests type the following from the "ut" directory:
        cmake ..
        make
        LD_LIBRARY_PATH=../../devel_artifacts/lib ./ut
+
+
+building cppkit - Windows
+
+- mkdir build
+- cd build
+- cmake --build . --clean-first
+- cmake --build . --target install
 
