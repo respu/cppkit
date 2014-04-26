@@ -42,10 +42,6 @@
 namespace cppkit
 {
 
-/// This typedef describes the interface to a function that will be called when
-/// their is either a send or recv timeout. A return value of true means "try again".
-typedef bool (*timeout_handler)( void* opaque );
-
 class ck_stream_io
 {
 public:
@@ -90,8 +86,7 @@ public:
 
     /// Attach a handler function pointer to send notifications about recv timeouts.
     /// \param rtcb A pointer to a function to call when recv times out.
-    /// \param opaque User data to be passed to rtcb.
-    CK_API virtual void attach_recv_timeout_handler(std::function<bool(void*)> rtcb, void* opaque)=0;
+    CK_API virtual void register_recv_timeout_callback( timeout_callback cb ) = 0;
 
     /// Explicitly set a recv timeout value.
     /// \param milliseconds The milliseconds to attempt a recv before failing.
@@ -99,8 +94,7 @@ public:
 
     /// Attach a handler function pointer to send notifications about send timeouts.
     /// \param stcb A pointer to a function to call when send times out.
-    /// \param opaque User data to be passed to stcb.
-    CK_API virtual void attach_send_timeout_handler(std::function<bool(void*)> stcb, void* opaque)=0;
+    CK_API virtual void register_send_timeout_callback( timeout_callback cb ) = 0;
 
     /// Explicitly set a send timeout value.
     /// \param milliseconds The milliseconds to attempt a send before failing.

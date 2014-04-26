@@ -64,10 +64,8 @@ ck_socket::ck_socket( uint32_t defaultRecvBufferSize )
       _addr(0),
       _recvTimeoutMilliseconds( DEFAULT_RECV_TIMEOUT ),
       _recvTimeoutHandler(),
-      _recvTimeoutHandlerOpaque( nullptr ),
       _sendTimeoutMilliseconds( DEFAULT_SEND_TIMEOUT ),
       _sendTimeoutHandler(),
-      _sendTimeoutHandlerOpaque( nullptr ),
       _host(),
       _hostPort(80),
       _recvBuffer( defaultRecvBufferSize ),
@@ -89,11 +87,9 @@ ck_socket::ck_socket( ck_socket_type type )
       _sok(0),
       _addr(0),
       _recvTimeoutMilliseconds( DEFAULT_RECV_TIMEOUT ),
-      _recvTimeoutHandler( nullptr ),
-      _recvTimeoutHandlerOpaque( nullptr ),
+      _recvTimeoutHandler(),
       _sendTimeoutMilliseconds( DEFAULT_SEND_TIMEOUT ),
-      _sendTimeoutHandler( nullptr ),
-      _sendTimeoutHandlerOpaque( nullptr ),
+      _sendTimeoutHandler(),
       _host(),
       _hostPort(80),
       _recvBuffer( DEFAULT_RECV_BUFFER_SIZE ),
@@ -656,10 +652,9 @@ ssize_t ck_socket::raw_recv( void* buf, size_t msgLen )
     return ret;
 }
 
-void ck_socket::attach_recv_timeout_handler( std::function<bool(void*)> rtcb, void* opaque )
+void ck_socket::register_recv_timeout_callback( timeout_callback cb )
 {
-    _recvTimeoutHandler = rtcb;
-    _recvTimeoutHandlerOpaque = opaque;
+    _recvTimeoutHandler = cb;
 }
 
 void ck_socket::set_recv_timeout( int milliseconds )
@@ -667,10 +662,9 @@ void ck_socket::set_recv_timeout( int milliseconds )
     _recvTimeoutMilliseconds = milliseconds;
 }
 
-void ck_socket::attach_send_timeout_handler( std::function<bool(void*)> stcb, void* opaque )
+void ck_socket::register_send_timeout_callback( timeout_callback cb )
 {
-    _sendTimeoutHandler = stcb;
-    _sendTimeoutHandlerOpaque = opaque;
+    _sendTimeoutHandler = cb;
 }
 
 void ck_socket::set_send_timeout( int milliseconds )
@@ -920,7 +914,7 @@ size_t ck_socket::_send( const void* msg, size_t msgLen, int sendTimeoutMillis )
             if( timedOut )
             {
                 // callback returns true if we should try again...
-                timedOut = (_sendTimeoutHandler) ? !_sendTimeoutHandler( _sendTimeoutHandlerOpaque ) : false;
+                timedOut = (_sendTimeoutHandler) ? !_sendTimeoutHandler() : false;
 
                 if( !timedOut )
                     waitMillis = sendTimeoutMillis;
@@ -960,7 +954,7 @@ size_t ck_socket::_recv( void* buf, size_t msgLen, int recvTimeoutMillis )
                 CK_LOG_INFO("Receive on socket timed out.");
 
                 // callback returns true if we should try again...
-                bool tryAgain = (_recvTimeoutHandler) ? _recvTimeoutHandler( _recvTimeoutHandlerOpaque ) : false;
+                bool tryAgain = (_recvTimeoutHandler) ? _recvTimeoutHandler() : false;
 
                 if( tryAgain )
                 {
