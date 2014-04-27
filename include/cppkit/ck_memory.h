@@ -43,10 +43,12 @@ class ck_memory
 public:
     CK_API ck_memory(size_t size=0);
     CK_API ck_memory(const ck_memory& obj);
+    CK_API ck_memory(ck_memory&& obj);
 
     CK_API virtual ~ck_memory() throw();
 
     CK_API ck_memory& operator=(const ck_memory& obj);
+    CK_API ck_memory& operator=(ck_memory&& obj);
 
     CK_API void clear();
 

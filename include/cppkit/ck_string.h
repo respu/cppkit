@@ -91,6 +91,10 @@ public:
         : _storage(other._storage)
     {}
 
+    CK_API ck_string(ck_string&& other)
+        : _storage(std::move(other._storage))
+    {}
+
     CK_API ck_string(const std::string& stdstr)
         : _storage(stdstr)
     {}
@@ -152,6 +156,12 @@ public:
     CK_API ck_string& operator=(const ck_string& other)
     {
         _storage = other._storage;
+        return *this;
+    }
+
+    CK_API ck_string& operator=(ck_string&& other)
+    {
+        _storage = std::move(other._storage);
         return *this;
     }
 

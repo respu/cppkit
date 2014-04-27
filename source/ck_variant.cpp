@@ -531,6 +531,14 @@ ck_variant::ck_variant( const ck_variant& other ) : _type(CK_VARTYPE_EMPTY),_var
     *this = other;
 }
 
+ck_variant::ck_variant( ck_variant&& other ) :
+    _type(std::move(other._type)),
+    _variant(std::move(other._variant)),
+    _text(std::move(other._text)),
+    _bytes(std::move(other._bytes))
+{
+}
+
 ck_variant::~ck_variant() throw()
 {
     clear();
@@ -560,6 +568,16 @@ ck_variant& ck_variant::operator=( const ck_variant& other )
     _variant = other._variant;
     _text = other._text;
     _bytes = other._bytes;
+
+    return *this;
+}
+
+ck_variant& ck_variant::operator=( ck_variant&& other )
+{
+    _type = std::move(other._type);
+    _variant = std::move(other._variant);
+    _text = std::move(other._text);
+    _bytes = std::move(other._bytes);
 
     return *this;
 }

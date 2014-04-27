@@ -64,6 +64,7 @@ public:
 
     CK_API ck_variant();
     CK_API ck_variant( const ck_variant& other );
+    CK_API ck_variant( ck_variant&& other );
 
     // The constructors are explicit to avoid ambiguity between
     // methods that take ck_variant and method overloads that take a type
@@ -99,6 +100,7 @@ public:
     CK_API bool is_empty() const;
 
     CK_API ck_variant& operator = ( const ck_variant& other );
+    CK_API ck_variant& operator = ( ck_variant&& other );
     CK_API ck_variant& operator = ( bool value );
     CK_API ck_variant& operator = ( char value );
     CK_API ck_variant& operator = ( signed char value );
