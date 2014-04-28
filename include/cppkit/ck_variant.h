@@ -64,7 +64,7 @@ public:
 
     CK_API ck_variant();
     CK_API ck_variant( const ck_variant& other );
-    CK_API ck_variant( ck_variant&& other );
+    CK_API ck_variant( ck_variant&& other ) noexcept;
 
     // The constructors are explicit to avoid ambiguity between
     // methods that take ck_variant and method overloads that take a type
@@ -93,14 +93,14 @@ public:
     CK_API explicit ck_variant( const ck_string& value );
     CK_API explicit ck_variant( const ck_memory& value );
     CK_API explicit ck_variant( void * value );
-    CK_API ~ck_variant() throw();
+    CK_API ~ck_variant() noexcept;
 
     CK_API CK_VARIANT_TYPE get_type() const;
     CK_API void clear();
     CK_API bool is_empty() const;
 
     CK_API ck_variant& operator = ( const ck_variant& other );
-    CK_API ck_variant& operator = ( ck_variant&& other );
+    CK_API ck_variant& operator = ( ck_variant&& other ) noexcept;
     CK_API ck_variant& operator = ( bool value );
     CK_API ck_variant& operator = ( char value );
     CK_API ck_variant& operator = ( signed char value );

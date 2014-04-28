@@ -91,7 +91,7 @@ public:
         : _storage(other._storage)
     {}
 
-    CK_API ck_string(ck_string&& other)
+    CK_API ck_string(ck_string&& other) noexcept
         : _storage(std::move(other._storage))
     {}
 
@@ -143,7 +143,7 @@ public:
         _storage = convert_wide_string_to_multi_byte_string(value);
     }
 
-    CK_API ~ck_string() throw() {}
+    CK_API ~ck_string() noexcept {}
 
     /// cppkit::ck_string implicitly casts to std::string& so that
     /// it can be used as a std::string without overhead.
@@ -159,7 +159,7 @@ public:
         return *this;
     }
 
-    CK_API ck_string& operator=(ck_string&& other)
+    CK_API ck_string& operator=(ck_string&& other) noexcept
     {
         _storage = std::move(other._storage);
         return *this;

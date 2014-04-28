@@ -44,13 +44,13 @@ ck_memory::ck_memory(const ck_memory& obj) :
 {
 }
 
-ck_memory::ck_memory(ck_memory&& obj) :
+ck_memory::ck_memory(ck_memory&& obj) noexcept :
     _bits(std::move(obj._bits)),
     _data_sentry(obj._data_sentry)
 {
 }
 
-ck_memory::~ck_memory() throw()
+ck_memory::~ck_memory() noexcept
 {
 }
 
@@ -61,7 +61,7 @@ ck_memory& ck_memory::operator=(const ck_memory& obj)
     return *this;
 }
 
-ck_memory& ck_memory::operator=(ck_memory&& obj)
+ck_memory& ck_memory::operator=(ck_memory&& obj) noexcept
 {
     _bits=std::move(obj._bits);
     _data_sentry=obj._data_sentry;

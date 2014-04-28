@@ -531,7 +531,7 @@ ck_variant::ck_variant( const ck_variant& other ) : _type(CK_VARTYPE_EMPTY),_var
     *this = other;
 }
 
-ck_variant::ck_variant( ck_variant&& other ) :
+ck_variant::ck_variant( ck_variant&& other ) noexcept :
     _type(std::move(other._type)),
     _variant(std::move(other._variant)),
     _text(std::move(other._text)),
@@ -539,7 +539,7 @@ ck_variant::ck_variant( ck_variant&& other ) :
 {
 }
 
-ck_variant::~ck_variant() throw()
+ck_variant::~ck_variant() noexcept
 {
     clear();
 }
@@ -572,7 +572,7 @@ ck_variant& ck_variant::operator=( const ck_variant& other )
     return *this;
 }
 
-ck_variant& ck_variant::operator=( ck_variant&& other )
+ck_variant& ck_variant::operator=( ck_variant&& other ) noexcept
 {
     _type = std::move(other._type);
     _variant = std::move(other._variant);
