@@ -258,6 +258,10 @@ void ck_socket_test::test_get_interface_addresses()
         ipAddress = interfaceAddresses["p2p1"].front();
     else if(interfaceAddresses.find("wlan0")!=interfaceAddresses.end())
         ipAddress = interfaceAddresses["wlan0"].front();
+    else if(interfaceAddresses.find("venet0:0")!=interfaceAddresses.end())
+        ipAddress = interfaceAddresses["venet0:0"].front();
+    else if(interfaceAddresses.find("venet0")!=interfaceAddresses.end())
+        ipAddress = interfaceAddresses["venet0"].front();
 
     UT_ASSERT(localHostAddress == "127.0.0.1");
     UT_ASSERT(!ipAddress.empty());

@@ -80,6 +80,8 @@ int main( int argc, char* argv[] )
     {
         printf("\nFailure. ");
         printf("%s\n",_failure_messages[RANDOM()%(sizeof(_failure_messages)/sizeof(_failure_messages[0]))]);
+
+        return 1;
     }
 
     i = _test_fixtures.begin();
