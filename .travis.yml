@@ -28,6 +28,7 @@ before_script:
   - mkdir ./ut/build
 
 script:
+  - /sbin/ifconfig
   - cd ./build
   - cmake ..
   - make
