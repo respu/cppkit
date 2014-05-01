@@ -10,7 +10,7 @@ cppkit todo
 
 lib ideas
 
-    river - library for implementing rtsp client and servers.
+    river - library for implementing rtsp client and servers!
 
     sdbl - A simple database layer.
         - SQLite & Postgresql backends
