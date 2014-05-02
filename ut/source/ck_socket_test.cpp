@@ -242,7 +242,6 @@ void ck_socket_test::test_get_addresses_by_hostname()
 
 void ck_socket_test::test_get_interface_addresses()
 {
-#if 0
     auto interfaceAddresses = ck_socket::get_interface_addresses();
 
 #ifndef IS_WINDOWS
@@ -303,7 +302,6 @@ void ck_socket_test::test_get_interface_addresses()
     }
 
     UT_ASSERT(!ipAddress.empty());
-#endif
 #endif
 }
 

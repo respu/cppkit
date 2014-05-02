@@ -110,6 +110,10 @@ void ck_udp_receiver_test::test_send_multicast()
         ipAddress = interfaceAddresses["em0"].front();
     else if( interfaceAddresses.find("em1") != interfaceAddresses.end() )
         ipAddress = interfaceAddresses["em1"].front();
+    else if( interfaceAddresses.find("venet0:0")!=interfaceAddresses.end() )
+        ipAddress = interfaceAddresses["venet0:0"].front();
+    else if( interfaceAddresses.find("venet0")!=interfaceAddresses.end() )
+        ipAddress = interfaceAddresses["venet0"].front();
     else CK_THROW(( "Unknown interface name." ));
 #endif
 
