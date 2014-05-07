@@ -28,6 +28,7 @@
 /// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=--=-=-=-=-=-
 
 #include "cppkit/ck_json.h"
+#include <algorithm>
 
 using namespace std;
 using namespace cppkit;
@@ -80,28 +81,28 @@ shared_ptr<ck_json_item> ck_json_item::find( shared_ptr<ck_json_item> json, ck_s
     }
     std::vector<ck_string> parts = slashDelimitedPath.split(delimiter);
     shared_ptr<ck_json_item> current = json;
-    for ( size_t i = 0; i < parts.size(); ++i )
+    for( ck_string part : parts )
     {
        // current is re-assigned below.  It is possible that current could be set to NULL if the previous
        // iteration did not find the previous item in the slashDelimitedPath
         if( current.get() == NULL )
            return current;
 
-       if ( parts[i].is_integer() )
+       if ( part.is_integer() )
        {
            //Means we want to index an item in an array
            if ( current->get_type() != CK_JSON_Array_Type )
-               CK_STHROW(ck_json_exception, ("The %d(th) item in the path(%s) does not match JSON structure!",i,slashDelimitedPath.c_str()));
+               CK_STHROW(ck_json_exception, ("The %s item in the path(%s) does not match JSON structure!",part.c_str(),slashDelimitedPath.c_str()));
            shared_ptr<ck_json_array> ary = static_pointer_cast<ck_json_array>(current);
-           current = ary->access_element(parts[i].to_int());
+           current = ary->access_element(part.to_int());
        }
        else
        {
            //Means we are looking by name, in a hash
            if ( current->get_type() != CK_JSON_Object_Type )
-               CK_STHROW(ck_json_exception, ("The %d(th) item in the path(%s) does not match JSON structure!",i,slashDelimitedPath.c_str()));
+               CK_STHROW(ck_json_exception, ("The %s item in the path(%s) does not match JSON structure!",part.c_str(),slashDelimitedPath.c_str()));
            shared_ptr<ck_json_object> obj = static_pointer_cast<ck_json_object>(current);
-           current = obj->get_object_member(parts[i]);
+           current = obj->get_object_member(part);
 
        }
     }
@@ -121,22 +122,9 @@ size_t ck_json_item::get_next( const ck_string& str, size_t from, bool& isBrace 
 
 size_t ck_json_item::search_for_non_white_space( const ck_string& str, size_t idx )
 {
-    static const char SPACE = 0x20;
-    static const char HORIZONTAL_TAB = 0x09;
-    static const char NEW_LINE = 0x0A;
-    static const char CARRIAGE_RETURN = 0x0D;
-    for ( size_t i = idx; i < str.size(); i++ )
-        switch ( str.c_str()[i] )
-        {
-        case SPACE:
-        case HORIZONTAL_TAB:
-        case NEW_LINE:
-        case CARRIAGE_RETURN:
-            continue;
-        default:
-            return i;
-        }
-    return std::string::npos;
+    char whitey[] = { 0x20 /*space*/, 0x09 /*tab*/, 0x0A /*new line*/, 0x0D/*carriage return*/ };
+
+    return str.find_first_not_of( whitey, idx, sizeof( whitey ) );
 }
 
 size_t ck_json_item::parse_string( const ck_string& str, size_t start, ck_string& res )
