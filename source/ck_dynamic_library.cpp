@@ -36,7 +36,7 @@ using namespace cppkit;
 using namespace std;
 
 #ifdef IS_WINDOWS
-	#include "Windows.h"
+    #include "Windows.h"
     #include "DbgHelp.h"
 #else
     #include <cxxabi.h>
