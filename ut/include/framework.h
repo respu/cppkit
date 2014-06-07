@@ -6,6 +6,7 @@
 #include <exception>
 #include <string>
 #include <stdio.h>
+#include <string.h>
 
 #ifdef WIN32
 #define SNPRINTF _snprintf_s
@@ -60,7 +61,7 @@ struct test_container
     test_fixture* fixture;
     void (test_fixture::*test)();
     std::string test_name;
-    std::string exception_msg;
+    char exception_msg[4096];
     bool passed;
 };
 
@@ -174,7 +175,9 @@ public:
             {
                 _something_failed = true;
                 (*i).passed = false;
-                (*i).exception_msg = ex.what();
+                size_t msgLen = strlen( ex.what() );
+                memset( &(*i).exception_msg, 0, 4096 );
+                memcpy( &(*i).exception_msg, ex.what(), (msgLen<4096) ? msgLen : 4096 );
                 printf("F]\n");
             }
             catch(...)
@@ -202,7 +205,7 @@ public:
             {
                 printf("\nUT_FAIL: %s failed with exception: %s\n",
                        (*i).test_name.c_str(),
-                       (*i).exception_msg.c_str());
+                       (*i).exception_msg);
             }
         }
     }

@@ -35,3 +35,4 @@ include(base_lib.cmake NO_POLICY_SCOPE)
 
 install_files("../../devel_artifacts/build" base_lib.cmake)
 install_files("../../devel_artifacts/build" base_ut.cmake)
+install_files("../../devel_artifacts/build" base_app.cmake)
