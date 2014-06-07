@@ -110,18 +110,23 @@ protected:
     {
         while( _started )
         {
-            guard g( _lock );
+            std::pair<CMD,std::promise<RESULT>> item;
 
-            _cond.wait( g, [this] () { return !this->_queue.empty() || !this->_started; } );
+            {
+                guard g( _lock );
 
-            if( !_started )
-                continue;
+                _cond.wait( g, [this] () { return !this->_queue.empty() || !this->_started; } );
 
-            // Call process() and attach any thrown exceptions to the result std::promise
+                if( !_started )
+                    continue;
+
+                item = std::move( _queue.back() );
+                _queue.pop_back();
+            }
 
             try
             {
-                _queue.back().second.set_value( process( _queue.back().first ) );
+                item.second.set_value( process( item.first ) );
             }
             catch( ... )
             {
@@ -134,8 +139,6 @@ protected:
                     CK_LOG_NOTICE( "Failed to attach unknown exception to std::promise<>" );
                 }
             }
-
-            _queue.pop_back();
         }
     }
 
