@@ -61,6 +61,8 @@ public:
     CK_API ck_byte_ptr map_data();
     CK_API size_t size_data() const;
 
+    CK_API static std::shared_ptr<ck_memory> clone( std::shared_ptr<ck_memory> src );
+
 private:
     std::vector<uint8_t> _bits;
     size_t _data_sentry;

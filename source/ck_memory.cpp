@@ -123,3 +123,11 @@ size_t ck_memory::size_data() const
 {
     return _data_sentry;
 }
+
+shared_ptr<ck_memory> ck_memory::clone( shared_ptr<ck_memory> src )
+{
+    shared_ptr<ck_memory> dst = make_shared<ck_memory>();
+    size_t srcSize = src->size_data();
+    memcpy( dst->extend_data( srcSize ).get_ptr(), src->map().get_ptr(), srcSize );
+    return dst;
+}

@@ -53,3 +53,19 @@ void chrono_test::test_duration_addition()
     auto d = hours(1) + minutes(30);
     UT_ASSERT(duration_cast<seconds>(d).count() == 5400);
 }
+
+void chrono_test::test_duration_setup()
+{
+    nanoseconds numNanos(250);
+    microseconds numMicros(250);
+    milliseconds numMillis(250);
+    seconds numSeconds(250);
+    minutes numMinutes(250);
+    hours numHours(250);
+    UT_ASSERT( numHours > numMinutes );
+    UT_ASSERT( numMinutes > numSeconds );
+    UT_ASSERT( numSeconds > numMillis );
+    UT_ASSERT( numMillis > numMicros );
+    UT_ASSERT( numMicros > numNanos );
+    UT_ASSERT( minutes(15001) > numHours );
+}

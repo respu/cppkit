@@ -23,7 +23,8 @@ set(SOURCES source/framework.cpp
             source/ck_udp_receiver_test.cpp
             source/ck_udp_sender_test.cpp
             source/ck_string_slice_test.cpp
-            source/ck_timer_test.cpp)
+            source/ck_timer_test.cpp
+            source/ck_statistics_test.cpp)
 
 set(COMMON_LIBS cppkit)
 set(WINDOWS_LIBS DbgHelp ws2_32 iphlpapi)
