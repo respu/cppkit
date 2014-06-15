@@ -59,6 +59,11 @@ set(CMAKE_INSTALL_PREFIX ${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE})
 include_directories(include "${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE}/include")
 link_directories("${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE}/lib")
 
+if(CMAKE_SYSTEM MATCHES "Linux-")
+  include_directories("/usr/local")
+  link_directories("/usr/local/lib")
+endif(CMAKE_SYSTEM MATCHES "Linux-")
+
 # Define our target name and build both SHARED and STATIC libs.
 #
 
