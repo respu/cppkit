@@ -123,6 +123,13 @@ public:
     {
     }
 
+    CK_API ck_byte_ptr(ck_byte_ptr&& other ) noexcept :
+        _start(std::move(other._start)),
+        _current(std::move(other._current)),
+        _length(std::move(other._length))
+    {
+    }
+
     /// Initializes the pointer to point to the beginning of the specified buffer
     CK_API ck_byte_ptr(const void* data, size_t length) :
         _start((uint8_t*)data),
@@ -138,6 +145,15 @@ public:
     CK_API ck_byte_ptr& operator=(const ck_byte_ptr& other)
     {
         return set_ptr(other._start, other._length);
+    }
+
+    CK_API ck_byte_ptr& operator=(ck_byte_ptr&& other) noexcept
+    {
+        _start = std::move(other._start);
+        _current = std::move(other._current);
+        _length = std::move(other._length);
+
+        return *this;
     }
 
     /// Resets the pointer to point to the beginning of the specified buffer
