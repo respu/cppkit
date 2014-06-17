@@ -4,6 +4,7 @@
 
 #include "cppkit/os/ck_exports.h"
 #include "cppkit/ck_exception.h"
+#include "cppkit/ck_byte_ptr.h"
 
 class ck_bitsy_test;
 
@@ -23,20 +24,20 @@ namespace cppkit
 ///
 /// Where val and val2 were previously declared to be of type uint32_t.
 
-template<typename ITER>
 class ck_bitsy
 {
     friend class ::ck_bitsy_test;
 public:
 
-    CK_API ck_bitsy(ITER begin, ITER end);
+    CK_API ck_bitsy(const uint8_t* begin, size_t size);
+    CK_API ck_bitsy(const ck_byte_ptr& src );
     CK_API ck_bitsy(const ck_bitsy& obj);
 
     CK_API virtual ~ck_bitsy() {}
 
     CK_API ck_bitsy& operator=(const ck_bitsy& obj);
 
-    CK_API void set_buffer(ITER begin, ITER end);
+    CK_API void set_buffer(const uint8_t* begin, size_t size);
 
     CK_API void reset();
 
@@ -53,6 +54,9 @@ public:
     /// Returns the number of bits remaining to be read.
     CK_API size_t get_bits_remaining() const;
 
+    /// Skip the specified number of bits
+    CK_API void skip_bits(int bitCount);
+
     /// Returns the minimum number of bits needed to represent the value of dword
     CK_API static int needed_bits(uint32_t dword);
 
@@ -61,66 +65,69 @@ private:
     inline void _inc_pos();
     inline size_t _get_bytes_remaining() const;
 
-    ITER _begin;
-    ITER _end;
-    ITER _pos;
+    const uint8_t* _begin;
+    size_t _length;
+    const uint8_t* _pos;
     uint8_t _currentMask;
     mutable size_t _bytesRemaining;
 };
 
-template<typename ITER>
-ck_bitsy<ITER>::ck_bitsy(ITER begin, ITER end) :
+ck_bitsy::ck_bitsy(const uint8_t* begin, size_t length) :
     _begin(begin),
-    _end(end),
+    _length(length),
     _pos(begin),
     _currentMask(128),
     _bytesRemaining(-1)
 {
 }
 
-template<typename ITER>
-ck_bitsy<ITER>::ck_bitsy(const ck_bitsy& obj) :
+ck_bitsy::ck_bitsy(const ck_byte_ptr& src ) :
+    _begin( src.get_ptr() ),
+    _length( src.length() ),
+    _pos( _begin ),
+    _currentMask(128),
+    _bytesRemaining(-1)
+{
+}
+
+ck_bitsy::ck_bitsy(const ck_bitsy& obj) :
     _begin(obj._begin),
-    _end(obj._end),
+    _length(obj._length),
     _pos(obj._pos),
     _currentMask(obj._currentMask),
     _bytesRemaining(obj._bytesRemaining)
 {
 }
 
-template<typename ITER>
-ck_bitsy<ITER>& ck_bitsy<ITER>::operator =(const ck_bitsy& obj)
+ck_bitsy& ck_bitsy::operator=(const ck_bitsy& obj)
 {
     _begin = obj._begin;
-    _end = obj._end;
+    _length = obj._length;
     _pos = obj._pos;
     _currentMask = obj._currentMask;
     _bytesRemaining = obj._bytesRemaining;
     return *this;
 }
 
-template<typename ITER>
-void ck_bitsy<ITER>::set_buffer(ITER begin, ITER end)
+void ck_bitsy::set_buffer(const uint8_t* begin, size_t length)
 {
     _begin = begin;
-    _end = end;
+    _length = length;
     reset();
 }
 
-template<typename ITER>
-void ck_bitsy<ITER>::reset()
+void ck_bitsy::reset()
 {
     _pos = _begin;
     _currentMask = 128;
     _bytesRemaining = -1;
 }
 
-template<typename ITER>
-uint32_t ck_bitsy<ITER>::get_bits(int bitCount)
+uint32_t ck_bitsy::get_bits(int bitCount)
 {
     uint32_t outputBits = 0;
 
-    for(int i = 0; i < bitCount && _pos < _end; ++i)
+    for(int i = 0; i < bitCount && _pos < (_begin + _length); ++i)
     {
         outputBits = outputBits << 1;
 
@@ -138,8 +145,7 @@ uint32_t ck_bitsy<ITER>::get_bits(int bitCount)
     return outputBits;
 }
 
-template<typename ITER>
-uint32_t ck_bitsy<ITER>::get_exact_bits(int bitCount)
+uint32_t ck_bitsy::get_exact_bits(int bitCount)
 {
     const size_t remaining = get_bits_remaining();
 
@@ -149,8 +155,7 @@ uint32_t ck_bitsy<ITER>::get_exact_bits(int bitCount)
     return get_bits(bitCount);
 }
 
-template<typename ITER>
-size_t ck_bitsy<ITER>::get_bits_remaining() const
+size_t ck_bitsy::get_bits_remaining() const
 {
     unsigned int bits = 0;
 
@@ -187,9 +192,21 @@ size_t ck_bitsy<ITER>::get_bits_remaining() const
     return _get_bytes_remaining() * 8 - (8 - bits);
 }
 
+void ck_bitsy::skip_bits(int bitCount)
+{
+    for(int i = 0; i < bitCount && _pos < (_begin + _length); ++i)
+    {
+        if(_currentMask == 1)
+        {
+            _currentMask = 128;
+            _inc_pos();
+        }
+        else _currentMask = _currentMask >> 1;
+    }
+}
+
 // Returns the minimum number of bits needed to represent the value of dword
-template<typename ITER>
-int ck_bitsy<ITER>::needed_bits(uint32_t dword)
+int ck_bitsy::needed_bits(uint32_t dword)
 {
     uint32_t mask = 1;
     uint32_t val = 0;
@@ -205,8 +222,7 @@ int ck_bitsy<ITER>::needed_bits(uint32_t dword)
     return bitsRequired;
 }
 
-template<typename ITER>
-inline void ck_bitsy<ITER>::_inc_pos()
+inline void ck_bitsy::_inc_pos()
 {
     ++_pos;
     if(_bytesRemaining == -1)
@@ -215,29 +231,16 @@ inline void ck_bitsy<ITER>::_inc_pos()
         --_bytesRemaining;
 }
 
-template<>
-inline void ck_bitsy<const uint8_t*>::_inc_pos()
-{
-    ++_pos;
-}
-
-template<typename ITER>
-inline size_t ck_bitsy<ITER>::_get_bytes_remaining() const
+inline size_t ck_bitsy::_get_bytes_remaining() const
 {
     if(_bytesRemaining == -1)
     {
         _bytesRemaining = 0;
-        ITER temp = _pos;
-        while(temp != _end) ++temp, ++_bytesRemaining;
+        const uint8_t* temp = _pos;
+        while(temp != (_begin + _length)) ++temp, ++_bytesRemaining;
     }
 
     return _bytesRemaining;
-}
-
-template<>
-inline size_t ck_bitsy<const uint8_t*>::_get_bytes_remaining() const
-{
-    return _end - _pos;
 }
 
 };
