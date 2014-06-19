@@ -39,6 +39,15 @@ class ck_pool_test;
 namespace cppkit
 {
 
+// ck_pool is a simple, thread safe object pool. ck_pool is templated on the object type, and
+// constructs all of the instances it owns in it's constructor.
+//
+// ck_pool::get() returns a special shared_ptr that will automagically put the object back in the
+// pool when it (and all copies of it) got away.
+//
+// Because shared_ptr<>'s tend to be passed around, this object is also thread safe (the methods
+// (other than the ctor & dtor) that modify the pool grab a lock).
+
 template<class T>
 class ck_pool
 {
