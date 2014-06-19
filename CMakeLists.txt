@@ -26,7 +26,8 @@ set(SOURCES source/ck_library_id.cpp
             source/ck_path.cpp
             source/ck_udp_sender.cpp
             source/ck_udp_receiver.cpp
-            source/ck_timer.cpp)
+            source/ck_timer.cpp
+            source/ck_pool.cpp)
 
 set(WINDOWS_LIBS DbgHelp ws2_32 iphlpapi)
 set(LINUX_LIBS pthread rt dl)
