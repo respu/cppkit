@@ -33,6 +33,7 @@
 #include <list>
 #include <mutex>
 #include <memory>
+#include "cppkit/ck_exception.h"
 
 class ck_pool_test;
 
@@ -68,6 +69,9 @@ public:
     std::shared_ptr<T> get()
     {
         std::unique_lock<std::recursive_mutex> g( _lok );
+
+        if( _free.empty() )
+            CK_THROW(("out of buffers."));
 
         // Construct a shared_ptr with a custom deleter lambda that puts the pointer back in _free.
         std::shared_ptr<T> f( _free.front(), [this](T* f) {
