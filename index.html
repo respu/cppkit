@@ -28,8 +28,7 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h3>
-<a name="we-care-about-ease-of-use" class="anchor" href="#we-care-about-ease-of-use"><span class="octicon octicon-link"></span></a>We care about ease of use.</h3>
+          <h3><a name="we-care-about-ease-of-use" class="anchor" href="#we-care-about-ease-of-use"><span class="octicon octicon-link"></span></a>We care about ease of use.</h3>
 
 <p>The main idea of cppkit is that we are willing to sacrifice a little performance to gain usability. The end result will be a library that won't work for those who need the utmost performance, but will be a joy to use for everyone else. cppkit is an opinionated library that won't be right for everyone, and we think that's perfectly OK.</p>
 
@@ -48,9 +47,10 @@
 
   vector&lt;ck_string&gt; parts = formatted.split( "horror" );
 </pre>
-<p>If this code makes you want to gag, that is OK. But you might not want to see any more.</p>
+<p>If this code makes you want to gag, that is OK. But you might not want to see any more. :)</p>
 <br />
-<p>We think the actor model is pretty great combined with C++11 std::future.</p>
+<h3><a name="we-care-about-ease-of-use" class="anchor" href="#we-care-about-ease-of-use"><span class="octicon octicon-link"></span></a>We think the Actor Model is pretty neat too.</h3>
+<p>C++11 std::future provides a great base to build on:</p>
 <pre>
 class adder_actor : public ck_actor<std::pair<int,int>,int>
 {
@@ -72,6 +72,7 @@ void ck_actor_test::test_adder()
 }
 </pre>
 <br />
+<h3><a name="we-care-about-ease-of-use" class="anchor" href="#we-care-about-ease-of-use"><span class="octicon octicon-link"></span></a>How about a little Convention.</h3>
 <p>We propose that there should be room in the world for a bit of the Ruby on Rails "Convention over Configuration" within C++. To that end, we include a CMake based build ecosystem. With our build system, a new library can be defined like so:</p>
 <pre>
 cmake_minimum_required(VERSION 2.8)
