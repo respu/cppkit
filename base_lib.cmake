@@ -1,4 +1,6 @@
 
+message("devel_artifacts path: ${devel_artifacts_path}")
+
 # First, append our compile options...
 #
 
@@ -8,7 +10,8 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 
 macro(add_compiler_flag CONFIG FLAG)
     if("${CONFIG}" STREQUAL "Both")
-        set(CMAKE_CXX_FLAGS "${FLAG} ${CMAKE_CXX_FLAGS}")
+        set(CMAKE_CXX_FLAGS_DEBUG "${FLAG} ${CMAKE_CXX_FLAGS_DEBUG}")
+        set(CMAKE_CXX_FLAGS_RELEASE "${FLAG} ${CMAKE_CXX_FLAGS_RELEASE}")
     elseif("${CONFIG}" STREQUAL "Debug")
         set(CMAKE_CXX_FLAGS_DEBUG "${FLAG} ${CMAKE_CXX_FLAGS_DEBUG}")
     elseif("${CONFIG}" STREQUAL "Release")
@@ -31,9 +34,13 @@ if(CMAKE_SYSTEM MATCHES "Linux-")
     add_definitions(-D_REENTRANT)
     set(CMAKE_EXE_LINKER_FLAGS -rdynamic)
 elseif(CMAKE_SYSTEM MATCHES "Windows")
+
+    if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+        add_definitions(-DWIN64)
+    endif(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+
     add_definitions(-DWIN32_LEAN_AND_MEAN)
     add_definitions(-DWIN32)
-#    add_definitions(-D_USE_32BIT_TIME_T)
     add_definitions(-DUNICODE)
     add_definitions(-D_UNICODE)
     add_definitions(-DNOMINMAX)
@@ -41,23 +48,26 @@ elseif(CMAKE_SYSTEM MATCHES "Windows")
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
     add_definitions(-D__inline__=__inline)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-    add_compiler_flag(Both /GF)    # Enable read-only string pooling.
-    add_compiler_flag(Both /EHsc)  # Make sure that destructors get executed when exceptions exit C++ code.
-    add_compiler_flag(Debug /ZI)   # Generate pdb files which support Edit and Continue Debugging
-    add_compiler_flag(Debug /Gm)   # Enable minimal rebuild
-    add_compiler_flag(Debug /FR)   # Create an .sbr file with complete symbolic information.
+    add_compiler_flag(Both /MT)
+    # Enable read-only string pooling.
+    add_compiler_flag(Both /GF)
+    # Make sure that destructors get executed when exceptions exit C++ code.
+    add_compiler_flag(Both /EHsc)
+    # Generate pdb files which support Edit and Continue Debugging
+    add_compiler_flag(Debug /Zi)
+    # Enable minimal rebuild
+    add_compiler_flag(Debug /Gm)
+    # Create an .sbr file with complete symbolic information.
+    add_compiler_flag(Debug /FR)
+    add_compiler_flag(Debug /MDd)
+    add_compiler_flag(Release /MD)
+    add_compiler_flag(Release /O2)
     SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 endif(CMAKE_SYSTEM MATCHES "Linux-")
 
-
-# Now, convert the relative path to "devel_artifacts" into an absolute path, use that as our CMAKE_INSTALL_PREFIX
-# and then set include and lib dir compile options...
-#
-
-get_filename_component(DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE "../devel_artifacts" ABSOLUTE)
-set(CMAKE_INSTALL_PREFIX ${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE})
-include_directories(include "${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE}/include")
-link_directories("${DEVEL_INSTALL_PATH_PREFIX_ABSOLUTE}/lib")
+set(CMAKE_INSTALL_PREFIX ${devel_artifacts_path})
+include_directories(include "${devel_artifacts_path}/include")
+link_directories("${devel_artifacts_path}/lib")
 
 if(CMAKE_SYSTEM MATCHES "Linux-")
   include_directories("/usr/local")
@@ -68,7 +78,6 @@ endif(CMAKE_SYSTEM MATCHES "Linux-")
 #
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
-add_library(${PROJECT_NAME}S STATIC ${SOURCES})
 
 
 # Add platform appropriate libraries correct targets...
@@ -76,10 +85,8 @@ add_library(${PROJECT_NAME}S STATIC ${SOURCES})
 
 if(CMAKE_SYSTEM MATCHES "Windows")
     target_link_libraries(${PROJECT_NAME} ${WINDOWS_LIBS} ${COMMON_LIBS})
-    target_link_libraries(${PROJECT_NAME}S ${WINDOWS_LIBS} ${COMMON_LIBS})
 elseif(CMAKE_SYSTEM MATCHES "Linux")
     target_link_libraries(${PROJECT_NAME} ${LINUX_LIBS} ${COMMON_LIBS})
-    target_link_libraries(${PROJECT_NAME}S ${LINUX_LIBS} ${COMMON_LIBS})
 endif(CMAKE_SYSTEM MATCHES "Windows")
 
 
@@ -107,7 +114,10 @@ if(MSVC)
                  CONFIGURATIONS Debug)
 endif(MSVC)
 
-install(TARGETS ${PROJECT_NAME}S ARCHIVE DESTINATION "lib"
-                                 COMPONENT library)
 
+
+install(TARGETS ARCHIVE DESTINATION "lib" COMPONENT library)
+
+IF(NOT DEFINED INSTALL_SKIP_HEADERS)
 install(DIRECTORY include/${PROJECT_NAME} DESTINATION include USE_SOURCE_PERMISSIONS)
+ENDIF(NOT DEFINED INSTALL_SKIP_HEADERS)

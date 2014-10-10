@@ -33,6 +33,7 @@ set(WINDOWS_LIBS DbgHelp ws2_32 iphlpapi)
 set(LINUX_LIBS pthread rt dl)
 #set(COMMON_LIBS "")
 
+include(common.cmake NO_POLICY_SCOPE)
 include(base_lib.cmake NO_POLICY_SCOPE)
 
 install_files("../../devel_artifacts/build" base_lib.cmake)
