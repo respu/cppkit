@@ -4,13 +4,11 @@ message("devel_artifacts path: ${devel_artifacts_path}")
 # First, append our compile options...
 #
 
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE Debug)
-ENDIF(NOT CMAKE_BUILD_TYPE)
+set(CMAKE_BUILD_TYPE Debug)
 
 macro(add_compiler_flag CONFIG FLAG)
     if("${CONFIG}" STREQUAL "Both")
-        set(CMAKE_CXX_FLAGS_DEBUG "${FLAG} ${CMAKE_CXX_FLAGS_DEBUG}")
+        set(CMAKE_CXX_FLAGS "${FLAG} ${CMAKE_CXX_FLAGS}")
         set(CMAKE_CXX_FLAGS_RELEASE "${FLAG} ${CMAKE_CXX_FLAGS_RELEASE}")
     elseif("${CONFIG}" STREQUAL "Debug")
         set(CMAKE_CXX_FLAGS_DEBUG "${FLAG} ${CMAKE_CXX_FLAGS_DEBUG}")
@@ -65,6 +63,10 @@ elseif(CMAKE_SYSTEM MATCHES "Windows")
     SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 endif(CMAKE_SYSTEM MATCHES "Linux-")
 
+
+# Now, setup our artifact install root and add our default header and lib paths.
+#
+
 set(CMAKE_INSTALL_PREFIX ${devel_artifacts_path})
 include_directories(include "${devel_artifacts_path}/include")
 link_directories("${devel_artifacts_path}/lib")
@@ -74,11 +76,10 @@ if(CMAKE_SYSTEM MATCHES "Linux-")
   link_directories("/usr/local/lib")
 endif(CMAKE_SYSTEM MATCHES "Linux-")
 
-# Define our target name and build both SHARED and STATIC libs.
+# Add our executable target
 #
 
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
-
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Add platform appropriate libraries correct targets...
 #
@@ -88,36 +89,3 @@ if(CMAKE_SYSTEM MATCHES "Windows")
 elseif(CMAKE_SYSTEM MATCHES "Linux")
     target_link_libraries(${PROJECT_NAME} ${LINUX_LIBS} ${COMMON_LIBS})
 endif(CMAKE_SYSTEM MATCHES "Windows")
-
-
-# rpath setup
-#
-
-set(CMAKE_SKIP_BUILD_RPATH false)
-set(CMAKE_BUILD_WITH_INSTALL_RPATH true)
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH true)
-set(CMAKE_INSTALL_RPATH "./libs" ${DEVEL_INSTALL_PATH})
-
-
-# Define our installation rules
-#
-
-install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION "lib"
-                                ARCHIVE DESTINATION "lib"
-                                RUNTIME DESTINATION "lib"
-                                COMPONENT library)
-
-# if we're on MSVC, install our .pdb files as well (for debugging)
-if(MSVC)
-    INSTALL(FILES ${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}.pdb
-                 DESTINATION lib
-                 CONFIGURATIONS Debug)
-endif(MSVC)
-
-
-
-install(TARGETS ARCHIVE DESTINATION "lib" COMPONENT library)
-
-IF(NOT DEFINED INSTALL_SKIP_HEADERS)
-install(DIRECTORY include/${PROJECT_NAME} DESTINATION include USE_SOURCE_PERMISSIONS)
-ENDIF(NOT DEFINED INSTALL_SKIP_HEADERS)

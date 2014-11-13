@@ -33,9 +33,12 @@ set(WINDOWS_LIBS DbgHelp ws2_32 iphlpapi)
 set(LINUX_LIBS pthread rt dl)
 #set(COMMON_LIBS "")
 
-include(common.cmake NO_POLICY_SCOPE)
-include(base_lib.cmake NO_POLICY_SCOPE)
+# XSDK is special and has to create ../devel_artifacts for everyone else.
+file(MAKE_DIRECTORY ../devel_artifacts)
 
-install_files("../../devel_artifacts/build" base_lib.cmake)
-install_files("../../devel_artifacts/build" base_ut.cmake)
-install_files("../../devel_artifacts/build" base_app.cmake)
+include(cmake/common.cmake NO_POLICY_SCOPE)
+include(cmake/base_lib.cmake NO_POLICY_SCOPE)
+
+install_files("../../devel_artifacts/build" cmake/base_lib.cmake)
+install_files("../../devel_artifacts/build" cmake/base_ut.cmake)
+install_files("../../devel_artifacts/build" cmake/base_app.cmake)
