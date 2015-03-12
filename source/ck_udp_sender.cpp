@@ -60,12 +60,12 @@ void ck_udp_sender::aim( const ck_string& targetIP, int targetPort )
 
 int32_t ck_udp_sender::send( void* buffer, size_t length )
 {
-    int32_t bytesSent = sendto( _sok,
-                                (char*)buffer,
-                                length,
-                                0,
-                                _addr.get_sock_addr(),
-                                _addr.sock_addr_size() );
+  int32_t bytesSent = sendto( (int)_sok,
+			      (char*)buffer,
+			      (int)length,
+			      0,
+			      _addr.get_sock_addr(),
+			      _addr.sock_addr_size() );
 
     if( bytesSent == -1 )
         CK_THROW(( "ck_udp_sender: sendto() returned an error. %s",

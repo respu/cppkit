@@ -63,7 +63,7 @@ ck_udp_receiver::ck_udp_receiver( int destinationPort,
         // [tdistler] Required b/c binding to multicast addr on Windows is an error.
         ck_socket_address addr( destinationPort, _addr.address_family() == AF_INET6 ? ip6_addr_any : ip4_addr_any );
 
-        if( ::bind( _sok, addr.get_sock_addr(), addr.sock_addr_size() ) < 0 )
+        if( ::bind( (int)_sok, addr.get_sock_addr(), addr.sock_addr_size() ) < 0 )
             CK_THROW(( "ck_udp_receiver: Unable to bind to local interface. %s",
                        ck_get_last_error_msg().c_str() ));
 #else
@@ -198,7 +198,7 @@ bool ck_udp_receiver::_receive( int& port, shared_ptr<ck_memory> buffer, bool bl
                 currentLargestSOK = (*i)->_sok;
         }
 
-        selectRet = select( currentLargestSOK + 1,
+        selectRet = select( (int)currentLargestSOK + 1,
                             &readFileDescriptors,
                             NULL,
                             NULL,

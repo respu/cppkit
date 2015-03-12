@@ -190,7 +190,7 @@ vector<ck_string> ck_socket::get_addresses_by_hostname( const ck_string& hostnam
 
     for( struct addrinfo* cur = addrInfo; cur != 0; cur = cur->ai_next )
     {
-        addresses.push_back( ck_socket_address::address_to_string(cur->ai_addr, cur->ai_addrlen) );
+        addresses.push_back( ck_socket_address::address_to_string(cur->ai_addr, (socklen_t)cur->ai_addrlen) );
     }
 
     freeaddrinfo(addrInfo);
@@ -218,7 +218,7 @@ std::vector<ck_string> ck_socket::resolve( int type, const ck_string& name )
             continue;
 
         if( cur->ai_addr->sa_family == type )
-            addresses.push_back( ck_socket_address::address_to_string(cur->ai_addr, cur->ai_addrlen) );
+            addresses.push_back( ck_socket_address::address_to_string(cur->ai_addr, (socklen_t)cur->ai_addrlen) );
     }
 
     freeaddrinfo( addrInfo );
@@ -360,7 +360,7 @@ void ck_socket::close()
         wait_recv( _delayClose );
     }
 
-    int sokTemp = _sok;
+    int sokTemp = (int)_sok;
     int err = 0;
 
     _sok = 0;
@@ -409,7 +409,7 @@ void ck_socket::enable_auto_server_close( int timeout )
 
 int ck_socket::get_sok_id() const
 {
-    return _sok;
+    return (int)_sok;
 }
 
 /// Causes socket object to give up ownership of underlying OS socket resources.
@@ -680,7 +680,7 @@ bool ck_socket::wait_recv( int& waitMillis )
     struct timeval beforeSelect = { 0, 0 };
     ck_gettimeofday(&beforeSelect);
 
-    ssize_t retVal = _can_recv_data(waitMillis, _sok);
+    ssize_t retVal = _can_recv_data(waitMillis, (int)_sok);
 
     if( _sok > 0 && retVal < 0 )
     {
@@ -713,7 +713,7 @@ bool ck_socket::wait_send( int& waitMillis )
     struct timeval beforeSelect = { 0, 0 };
     ck_gettimeofday(&beforeSelect);
 
-    ssize_t retVal = _can_send_data(waitMillis, _sok);
+    ssize_t retVal = _can_send_data(waitMillis, (int)_sok);
 
     if( _sok > 0 && retVal < 0 )
     {
@@ -742,7 +742,7 @@ bool ck_socket::wait_send( int& waitMillis )
 
 bool ck_socket::ready_to_recv()
 {
-    ssize_t retVal = _can_recv_data(0, _sok);
+    ssize_t retVal = _can_recv_data(0, (int)_sok);
 
     if( _sok > 0 && retVal < 0 )
         return false;
@@ -755,7 +755,7 @@ bool ck_socket::ready_to_recv()
 
 bool ck_socket::ready_to_send()
 {
-    ssize_t retVal = _can_send_data(0, _sok);
+    ssize_t retVal = _can_send_data(0, (int)_sok);
 
     if( _sok > 0 && retVal < 0 )
         return false;
@@ -985,7 +985,7 @@ size_t ck_socket::_recv( void* buf, size_t msgLen, int recvTimeoutMillis )
 
                 _recvPos = 0;
 
-                _bufferedBytes = bytesJustReceived;
+                _bufferedBytes = (uint32_t)bytesJustReceived;
 
                 continue; // If we read some bytes, we loop here so that we go into the SomeBuffered() case above.
             }
@@ -1010,9 +1010,9 @@ size_t ck_socket::_read_recv_buffer( void* buf, size_t msgLen )
 
             memcpy( buf, pos, msgLen );
 
-            _recvPos += msgLen;
+            _recvPos += (uint32_t)msgLen;
 
-            _bufferedBytes -= msgLen;
+            _bufferedBytes -= (uint32_t)msgLen;
 
             return msgLen;
         }

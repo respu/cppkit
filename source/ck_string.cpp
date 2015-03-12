@@ -927,12 +927,12 @@ bool ck_string::is_double(bool canHaveSign) const
     const size_t strippedFront = _storage[first] == '-' ? first + 1 : first;
     const size_t last = _storage.find_last_not_of(' ');
     const size_t strippedBack = last == string::npos ? 0 : (size() - 1) - last;
-    const int numSize = (int)(size() - (strippedFront + strippedBack) - 1);
+    const int64_t numSize = (int)(size() - (strippedFront + strippedBack) - 1);
 
     if(numSize == 0)
         return false;
 
-    const int numDigits = count_if(_storage.begin() + strippedFront,
+    const int64_t numDigits = count_if(_storage.begin() + strippedFront,
                                    _storage.begin() + decimal,
                                    verify_digit) +
         count_if(_storage.begin() + decimal + 1,

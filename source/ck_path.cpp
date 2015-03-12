@@ -211,7 +211,7 @@ ck_path::path_parts ck_path::_get_path_and_glob( const ck_string& glob ) const
     }
     else
     {
-        const int lastSlash = glob.rfind( PATH_SLASH );
+        const size_t lastSlash = glob.rfind( PATH_SLASH );
 
         parts.path = (lastSlash >= 0) ? glob.substr( 0, lastSlash ) : "";
         parts.glob = ((int)glob.size() > (lastSlash+1)) ? glob.substr(lastSlash + 1, glob.size() - (lastSlash+1)) : "";
