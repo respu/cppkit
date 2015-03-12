@@ -75,7 +75,7 @@ public:
 
         // Construct a shared_ptr with a custom deleter lambda that puts the pointer back in _free.
         std::shared_ptr<T> f( _free.front(), [this](T* f) {
-            std::unique_lock<std::recursive_mutex> g( _lok );
+            std::unique_lock<std::recursive_mutex> g2( _lok );
             _free.push_back( f );
         } );
 
