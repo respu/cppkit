@@ -115,6 +115,8 @@ if(CMAKE_SYSTEM MATCHES "Windows")
     target_link_libraries(${PROJECT_NAME} ${WINDOWS_LIBS} ${COMMON_LIBS})
 elseif(CMAKE_SYSTEM MATCHES "Linux")
     target_link_libraries(${PROJECT_NAME} ${LINUX_LIBS} ${COMMON_LIBS})
+else()
+    target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS})
 endif(CMAKE_SYSTEM MATCHES "Windows")
 
 

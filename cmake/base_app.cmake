@@ -58,6 +58,19 @@ elseif(CMAKE_SYSTEM MATCHES "Windows")
     add_compiler_flag(Release /MD)
     add_compiler_flag(Release /O2)
     SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
+elseif(CMAKE_SYSTEM MATCHES "Darwin-")
+
+    add_compiler_flag(Both -fthreadsafe-statics)
+    add_compiler_flag(Both -fPIC)
+    add_compiler_flag(Both -std=c++11)
+    add_compiler_flag(Release -O3)
+    add_compiler_flag(Release -DNDEBUG)
+    add_compiler_flag(Debug -ggdb)
+    add_compiler_flag(Debug -O0)
+    add_definitions(-DMACOSX)
+    add_definitions(-D_REENTRANT)
+    set(CMAKE_EXE_LINKER_FLAGS -rdynamic)
+
 endif(CMAKE_SYSTEM MATCHES "Linux-")
 
 
@@ -121,6 +134,8 @@ if(CMAKE_SYSTEM MATCHES "Windows")
     target_link_libraries(${PROJECT_NAME} ${WINDOWS_LIBS} ${COMMON_LIBS})
 elseif(CMAKE_SYSTEM MATCHES "Linux")
     target_link_libraries(${PROJECT_NAME} ${LINUX_LIBS} ${COMMON_LIBS})
+else()
+    target_link_libraries(${PROJECT_NAME} ${COMMON_LIBS})
 endif(CMAKE_SYSTEM MATCHES "Windows")
 
 
