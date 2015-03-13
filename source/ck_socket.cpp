@@ -830,10 +830,7 @@ ssize_t ck_socket::_do_poll_send( int waitMillis, int fd )
 
     return retVal;
 }
-#endif
-
-#ifdef IS_WINDOWS
-
+#else
 ssize_t ck_socket::_do_select_recv( int waitMillis, int fd )
 {
     fd_set recvFileDescriptors;
