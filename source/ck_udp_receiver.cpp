@@ -67,7 +67,7 @@ ck_udp_receiver::ck_udp_receiver( int destinationPort,
             CK_THROW(( "ck_udp_receiver: Unable to bind to local interface. %s",
                        ck_get_last_error_msg().c_str() ));
 #else
-        if( bind( _sok, _addr.get_sock_addr(), _addr.sock_addr_size() ) < 0 )
+        if( ::bind( _sok, _addr.get_sock_addr(), _addr.sock_addr_size() ) < 0 )
             CK_THROW(( "ck_udp_receiver: Unable to bind to local interface. %s",
                        ck_get_last_error_msg().c_str() ));
 #endif

@@ -190,7 +190,13 @@ int ck_memory_map::_get_posix_access_flags( int flags ) const
     if( flags & MM_TYPE_FILE )
         osFlags |= MAP_FILE;
     if( flags & MM_TYPE_ANON )
+    {
+#ifdef IS_LINUX
         osFlags |= MAP_ANONYMOUS;
+#else
+        osFlags |= MAP_ANON;
+#endif
+    }
     if( flags & MM_SHARED )
         osFlags |= MAP_SHARED;
     if( flags & MM_PRIVATE )

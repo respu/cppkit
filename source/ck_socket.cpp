@@ -773,22 +773,20 @@ ck_string ck_socket::get_host() const
 
 ssize_t ck_socket::_can_recv_data( int waitMillis, int fd )
 {
-#ifdef IS_WINDOWS
-    ssize_t retVal = _do_select_recv(waitMillis, fd);
-#endif
 #ifdef IS_LINUX
     ssize_t retVal = _do_poll_recv(waitMillis, fd);
+#else
+    ssize_t retVal = _do_select_recv(waitMillis, fd);
 #endif
     return retVal;
 }
 
 ssize_t ck_socket::_can_send_data( int waitMillis, int fd )
 {
-#ifdef IS_WINDOWS
-    ssize_t retVal = _do_select_send(waitMillis, fd);
-#endif
 #ifdef IS_LINUX
     ssize_t retVal = _do_poll_send(waitMillis, fd);
+#else
+    ssize_t retVal = _do_select_send(waitMillis, fd);
 #endif
     return retVal;
 }

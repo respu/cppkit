@@ -39,12 +39,18 @@
 #elif _MSC_VER
   #undef  IS_MSC
   #define IS_MSC
+#elif __clang__
+  #undef IS_CLANG
+  #define IS_CLANG
 #endif
 
 // Operating System
 #if defined(LINUX_OS)
   #undef  IS_LINUX
   #define IS_LINUX
+
+  #undef IS_POSIX
+  #define IS_POSIX
 
   #include "sys/types.h"
 
@@ -72,6 +78,25 @@
   #else
     #error "Unknown Architecture!"
   #endif
+#elif defined(MACOSX)
+  #undef IS_MACOSX
+  #define IS_MACOSX
+
+  #undef IS_POSIX
+  #define IS_POSIX
+
+  #include "sys/types.h"
+
+  #if __WORDSIZE == 64
+    #undef  IS_64BIT
+    #define IS_64BIT
+  #elif __WORDSIZE == 32
+    #undef  IS_32BIT
+    #define IS_32BIT
+  #else
+    #error "Unknown Architecture!"
+  #endif
+
 #else
   #error "Unknown OS!"
 #endif
@@ -80,6 +105,17 @@
   #undef  IS_DEBUG
   #define IS_DEBUG
 #endif
+
+#if (defined(IS_WINDOWS) && !defined(NDEBUG)) || defined(_DEBUG) || defined(DEBUG)
+  #undef  IS_DEBUG
+  #define IS_DEBUG
+#endif
+
+#if (defined(IS_MACOSX) && !defined(NDEBUG)) || defined(_DEBUG) || defined(DEBUG)
+  #undef  IS_DEBUG
+  #define IS_DEBUG
+#endif
+
 
 //==============================================================================
 /// @brief Represents a Universally Unique Identifier (RFC 4122 memory layout).

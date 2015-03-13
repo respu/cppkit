@@ -35,12 +35,12 @@
 #include <ctime>
 #include <thread>
 
-#ifdef IS_LINUX
+#ifdef IS_WINDOWS
+#include <Windows.h>
+#else
 #include <signal.h>
 #include <cstdlib>
 #include <syslog.h>
-#else
-#include <Windows.h>
 #endif
 
 #define CK_LOG_CHUNK_SIZE 1024

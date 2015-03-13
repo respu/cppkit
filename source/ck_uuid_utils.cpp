@@ -196,7 +196,7 @@ bool ck_uuid_to_string( const ck_uuid_bits* uuid, char* str, size_t len )
     const char* uuid_char = (const char*) uuid;
 
     // Verify that the buffer is large enough to hold the final string.
-    if( len >= 0 && len < (CK_UUID_STRING_LENGTH + 1))
+    if( len < (CK_UUID_STRING_LENGTH + 1))
         return false;
 
     // UUID:    "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"

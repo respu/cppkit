@@ -279,12 +279,12 @@ private:
     CK_API ssize_t _can_recv_data( int waitMillis, int fd );
     CK_API ssize_t _can_send_data( int waitMillis, int fd );
 
-    CK_API ssize_t _do_select_recv( int waitMillis, int fd );
-    CK_API ssize_t _do_select_send( int waitMillis, int fd );
-
 #ifdef IS_LINUX
     CK_API ssize_t _do_poll_recv( int waitMillis, int fd );
     CK_API ssize_t _do_poll_send( int waitMillis, int fd );
+#else
+    CK_API ssize_t _do_select_recv( int waitMillis, int fd );
+    CK_API ssize_t _do_select_send( int waitMillis, int fd );
 #endif
 
     static int _sokCount;

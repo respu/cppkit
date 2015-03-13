@@ -34,7 +34,7 @@
 #include "cppkit/ck_exception.h"
 #include "cppkit/ck_string.h"
 
-#ifdef IS_LINUX
+#ifdef IS_POSIX
 #include <dlfcn.h>
 #endif
 

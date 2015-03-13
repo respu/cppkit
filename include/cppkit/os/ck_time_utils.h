@@ -8,13 +8,11 @@
 #include <time.h>
 #include <ctime>
 
-#ifdef IS_LINUX
-#include <sys/time.h>
-#include <unistd.h>
-#endif
-
 #ifdef IS_WINDOWS
 #include <winsock2.h>
+#else
+#include <sys/time.h>
+#include <unistd.h>
 #endif
 
 namespace cppkit

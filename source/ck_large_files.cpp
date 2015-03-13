@@ -1,11 +1,12 @@
 
 #include "cppkit/os/ck_large_files.h"
+#include "cppkit/ck_types.h"
 
-#ifdef IS_LINUX
+#if defined(IS_POSIX)
 #include <fcntl.h>
 #endif
 
-#ifdef IS_WINDOWS
+#if defined(IS_WINDOWS)
 #include <io.h>
 #endif
 
@@ -103,17 +104,39 @@ CK_API int ck_filecommit( FILE* file )
 
     // sync all data associated with file stream to disk.
     int fd = fileno(file);
+
+#if defined(IS_LINUX)
     fdatasync(fd);
 
     // advise kernel to dump cached data from memory.
     int err = posix_fadvise64(fd, 0, 0, POSIX_FADV_DONTNEED);
+
+#elif defined(IS_MACOSX)
+    int err = fcntl( fd, F_FULLFSYNC );
+#endif
 
     return err;
 }
 
 CK_API int ck_fallocate( FILE* file, int64_t size )
 {
+#if defined(IS_LINUX)
     return ( posix_fallocate64( fileno( file ), 0, size ) == 0 ) ? 0 : -1;
+#elif defined(IS_MACOSX)
+
+    fstore_t store = {F_ALLOCATECONTIG, F_PEOFPOSMODE, 0, size};
+
+    int ret = fcntl( fileno( file ), F_PREALLOCATE, &store );
+
+    if( -1 == ret )
+    {
+        store.fst_flags = F_ALLOCATEALL;
+	ret = fcntl( fileno( file ), F_PREALLOCATE, &store );
+    }
+
+    return (ret==0)?0:-1;
+
+#endif
 }
 
 #endif
@@ -126,7 +149,11 @@ CK_API bool exists( const ck_string& file_name )
 
 ck_string temp_dir()
 {
-#ifdef IS_LINUX
+#ifdef IS_WINDOWS
+    wchar_t buf[MAX_PATH];
+    DWORD len = GetTempPathW(MAX_PATH, buf);
+    return len != 0 ? ck_string(buf, len) : ".";
+#else
     const char* tmp_dir = getenv("TMPDIR");
     if(tmp_dir && exists(tmp_dir))
         return tmp_dir;
@@ -152,10 +179,6 @@ ck_string temp_dir()
         return tmp_dir;
 
     return ".";
-#else
-    wchar_t buf[MAX_PATH];
-    DWORD len = GetTempPathW(MAX_PATH, buf);
-    return len != 0 ? ck_string(buf, len) : ".";
 #endif
 }
 
