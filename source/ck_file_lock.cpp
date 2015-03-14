@@ -4,6 +4,7 @@
 
 #ifdef IS_WINDOWS
 #include <windows.h>
+#include <io.h>
 #else
 #include <sys/file.h>
 #endif
@@ -25,9 +26,7 @@ ck_file_lock::~ck_file_lock() noexcept
 void ck_file_lock::lock()
 {
 #ifdef IS_WINDOWS
-    ck_file_lock::_lock.lock();
-
-    intptr_t fileHandle = _get_osfhandle( _fd );
+    HANDLE fileHandle = (HANDLE)_get_osfhandle( _fd );
     if( fileHandle == INVALID_HANDLE_VALUE )
         CK_THROW(("Unable to get OS handle."));
 
@@ -55,9 +54,7 @@ void ck_file_lock::lock()
 void ck_file_lock::unlock()
 {
 #ifdef IS_WINDOWS
-    ck_file_lock::_lock.unlock();
-
-    intptr_t fileHandle = _get_osfhandle( _fd );
+    HANDLE fileHandle = (HANDLE)_get_osfhandle( _fd );
     if( fileHandle == INVALID_HANDLE_VALUE )
         CK_THROW(("Unable to get OS handle."));
 
