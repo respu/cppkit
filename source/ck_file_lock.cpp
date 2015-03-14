@@ -9,6 +9,9 @@
 #endif
 
 using namespace cppkit;
+using namespace std;
+
+recursive_mutex ck_file_lock::_lock;
 
 ck_file_lock::ck_file_lock( int fd ) :
     _fd( fd )
@@ -19,9 +22,11 @@ ck_file_lock::~ck_file_lock() noexcept
 {
 }
 
-void ck_file_lock::lock( bool exclusive )
+void ck_file_lock::lock()
 {
 #ifdef IS_WINDOWS
+    ck_file_lock::_lock.lock();
+
     intptr_t fileHandle = _get_osfhandle( _fd );
     if( fileHandle == INVALID_HANDLE_VALUE )
         CK_THROW(("Unable to get OS handle."));
@@ -31,7 +36,7 @@ void ck_file_lock::lock( bool exclusive )
     overlapped.OffsetHigh = 0;
 
     BOOL success = LockFileEx( fileHandle,
-                               (exclusive) ? LOCKFILE_EXCLUSIVE_LOCK : 0,
+                               LOCKFILE_EXCLUSIVE_LOCK,
                                0,
                                MAXDWORD,
                                MAXDWORD,
@@ -39,7 +44,9 @@ void ck_file_lock::lock( bool exclusive )
     if( !success )
         CK_THROW(("Unable to acquire file lock: %s",ck_get_last_error_msg().c_str()));
 #else
-    int err = flock( _fd, (exclusive)?LOCK_EX:LOCK_SH );
+    ck_file_lock::_lock.lock();
+
+    int err = flock( _fd, LOCK_EX );
     if( err < 0 )
         CK_THROW(("Unable to acquire file lock: %s",ck_get_last_error_msg().c_str()));
 #endif
@@ -48,6 +55,8 @@ void ck_file_lock::lock( bool exclusive )
 void ck_file_lock::unlock()
 {
 #ifdef IS_WINDOWS
+    ck_file_lock::_lock.unlock();
+
     intptr_t fileHandle = _get_osfhandle( _fd );
     if( fileHandle == INVALID_HANDLE_VALUE )
         CK_THROW(("Unable to get OS handle."));
@@ -64,8 +73,21 @@ void ck_file_lock::unlock()
     if( !success )
         CK_THROW(("Unable to release file lock: %s",ck_get_last_error_msg().c_str()));
 #else
+    ck_file_lock::_lock.unlock();
+
     int err = flock( _fd, LOCK_UN );
     if( err < 0 )
         CK_THROW(("Unable to release file lock: %s",ck_get_last_error_msg().c_str()));
 #endif
+}
+
+ck_file_lock_guard::ck_file_lock_guard( ck_file_lock& lok ) :
+    _lok( lok )
+{
+    _lok.lock();
+}
+
+ck_file_lock_guard::~ck_file_lock_guard() noexcept
+{
+    _lok.unlock();
 }

@@ -30,23 +30,40 @@
 #ifndef cppkit_file_lock_h
 #define cppkit_file_lock_h
 
+#include <mutex>
+#include "cppkit/os/ck_exports.h"
+
 namespace cppkit
 {
 
 class ck_file_lock
 {
 public:
-    ck_file_lock( int fd );
-    virtual ~ck_file_lock() noexcept;
+    CK_API ck_file_lock( int fd );
+    CK_API virtual ~ck_file_lock() noexcept;
 
-    void lock( bool exclusive = true );
-    void unlock();
+    CK_API void lock();
+    CK_API void unlock();
 
 private:
     ck_file_lock( const ck_file_lock& );
     ck_file_lock& operator = ( const ck_file_lock& );
 
     int _fd;
+    static std::recursive_mutex _lock;
+};
+
+class ck_file_lock_guard final
+{
+public:
+    CK_API ck_file_lock_guard( ck_file_lock& lok );
+    CK_API ~ck_file_lock_guard() noexcept;
+
+private:
+    ck_file_lock_guard( const ck_file_lock_guard& );
+    ck_file_lock_guard& operator = ( const ck_file_lock_guard& );
+
+    ck_file_lock& _lok;
 };
 
 }
