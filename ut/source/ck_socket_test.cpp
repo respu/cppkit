@@ -245,7 +245,7 @@ void ck_socket_test::test_get_interface_addresses()
     auto interfaceAddresses = ck_socket::get_interface_addresses();
 
 #ifndef IS_WINDOWS
-  #if IS_LINUX
+  #ifdef IS_LINUX
     ck_string localHostAddress = interfaceAddresses["lo"].front();
 
     ck_string ipAddress;
