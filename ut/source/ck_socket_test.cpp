@@ -51,7 +51,7 @@ void ck_socket_test::test_bind_ephemeral()
 
 void ck_socket_test::test_connect()
 {
-    const char addrs[][32] = { "127.0.0.1", "localhost", "::1" };
+    const ck_string addrs[] = { "127.0.0.1", "localhost", "::1" };
 
     int port = UT_NEXT_PORT();
 
@@ -61,7 +61,7 @@ void ck_socket_test::test_connect()
         {
             thread t([&](){
                 ck_socket server_sok;
-                server_sok.bind( port, addrs[i] );
+                server_sok.bind( port, addrs[i].c_str() );
                 server_sok.listen();
                 auto connected = server_sok.accept();
                 unsigned int val = 0;
@@ -74,7 +74,7 @@ void ck_socket_test::test_connect()
             unsigned int val = 41;
             ck_socket client_sok;
 
-            TRY_N_TIMES(client_sok.query_connect(addrs[i], port , 1),10);
+            TRY_N_TIMES(client_sok.query_connect(addrs[i].c_str(), port , 1),10);
 
             // Test get_peer_ip()
             UT_ASSERT_NO_THROW( client_sok.get_peer_ip() );
@@ -245,6 +245,7 @@ void ck_socket_test::test_get_interface_addresses()
     auto interfaceAddresses = ck_socket::get_interface_addresses();
 
 #ifndef IS_WINDOWS
+  #if IS_LINUX
     ck_string localHostAddress = interfaceAddresses["lo"].front();
 
     ck_string ipAddress;
@@ -265,6 +266,19 @@ void ck_socket_test::test_get_interface_addresses()
 
     UT_ASSERT(localHostAddress == "127.0.0.1");
     UT_ASSERT(!ipAddress.empty());
+  #else
+    ck_string localHostAddress = interfaceAddresses["lo0"].front();
+
+    ck_string ipAddress;
+    if(interfaceAddresses.find("en1")!=interfaceAddresses.end())
+        ipAddress = interfaceAddresses["en1"].front();
+    if(interfaceAddresses.find("p2p0")!=interfaceAddresses.end())
+        ipAddress = interfaceAddresses["p2p0"].front();
+
+    UT_ASSERT(localHostAddress == "127.0.0.1");
+    UT_ASSERT(!ipAddress.empty());
+  #endif
+
 #else
 
     // The bamboo test boxes don't always seem to give us "Local Area Connection"

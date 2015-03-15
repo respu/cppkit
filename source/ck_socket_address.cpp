@@ -103,6 +103,7 @@ void ck_socket_address::set_address(const ck_string& addr, int port)
     {
         // Determine address type and set sockaddr_storage structure.
         get_address_family(addr, (struct sockaddr*)&_sockaddr);
+
         if (_sockaddr.ss_family == AF_INET)
         {
             struct sockaddr_in* pa = (struct sockaddr_in*)&_sockaddr;
@@ -117,6 +118,7 @@ void ck_socket_address::set_address(const ck_string& addr, int port)
             CK_THROW((ck_string::format("ck_socket_address::set_address: Unknown address family (%d) for address \'%s\'", _sockaddr.ss_family, addr.c_str())));
     }
 
+
     _addr = addr;
 }
 
@@ -129,8 +131,9 @@ unsigned int ck_socket_address::get_address_family(const ck_string& address, str
     //hint.ai_flags = AI_NUMERICHOST;  // Uncomment this to disable DNS lookup
     int ret = getaddrinfo(isolate_address(address).c_str(), 0, &hint, &info);
     if (ret) {
-        CK_THROW(("ck_socket_address::get_address_family: Failed to determine address info for \'%s\'. %s", address.c_str(), ck_get_error_msg(ret).c_str()));
+      CK_THROW(("ck_socket_address::get_address_family: Failed to determine address info for \'%s\'. %s", address.c_str(), gai_strerror(ret)));
     }
+
     unsigned int family = info->ai_family;
     if (saddr)
         memcpy(saddr, info->ai_addr, sock_addr_size(family));

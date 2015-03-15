@@ -4,6 +4,7 @@
 
 #if defined(IS_POSIX)
 #include <fcntl.h>
+#include <unistd.h>
 #endif
 
 #if defined(IS_WINDOWS)
@@ -111,7 +112,7 @@ CK_API int ck_filecommit( FILE* file )
     // advise kernel to dump cached data from memory.
     int err = posix_fadvise64(fd, 0, 0, POSIX_FADV_DONTNEED);
 
-#elif defined(IS_MACOSX)
+#else
     int err = fcntl( fd, F_FULLFSYNC );
 #endif
 
@@ -122,7 +123,7 @@ CK_API int ck_fallocate( FILE* file, int64_t size )
 {
 #if defined(IS_LINUX)
     return ( posix_fallocate64( fileno( file ), 0, size ) == 0 ) ? 0 : -1;
-#elif defined(IS_MACOSX)
+#else
 
     fstore_t store = {F_ALLOCATECONTIG, F_PEOFPOSMODE, 0, size};
 
@@ -134,7 +135,7 @@ CK_API int ck_fallocate( FILE* file, int64_t size )
 	ret = fcntl( fileno( file ), F_PREALLOCATE, &store );
     }
 
-    return (ret==0)?0:-1;
+    return 0 == ftruncate( fileno( file ), size );
 
 #endif
 }

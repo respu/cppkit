@@ -90,7 +90,7 @@ void ck_path_test::test_open_path()
         ck_string fileName;
         bool ok = path.read_dir( fileName );
 
-        UT_ASSERT( fileName == L"Чернобыльской" );
+        UT_ASSERT( fileName == L"Чернобыльской" );
     }
 }
 
@@ -180,7 +180,7 @@ void ck_path_test::test_iter()
         ck_string fileName;
         path.read_dir( fileName );
 
-        UT_ASSERT( fileName == L"Чернобыльской" );
+        UT_ASSERT( fileName == L"Чернобыльской" );
     }
 }
 

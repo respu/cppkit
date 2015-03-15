@@ -14,7 +14,7 @@ struct _sample
 {
     SAMPLE_TYPE value;
     std::chrono::steady_clock::time_point time;
-    bool operator<(const struct _sample<SAMPLE_TYPE> &other)
+    bool operator<(const struct _sample<SAMPLE_TYPE> &other) const
     {
         return value < other.value;
     }

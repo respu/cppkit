@@ -206,91 +206,69 @@ void ck_socket_address_test::test_sock_addr_cast()
 
 void ck_socket_address_test::test_comparisons()
 {
-    {
-        // IPv4
-        struct sockaddr_in s4, s4_diff;
-        struct sockaddr_storage ss, ss_diff;
-        memset(&s4, 0, sizeof(s4));
-        memset(&s4_diff, 0, sizeof(s4_diff));
-        memset(&ss, 0, sizeof(ss));
-        memset(&ss_diff, 0, sizeof(ss_diff));
+  {
+    // equality
+    struct addrinfo hint, *info = NULL;
+    memset( &hint, 0, sizeof(hint) );
+    hint.ai_family = AF_UNSPEC;
+    hint.ai_flags = AI_CANONNAME;
+    int ret = getaddrinfo( "65.90.240.15", "4243", &hint, &info );
+    UT_ASSERT( ret == 0 );
+    
+    ck_socket_address xsa(4243, "65.90.240.15");
 
-        s4.sin_family = AF_INET;
-        s4.sin_port = htons( 4243 );
-        s4.sin_addr.s_addr = 0x0ff05aa5; // Nice bit pattern = 165.90.240.15
-        memcpy(&s4_diff, &s4, sizeof(s4));
-        memcpy(&ss, &s4, sizeof(s4));
+    UT_ASSERT( xsa == (struct sockaddr*)info->ai_addr );
 
-        s4_diff.sin_port += 1;
-        memcpy(&ss_diff, &s4_diff, sizeof(s4_diff));
+    freeaddrinfo( info );
+  }
 
-        ck_socket_address xsa(4243, "165.90.240.15");
-        ck_socket_address xsa_same(xsa);
-        ck_socket_address xsa_diff_port(4242, "165.90.240.15");
-        ck_socket_address xsa_diff_addr(4243, "165.91.240.15");
+  {
+    // different port
+    struct addrinfo hint, *info = NULL;
+    memset( &hint, 0, sizeof(hint) );
+    hint.ai_family = AF_UNSPEC;
+    hint.ai_flags = AI_CANONNAME;
+    int ret = getaddrinfo( "65.90.240.15", "4244", &hint, &info );
+    UT_ASSERT( ret == 0 );
 
-        UT_ASSERT( xsa == (struct sockaddr*)&s4 );
-        UT_ASSERT( xsa == ss );
-        UT_ASSERT( xsa == xsa_same );
-        UT_ASSERT( (xsa == (struct sockaddr*)&s4_diff) == false );
-        UT_ASSERT( (xsa == ss_diff) == false );
-        UT_ASSERT( (xsa == xsa_diff_port) == false );
-        UT_ASSERT( (xsa == xsa_diff_addr) == false );
+    ck_socket_address xsa(4243, "65.90.240.15");
 
-        UT_ASSERT( xsa != (struct sockaddr*)&s4_diff );
-        UT_ASSERT( xsa != ss_diff );
-        UT_ASSERT( xsa != xsa_diff_port );
-        UT_ASSERT( xsa != xsa_diff_addr );
-        UT_ASSERT( (xsa != (struct sockaddr*)&s4) == false );
-        UT_ASSERT( (xsa != ss) == false );
-        UT_ASSERT( (xsa != xsa_same) == false );
-    }
-    {
-        // IPv6
-        struct sockaddr_in6 s6, s6_diff;
-        struct sockaddr_storage ss, ss_diff;
-        memset(&s6, 0, sizeof(s6));
-        memset(&s6_diff, 0, sizeof(s6_diff));
-        memset(&ss, 0, sizeof(ss));
-        memset(&ss_diff, 0, sizeof(ss_diff));
+    UT_ASSERT( (xsa == (struct sockaddr*)info->ai_addr) == false );
 
-        s6.sin6_family = AF_INET6;
-        s6.sin6_port = htons( 4243 );
-        // fe80::0ff0:5aa5
-        s6.sin6_addr.s6_addr[0] = 0xfe;
-        s6.sin6_addr.s6_addr[1] = 0x80;
-        s6.sin6_addr.s6_addr[12] = 0x0f;
-        s6.sin6_addr.s6_addr[13] = 0xf0;
-        s6.sin6_addr.s6_addr[14] = 0x5a;
-        s6.sin6_addr.s6_addr[15] = 0xa5;
-        memcpy(&s6_diff, &s6, sizeof(s6));
-        memcpy(&ss, &s6, sizeof(s6));
+    freeaddrinfo( info );
+  }
 
-        s6_diff.sin6_port += 1;
-        memcpy(&ss_diff, &s6_diff, sizeof(s6_diff));
+  {
+    // different address
+    struct addrinfo hint, *info = NULL;
+    memset( &hint, 0, sizeof(hint) );
+    hint.ai_family = AF_UNSPEC;
+    hint.ai_flags = AI_CANONNAME;
+    int ret = getaddrinfo( "65.90.240.16", "4243", &hint, &info );
+    UT_ASSERT( ret == 0 );
 
-        ck_socket_address xsa(4243, "fe80::0ff0:5aa5");
-        ck_socket_address xsa_same(xsa);
-        ck_socket_address xsa_diff_port(4242, "fe80::0ff0:5aa5");
-        ck_socket_address xsa_diff_addr(4243, "fe80::0ff0:59a5");
+    ck_socket_address xsa(4243, "65.90.240.15");
 
-        UT_ASSERT( xsa == (struct sockaddr*)&s6 );
-        UT_ASSERT( xsa == ss );
-        UT_ASSERT( xsa == xsa_same );
-        UT_ASSERT( (xsa == (struct sockaddr*)&s6_diff) == false );
-        UT_ASSERT( (xsa == ss_diff) == false );
-        UT_ASSERT( (xsa == xsa_diff_port) == false );
-        UT_ASSERT( (xsa == xsa_diff_addr) == false );
+    UT_ASSERT( (xsa == (struct sockaddr*)info->ai_addr) == false );
 
-        UT_ASSERT( xsa != (struct sockaddr*)&s6_diff );
-        UT_ASSERT( xsa != ss_diff );
-        UT_ASSERT( xsa != xsa_diff_port );
-        UT_ASSERT( xsa != xsa_diff_addr );
-        UT_ASSERT( (xsa != (struct sockaddr*)&s6) == false );
-        UT_ASSERT( (xsa != ss) == false );
-        UT_ASSERT( (xsa != xsa_same) == false );
-    }
+    freeaddrinfo( info );
+  }
 
+  {
+    // equality
+    struct addrinfo hint, *info = NULL;
+    memset( &hint, 0, sizeof(hint) );
+    hint.ai_family = AF_UNSPEC;
+    hint.ai_flags = AI_CANONNAME;
+    int ret = getaddrinfo( "fe80::0ff0:5aa5", "4243", &hint, &info );
+    UT_ASSERT( ret == 0 );
+    
+    ck_socket_address xsa(4243, "fe80::0ff0:5aa5");
+
+    UT_ASSERT( xsa == (struct sockaddr*)info->ai_addr );
+
+    freeaddrinfo( info );
+  }
 }
 
 void ck_socket_address_test::test_static_get_address_family()

@@ -1,7 +1,8 @@
 
 #include "cppkit/os/ck_large_files.h"
 #include "cppkit/os/ck_files.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 #include "ck_large_files_test.h"
 
 using namespace std;
@@ -13,16 +14,17 @@ static const ck_string ASCII_FILE = "LargeFileTests_ASCII_File.txt";
 static const int ASCII_FILE_LEN = strlen( ASCII_FILE.c_str() );
 static const ck_string UNICODE_FILE = L"Masta_カメラ_2010-12-21_1652.txt";
 static const ck_string PRE_ALLOCATED_FILE = "LargeFileTests_PreAllocatedFile.txt";
+static const char* WRITE_MODE = "w+b";
 
 void ck_large_files_test::setup()
 {
-    FILE* f = ck_fopen(ASCII_FILE,WRITE_MODE);
+    FILE* f = fopen(ASCII_FILE.c_str(),WRITE_MODE);
     fwrite(ASCII_FILE.c_str(),ASCII_FILE.length(),1,f);
     fclose(f);
-    f = ck_fopen(UNICODE_FILE,WRITE_MODE);
+    f = fopen(UNICODE_FILE.c_str(),WRITE_MODE);
     fwrite(UNICODE_FILE.get_wide_string().data(),UNICODE_FILE.get_wide_string().length(),1,f);
     fclose(f);
-    f = ck_fopen( PRE_ALLOCATED_FILE, "w+b" );
+    f = fopen( PRE_ALLOCATED_FILE.c_str(), "w+b" );
     fwrite(UNICODE_FILE.get_wide_string().data(),UNICODE_FILE.get_wide_string().length(),1,f);
     fclose(f);
 }
@@ -74,7 +76,7 @@ void ck_large_files_test::test_seek_tell()
 
 void ck_large_files_test::test_pre_allocated_file()
 {
-    FILE* f = ck_fopen( PRE_ALLOCATED_FILE, "r+b" );
+    FILE* f = fopen( PRE_ALLOCATED_FILE.c_str(), "r+b" );
     ck_fallocate( f, (1024*1024) );
     fclose( f );
     ck_file_info info;

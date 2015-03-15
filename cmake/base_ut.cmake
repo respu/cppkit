@@ -62,7 +62,7 @@ elseif(CMAKE_SYSTEM MATCHES "Windows")
     add_compiler_flag(Release /O2)
     SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 elseif(CMAKE_SYSTEM MATCHES "Darwin-")
-
+    add_compiler_flag(Both -Wno-unused-value)
     add_compiler_flag(Both -fthreadsafe-statics)
     add_compiler_flag(Both -fPIC)
     add_compiler_flag(Both -std=c++11)
