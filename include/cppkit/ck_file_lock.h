@@ -50,7 +50,6 @@ private:
     ck_file_lock& operator = ( const ck_file_lock& );
 
     int _fd;
-    static std::recursive_mutex _lock;
 };
 
 class ck_file_lock_guard final

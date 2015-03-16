@@ -12,8 +12,6 @@
 using namespace cppkit;
 using namespace std;
 
-recursive_mutex ck_file_lock::_lock;
-
 ck_file_lock::ck_file_lock( int fd ) :
     _fd( fd )
 {
@@ -43,8 +41,6 @@ void ck_file_lock::lock()
     if( !success )
         CK_THROW(("Unable to acquire file lock: %s",ck_get_last_error_msg().c_str()));
 #else
-    ck_file_lock::_lock.lock();
-
     int err = flock( _fd, LOCK_EX );
     if( err < 0 )
         CK_THROW(("Unable to acquire file lock: %s",ck_get_last_error_msg().c_str()));
@@ -70,8 +66,6 @@ void ck_file_lock::unlock()
     if( !success )
         CK_THROW(("Unable to release file lock: %s",ck_get_last_error_msg().c_str()));
 #else
-    ck_file_lock::_lock.unlock();
-
     int err = flock( _fd, LOCK_UN );
     if( err < 0 )
         CK_THROW(("Unable to release file lock: %s",ck_get_last_error_msg().c_str()));

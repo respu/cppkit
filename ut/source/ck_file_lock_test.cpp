@@ -42,6 +42,8 @@ void ck_file_lock_test::test_constructor()
 
 void ck_file_lock_test::test_exclusive()
 {
+    FILE* otherFile = fopen( "lockfile", "w+b" );
+
     int state = 42;
 
     ck_file_lock fileLock( fileno( lockFile ) );
@@ -50,7 +52,7 @@ void ck_file_lock_test::test_exclusive()
         ck_file_lock_guard g( fileLock );
 
         thread t([&](){
-                ck_file_lock newLock( fileno( lockFile ) );
+                ck_file_lock newLock( fileno( otherFile ) );
                 ck_file_lock_guard g( newLock );
                 state = 43;
             });
@@ -64,4 +66,6 @@ void ck_file_lock_test::test_exclusive()
     ck_usleep( 100000 );
 
     UT_ASSERT( state == 43 );
+
+    fclose( otherFile );
 }
