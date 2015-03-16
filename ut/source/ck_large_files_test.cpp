@@ -18,13 +18,13 @@ static const char* LOCAL_WRITE_MODE = "w+b";
 
 void ck_large_files_test::setup()
 {
-    FILE* f = fopen(ASCII_FILE.c_str(),LOCAL_WRITE_MODE);
+    FILE* f = ck_fopen(ASCII_FILE.c_str(),LOCAL_WRITE_MODE);
     fwrite(ASCII_FILE.c_str(),ASCII_FILE.length(),1,f);
     fclose(f);
-    f = fopen(UNICODE_FILE.c_str(),LOCAL_WRITE_MODE);
+    f = ck_fopen(UNICODE_FILE.c_str(),LOCAL_WRITE_MODE);
     fwrite(UNICODE_FILE.get_wide_string().data(),UNICODE_FILE.get_wide_string().length(),1,f);
     fclose(f);
-    f = fopen( PRE_ALLOCATED_FILE.c_str(), "w+b" );
+    f = ck_fopen( PRE_ALLOCATED_FILE.c_str(), "w+b" );
     fwrite(UNICODE_FILE.get_wide_string().data(),UNICODE_FILE.get_wide_string().length(),1,f);
     fclose(f);
 }
@@ -67,7 +67,7 @@ void ck_large_files_test::test_unicode_file()
 
 void ck_large_files_test::test_seek_tell()
 {
-    FILE* f = fopen( ASCII_FILE.c_str(), "r" );
+    FILE* f = ck_fopen( ASCII_FILE.c_str(), "r" );
     ck_fseeko( f, 0, SEEK_END );
     int64_t pos = ck_ftello( f );
     UT_ASSERT( pos == ASCII_FILE_LEN );
@@ -76,7 +76,7 @@ void ck_large_files_test::test_seek_tell()
 
 void ck_large_files_test::test_pre_allocated_file()
 {
-    FILE* f = fopen( PRE_ALLOCATED_FILE.c_str(), "r+b" );
+    FILE* f = ck_fopen( PRE_ALLOCATED_FILE.c_str(), "r+b" );
     ck_fallocate( f, (1024*1024) );
     fclose( f );
     ck_file_info info;

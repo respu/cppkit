@@ -187,33 +187,6 @@ namespace cppkit
 //======================================================================
 const ck_uuid_bits CK_EMPTY_UUID = {{0}};
 
-//======================================================================
-/// @brief Defines the type of value that is stored in a XVariant
-//======================================================================
-enum CK_VARIANT_TYPE
-{
-  CK_VARTYPE_EMPTY = 0,
-  CK_VARTYPE_BOOL,
-  CK_VARTYPE_CHAR,
-  CK_VARTYPE_SIGNED_CHAR,
-  CK_VARTYPE_UNSIGNED_CHAR,
-  CK_VARTYPE_SIGNED_SHORT,
-  CK_VARTYPE_UNSIGNED_SHORT,
-  CK_VARTYPE_SIGNED_INT,
-  CK_VARTYPE_UNSIGNED_INT,
-  CK_VARTYPE_SIGNED_LONG,
-  CK_VARTYPE_UNSIGNED_LONG,
-  CK_VARTYPE_SIGNED_LONG_LONG,
-  CK_VARTYPE_UNSIGNED_LONG_LONG,
-  CK_VARTYPE_FLOAT,
-  CK_VARTYPE_DOUBLE,
-  CK_VARTYPE_LONG_DOUBLE,
-  CK_VARTYPE_UUID,
-  CK_VARTYPE_TEXT,
-  CK_VARTYPE_BYTES,
-  CK_VARTYPE_PTR
-};
-
 }
 
 #ifndef IN

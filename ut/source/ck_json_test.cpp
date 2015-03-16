@@ -128,7 +128,7 @@ void ck_json_test::TestFind()
         UT_ASSERT(item.get() != NULL);
         shared_ptr<ck_json_value> value;
         UT_ASSERT_NO_THROW(value = static_pointer_cast<ck_json_value>(ck_json_item::find(item,"menu/items/3/id")));
-        ck_string temp = value->get_value().get<ck_string>();
+        ck_string temp = value->get_value().to_string();
         UT_ASSERT( temp == "ZoomIn" );
     }
     {
@@ -183,7 +183,7 @@ void ck_json_test::TestFind()
         UT_ASSERT(item.get() != NULL);
         shared_ptr<ck_json_value> value;
         UT_ASSERT_NO_THROW( value = static_pointer_cast<ck_json_value>(ck_json_item::find(item,"0/0/0")) );
-        int x = value->get_value();
+	double x = value->get_value().to_double();
         UT_ASSERT( x == 23 );
     }
     {
@@ -254,7 +254,7 @@ void ck_json_test::TestForQuotedContent()
     shared_ptr<ck_json_object> obj = static_pointer_cast<ck_json_object>(item);
     unordered_map<string, shared_ptr<ck_json_item> > contents = obj->GetObjectContents();
     UT_ASSERT( contents.size() == 1 );
-    ck_string foo = obj->get_object_member("foo")->get<ck_string>();
+    ck_string foo = obj->get_object_member("foo")->get().to_string();
     ck_string bar = "\\\"temp\\\"";
     UT_ASSERT( foo == bar );
 }
@@ -350,8 +350,8 @@ void ck_json_test::TestSimpleArray()
     {
         double d = i + 42;
         UT_ASSERT( contents[i]->get_type() == CK_JSON_Value_Type );
-        UT_ASSERT( static_pointer_cast<ck_json_value>(contents[i])->get_value().get_type() == CK_VARTYPE_DOUBLE );
-        UT_ASSERT( static_pointer_cast<ck_json_value>(contents[i])->get_value().get<double>() == d );
+        UT_ASSERT( static_pointer_cast<ck_json_value>(contents[i])->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+        UT_ASSERT( static_pointer_cast<ck_json_value>(contents[i])->get_value().to_double() == d );
     }
 }
 
@@ -365,11 +365,11 @@ void ck_json_test::TestSimpleObject()
     UT_ASSERT( contents.size() == 2 );
 
     shared_ptr<ck_json_value> value = static_pointer_cast<ck_json_value>(contents["foo"]);
-    UT_ASSERT( value->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( ((double)(value->get_value())) == 42 );
+    UT_ASSERT( value->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( ((value->get_value().to_double())) == 42 );
     value = static_pointer_cast<ck_json_value>(contents["bar"]);
-    UT_ASSERT( value->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( ((double)(value->get_value())) == 44 );
+    UT_ASSERT( value->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( ((value->get_value().to_double())) == 44 );
 }
 
 void ck_json_test::TestArrayContainArray()
@@ -409,28 +409,28 @@ void ck_json_test::TestArrayContainArray()
 
     shared_ptr<ck_json_item> subSubElem0 = subSubContents[0];
     UT_ASSERT( subSubElem0->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().get<double>() == 23);
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().to_double() == 23);
 
     UT_ASSERT( subElem1->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().get<double>() == 3 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().to_double() == 3 );
     UT_ASSERT( subElem2->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().get<double>() == 3 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().to_double() == 3 );
     UT_ASSERT( subElem3->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().get<double>() == 7 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().to_double() == 7 );
 
     shared_ptr<ck_json_item> elem2 = contents[1];
     UT_ASSERT( elem2->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().get<double>() == 43 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().to_double() == 43 );
 
     shared_ptr<ck_json_item> elem3 = contents[2];
     UT_ASSERT( elem3->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().get<double>() == 44 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().to_double() == 44 );
 }
 
 void ck_json_test::TestShortHand()
@@ -466,8 +466,8 @@ void ck_json_test::TestShortHand()
     UT_ASSERT_NO_THROW( item = ck_json_item::parse_document(doc) );
     UT_ASSERT(item.get() != NULL);
 
-    UT_ASSERT( item->index("menu")->index("header")->get<ck_string>() == "SVG Viewer" );
-    UT_ASSERT( item->index("menu")->index("items")->index(1)->index("label")->get<ck_string>() == "Open New" );
+    UT_ASSERT( item->index("menu")->index("header")->get().to_string() == "SVG Viewer" );
+    UT_ASSERT( item->index("menu")->index("items")->index(1)->index("label")->get().to_string() == "Open New" );
     UT_ASSERT_THROWS( item->index("menu")->index(0),ck_json_exception );
 }
 
@@ -509,30 +509,30 @@ void ck_json_test::TestArrayContainObject()
     shared_ptr<ck_json_item> subSubElem0 = subSubContents["foo"];
 
     UT_ASSERT( subSubElem0->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().get<double>() == 23 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().to_double() == 23 );
 
     UT_ASSERT( subElem1->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().get<double>() == 3 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().to_double() == 3 );
 
     UT_ASSERT( subElem2->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().get<double>() == 3 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().to_double() == 3 );
 
     UT_ASSERT( subElem3->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().get<double>() == 7 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().to_double() == 7 );
 
     shared_ptr<ck_json_item> elem2 = contents[1];
     UT_ASSERT( elem2->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().get<double>() == 43 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().to_double() == 43 );
 
     shared_ptr<ck_json_item> elem3 = contents[2];
     UT_ASSERT( elem3->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().get<double>() == 44 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().to_double() == 44 );
 }
 
 void ck_json_test::TestObjectContainObject()
@@ -571,30 +571,30 @@ void ck_json_test::TestObjectContainObject()
     shared_ptr<ck_json_item> subSubElem0 = subSubContents["foo"];
 
     UT_ASSERT( subSubElem0->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().get<double>() == 23 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subSubElem0)->get_value().to_double() == 23 );
 
     UT_ASSERT( subElem1->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().get<double>() == 3 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem1)->get_value().to_double() == 3 );
 
     UT_ASSERT( subElem2->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().get<double>() == 3 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem2)->get_value().to_double() == 3 );
 
     UT_ASSERT( subElem3->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().get<double>() == 7 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(subElem3)->get_value().to_double() == 7 );
 
     shared_ptr<ck_json_item> elem2 = contents["B"];
     UT_ASSERT( elem2->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().get<double>() == 43 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem2)->get_value().to_double() == 43 );
 
     shared_ptr<ck_json_item> elem3 = contents["C"];
     UT_ASSERT( elem3->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().get<double>() == 44 );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( static_pointer_cast<ck_json_value>(elem3)->get_value().to_double() == 44 );
 }
 
 void ck_json_test::TestObjectContainArray()
@@ -632,28 +632,28 @@ void ck_json_test::TestObjectContainArray()
     UT_ASSERT( subSubContents.size() == 1 );
     shared_ptr<ck_json_item> subSubElem0 = subSubContents[0];
     UT_ASSERT( subSubElem0->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem0)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem0)->get_value().get<double>() == 23 );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem0)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem0)->get_value().to_double() == 23 );
 
     UT_ASSERT( subElem1->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem1)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem1)->get_value().get<double>() == 3 );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem1)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem1)->get_value().to_double() == 3 );
     UT_ASSERT( subElem2->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem2)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem2)->get_value().get<double>() == 3 );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem2)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem2)->get_value().to_double() == 3 );
     UT_ASSERT( subElem3->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem3)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem3)->get_value().get<double>() == 7 );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem3)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subElem3)->get_value().to_double() == 7 );
 
     shared_ptr<ck_json_item> elem2 = contents["B"];
     UT_ASSERT( elem2->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(elem2)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(elem2)->get_value().get<double>() == 43 );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(elem2)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(elem2)->get_value().to_double() == 43 );
 
     shared_ptr<ck_json_item> elem3 = contents["C"];
     UT_ASSERT( elem3->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(elem3)->get_value().get_type() == CK_VARTYPE_DOUBLE );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(elem3)->get_value().get<double>() == 44 );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(elem3)->get_value().get_type() == ck_variant::VARTYPE_DOUBLE );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(elem3)->get_value().to_double() == 44 );
 }
 
 void ck_json_test::TestJsonOrgExample()
@@ -701,9 +701,9 @@ void ck_json_test::TestJsonOrgExample()
 
     shared_ptr<ck_json_item> header = subContents["header"];
     UT_ASSERT( header->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(header)->get_value().get_type() == CK_VARTYPE_TEXT );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(header)->get_value().get_type() == ck_variant::VARTYPE_STRING );
 
-    str = dynamic_pointer_cast<ck_json_value>(header)->get_value().get<ck_string>();
+    str = dynamic_pointer_cast<ck_json_value>(header)->get_value().to_string();
 
     UT_ASSERT( str == "SVG Viewer" );
 
@@ -721,28 +721,28 @@ void ck_json_test::TestJsonOrgExample()
     UT_ASSERT( subSubElem2->get_type() == CK_JSON_Value_Type );
     UT_ASSERT( subSubElem6->get_type() == CK_JSON_Value_Type );
     UT_ASSERT( subSubElem10->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem2)->get_value().get_type() == CK_VARTYPE_EMPTY );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem2)->get_value().get_type() == ck_variant::VARTYPE_EMPTY );
 
 
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem6)->get_value().get_type() == CK_VARTYPE_BOOL );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem6)->get_value().get<bool>() );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem6)->get_value().get_type() == ck_variant::VARTYPE_BOOL );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem6)->get_value().to_bool() );
 
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem10)->get_value().get_type() == CK_VARTYPE_BOOL );
-    UT_ASSERT( !dynamic_pointer_cast<ck_json_value>(subSubElem10)->get_value().get<bool>() );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem10)->get_value().get_type() == ck_variant::VARTYPE_BOOL );
+    UT_ASSERT( !dynamic_pointer_cast<ck_json_value>(subSubElem10)->get_value().to_bool() );
 
     UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem0)->GetObjectContents().size() == 1 );
     UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem0)->GetObjectContents()["id"]->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem0)->GetObjectContents()["id"] )->get_value().get<ck_string>() == "Open" );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem0)->GetObjectContents()["id"] )->get_value().to_string() == "Open" );
 
     UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents().size() == 2 );
 
 
-    str = dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents()["id"] )->get_value().get<ck_string>();
+    str = dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents()["id"] )->get_value().to_string();
     UT_ASSERT( str == "OpenNew" );
 
     UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents()["id"]->get_type() == CK_JSON_Value_Type );
 
     UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents()["label"]->get_type() == CK_JSON_Value_Type );
-    str = dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents()["label"] )->get_value().get<ck_string>();
+    str = dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents()["label"] )->get_value().to_string();
     UT_ASSERT( str == "Open New"  );
 }

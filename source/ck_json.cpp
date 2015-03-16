@@ -203,7 +203,7 @@ size_t ck_json_value::parse( ck_string& str )
     {//Is String
         ck_string result = "";
         index = parse_string(str,0,result);
-        _data = result;
+        _data = ck_variant::from_string( result );
     }
     else if ( str.starts_with(FALSE_START) || str.starts_with(NULL_START) || str.starts_with(TRUE_START) )
     {//Is Literal
@@ -211,13 +211,13 @@ size_t ck_json_value::parse( ck_string& str )
         {
         case FALSE_START:
             index+=FALSE_LENGTH;
-            _data = false;
+            _data.set_bool( false );
             break;
         case NULL_START:
             index+=NULL_LENGTH;
             break;
         case TRUE_START:
-            _data = true;
+  	    _data.set_bool( true );
             index+=TRUE_LENGTH;
             break;
         default:
@@ -232,7 +232,7 @@ size_t ck_json_value::parse( ck_string& str )
         else if ( closeBrace < closeBracket )
             index = closeBrace;
         else index = closeBracket;
-        _data = str.substr(0,index).strip().to_double();
+        _data.set_double( str.substr(0,index).strip().to_double() );
     }
 
     return index;

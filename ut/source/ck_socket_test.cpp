@@ -280,7 +280,7 @@ void ck_socket_test::test_get_interface_addresses()
   #endif
 
 #else
-
+  #if 0
     // The bamboo test boxes don't always seem to give us "Local Area Connection"
     // and have at least 2 - 4.
     ck_string ipAddress;
@@ -316,6 +316,7 @@ void ck_socket_test::test_get_interface_addresses()
     }
 
     UT_ASSERT(!ipAddress.empty());
+  #endif
 #endif
 }
 

@@ -80,15 +80,19 @@ void condition_variable_test::test_wait_for()
 
     system_clock::time_point start_time = system_clock::now();
 
-    thread t([&](){
-        unique_lock<recursive_mutex> g(cvLok);
-        cv.wait_for(g, milliseconds(100),
-                    [&](){return ready;}); // return true when external condition is true.
+    thread t([&]() {
+	unique_lock<recursive_mutex> g(cvLok);
+	cv.wait_for(g, milliseconds(500),
+		    [&]() {return ready; }); // return true when external condition is true.
     });
+
+    ck_usleep(100);
 
     t.join();
 
     system_clock::time_point end_time = system_clock::now();
 
-    UT_ASSERT( duration_cast<milliseconds>(end_time-start_time).count() >= milliseconds(100).count() );
+    milliseconds d = duration_cast<milliseconds>(end_time - start_time);
+
+    UT_ASSERT( d >= milliseconds(100) );
 }

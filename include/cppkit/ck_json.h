@@ -79,13 +79,7 @@ public:
     CK_API virtual std::shared_ptr<ck_json_item> index( const size_t& index );
     CK_API virtual size_t size();
 
-    template<class T>
-    CK_API T get()
-    {
-        if ( get_type() != CK_JSON_Value_Type )
-            CK_STHROW(ck_json_exception,("Cannot call get on non XJSONValue type json element"));
-        return _data.get<T>();
-    }
+    CK_API ck_variant get() { return _data; }
 
     CK_API static std::shared_ptr<ck_json_item> find( std::shared_ptr<ck_json_item> json,
                                                       ck_string slashDelimitedPath );
