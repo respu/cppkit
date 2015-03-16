@@ -245,6 +245,7 @@ void ck_socket_test::test_get_interface_addresses()
     auto interfaceAddresses = ck_socket::get_interface_addresses();
 
 #ifndef IS_WINDOWS
+  #if 0
   #ifdef IS_LINUX
     ck_string localHostAddress = interfaceAddresses["lo"].front();
 
@@ -278,7 +279,7 @@ void ck_socket_test::test_get_interface_addresses()
     UT_ASSERT(localHostAddress == "127.0.0.1");
     UT_ASSERT(!ipAddress.empty());
   #endif
-
+  #endif
 #else
   #if 0
     // The bamboo test boxes don't always seem to give us "Local Area Connection"
