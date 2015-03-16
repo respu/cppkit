@@ -89,7 +89,7 @@ void ck_json_test::TestT247_2()
         UT_ASSERT( ary->size() == 1 );
         obj = static_pointer_cast<ck_json_object>(ary->index(0));
         UT_ASSERT(obj.get() != NULL);
-        UT_ASSERT(obj->GetObjectContents().size() == 0 );
+        UT_ASSERT(obj->get_object_contents().size() == 0 );
     }
 }
 
@@ -252,7 +252,7 @@ void ck_json_test::TestForQuotedContent()
     UT_ASSERT(item.get() != NULL);
     UT_ASSERT(item->get_type() == CK_JSON_Object_Type);
     shared_ptr<ck_json_object> obj = static_pointer_cast<ck_json_object>(item);
-    unordered_map<string, shared_ptr<ck_json_item> > contents = obj->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > contents = obj->get_object_contents();
     UT_ASSERT( contents.size() == 1 );
     ck_string foo = obj->get_object_member("foo")->get().to_string();
     ck_string bar = "\\\"temp\\\"";
@@ -267,7 +267,7 @@ void ck_json_test::TestEmptyObjInArray()
     UT_ASSERT(item.get() != NULL);
     UT_ASSERT(item->get_type() == CK_JSON_Object_Type);
     shared_ptr<ck_json_object> obj = static_pointer_cast<ck_json_object>(item);
-    unordered_map<string, shared_ptr<ck_json_item> > contents = obj->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > contents = obj->get_object_contents();
     UT_ASSERT( contents.size() == 1 );
     ck_string foo = "foo";
     shared_ptr<ck_json_array> ary = static_pointer_cast<ck_json_array>(obj->get_object_member(foo));
@@ -282,11 +282,11 @@ void ck_json_test::TestEmptyObjInObj()
     UT_ASSERT(item.get() != NULL);
     UT_ASSERT(item->get_type() == CK_JSON_Object_Type);
     shared_ptr<ck_json_object> obj = static_pointer_cast<ck_json_object>(item);
-    unordered_map<string, shared_ptr<ck_json_item> > contents = obj->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > contents = obj->get_object_contents();
     UT_ASSERT( contents.size() == 1 );
     ck_string foo = "foo";
     shared_ptr<ck_json_object> obj2 = static_pointer_cast<ck_json_object>(obj->get_object_member(foo));
-    UT_ASSERT( obj2->GetObjectContents().size() == 0 );
+    UT_ASSERT( obj2->get_object_contents().size() == 0 );
 }
 
 void ck_json_test::TestEmptyArrayInObj()
@@ -298,7 +298,7 @@ void ck_json_test::TestEmptyArrayInObj()
     shared_ptr<ck_json_array> ary = static_pointer_cast<ck_json_array>(item);
     UT_ASSERT( ary->get_array().size() == 1 );
     shared_ptr<ck_json_object> obj = static_pointer_cast<ck_json_object>(ary->access_element(0));
-    unordered_map<string, shared_ptr<ck_json_item> > contents = obj->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > contents = obj->get_object_contents();
     UT_ASSERT( contents.size() == 0 );
 }
 
@@ -322,7 +322,7 @@ void ck_json_test::TestEmptyObj()
     UT_ASSERT(item.get() != NULL);
     UT_ASSERT(item->get_type() == CK_JSON_Object_Type);
     shared_ptr<ck_json_object> obj = static_pointer_cast<ck_json_object>(item);
-    unordered_map<string, shared_ptr<ck_json_item> > contents = obj->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > contents = obj->get_object_contents();
     UT_ASSERT( contents.size() == 0 );
 }
 
@@ -361,7 +361,7 @@ void ck_json_test::TestSimpleObject()
     shared_ptr<ck_json_item> item = ck_json_item::parse_document(doc);
     UT_ASSERT(item.get() != NULL);
     UT_ASSERT(item->get_type() == CK_JSON_Object_Type);
-    unordered_map<string, shared_ptr<ck_json_item> > contents = static_pointer_cast<ck_json_object>(item)->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > contents = static_pointer_cast<ck_json_object>(item)->get_object_contents();
     UT_ASSERT( contents.size() == 2 );
 
     shared_ptr<ck_json_value> value = static_pointer_cast<ck_json_value>(contents["foo"]);
@@ -504,7 +504,7 @@ void ck_json_test::TestArrayContainObject()
 
     UT_ASSERT( subElem0->get_type() == CK_JSON_Object_Type );
 
-    unordered_map<string, shared_ptr<ck_json_item> > subSubContents = static_pointer_cast<ck_json_object>(subElem0)->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > subSubContents = static_pointer_cast<ck_json_object>(subElem0)->get_object_contents();
     UT_ASSERT( subSubContents.size() == 1 );
     shared_ptr<ck_json_item> subSubElem0 = subSubContents["foo"];
 
@@ -552,12 +552,12 @@ void ck_json_test::TestObjectContainObject()
     shared_ptr<ck_json_item> item = ck_json_item::parse_document(doc);
     UT_ASSERT(item.get() != NULL);
     UT_ASSERT(item->get_type() == CK_JSON_Object_Type);
-    unordered_map<string, shared_ptr<ck_json_item> > contents = static_pointer_cast<ck_json_object>(item)->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > contents = static_pointer_cast<ck_json_object>(item)->get_object_contents();
     UT_ASSERT( contents.size() == 3 );
 
     shared_ptr<ck_json_item> elem1 = contents["A"];
     UT_ASSERT( elem1->get_type() == CK_JSON_Object_Type );
-    unordered_map<string, shared_ptr<ck_json_item> > subContents = static_pointer_cast<ck_json_object>(elem1)->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > subContents = static_pointer_cast<ck_json_object>(elem1)->get_object_contents();
     UT_ASSERT( subContents.size() == 4 );
     shared_ptr<ck_json_item> subElem0 = subContents["tim"];
     shared_ptr<ck_json_item> subElem1 = subContents["jack"];
@@ -565,7 +565,7 @@ void ck_json_test::TestObjectContainObject()
     shared_ptr<ck_json_item> subElem3 = subContents["dingo"];
 
     UT_ASSERT( subElem0->get_type() == CK_JSON_Object_Type );
-    unordered_map<string, shared_ptr<ck_json_item> > subSubContents = static_pointer_cast<ck_json_object>(subElem0)->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > subSubContents = static_pointer_cast<ck_json_object>(subElem0)->get_object_contents();
     UT_ASSERT( subSubContents.size() == 1 );
 
     shared_ptr<ck_json_item> subSubElem0 = subSubContents["foo"];
@@ -615,12 +615,12 @@ void ck_json_test::TestObjectContainArray()
     shared_ptr<ck_json_item> item = ck_json_item::parse_document(doc);
     UT_ASSERT(item.get() != NULL);
     UT_ASSERT(item->get_type() == CK_JSON_Object_Type);
-    unordered_map<string, shared_ptr<ck_json_item> > contents = dynamic_pointer_cast<ck_json_object>(item)->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > contents = dynamic_pointer_cast<ck_json_object>(item)->get_object_contents();
     UT_ASSERT( contents.size() == 3 );
 
     shared_ptr<ck_json_item> elem1 = contents["A"];
     UT_ASSERT( elem1->get_type() == CK_JSON_Object_Type );
-    unordered_map<string, shared_ptr<ck_json_item> > subContents = dynamic_pointer_cast<ck_json_object>(elem1)->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > subContents = dynamic_pointer_cast<ck_json_object>(elem1)->get_object_contents();
     UT_ASSERT( subContents.size() == 4 );
     shared_ptr<ck_json_item> subElem0 = subContents["tim"];
     shared_ptr<ck_json_item> subElem1 = subContents["jack"];
@@ -691,12 +691,12 @@ void ck_json_test::TestJsonOrgExample()
     UT_ASSERT(item.get() != NULL);
     UT_ASSERT(item->get_type() == CK_JSON_Object_Type);
 
-    unordered_map<string, shared_ptr<ck_json_item> > contents = dynamic_pointer_cast<ck_json_object>(item)->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > contents = dynamic_pointer_cast<ck_json_object>(item)->get_object_contents();
     UT_ASSERT( contents.size() == 1 );
 
     shared_ptr<ck_json_item> menu = contents["menu"];
     UT_ASSERT( menu->get_type() == CK_JSON_Object_Type );
-    unordered_map<string, shared_ptr<ck_json_item> > subContents = dynamic_pointer_cast<ck_json_object>(menu)->GetObjectContents();
+    unordered_map<string, shared_ptr<ck_json_item> > subContents = dynamic_pointer_cast<ck_json_object>(menu)->get_object_contents();
     UT_ASSERT( subContents.size() == 2 );
 
     shared_ptr<ck_json_item> header = subContents["header"];
@@ -730,19 +730,19 @@ void ck_json_test::TestJsonOrgExample()
     UT_ASSERT( dynamic_pointer_cast<ck_json_value>(subSubElem10)->get_value().get_type() == ck_variant::VARTYPE_BOOL );
     UT_ASSERT( !dynamic_pointer_cast<ck_json_value>(subSubElem10)->get_value().to_bool() );
 
-    UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem0)->GetObjectContents().size() == 1 );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem0)->GetObjectContents()["id"]->get_type() == CK_JSON_Value_Type );
-    UT_ASSERT( dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem0)->GetObjectContents()["id"] )->get_value().to_string() == "Open" );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem0)->get_object_contents().size() == 1 );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem0)->get_object_contents()["id"]->get_type() == CK_JSON_Value_Type );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem0)->get_object_contents()["id"] )->get_value().to_string() == "Open" );
 
-    UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents().size() == 2 );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem1)->get_object_contents().size() == 2 );
 
 
-    str = dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents()["id"] )->get_value().to_string();
+    str = dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem1)->get_object_contents()["id"] )->get_value().to_string();
     UT_ASSERT( str == "OpenNew" );
 
-    UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents()["id"]->get_type() == CK_JSON_Value_Type );
+    UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem1)->get_object_contents()["id"]->get_type() == CK_JSON_Value_Type );
 
-    UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents()["label"]->get_type() == CK_JSON_Value_Type );
-    str = dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem1)->GetObjectContents()["label"] )->get_value().to_string();
+    UT_ASSERT( dynamic_pointer_cast<ck_json_object>(subSubElem1)->get_object_contents()["label"]->get_type() == CK_JSON_Value_Type );
+    str = dynamic_pointer_cast<ck_json_value>( dynamic_pointer_cast<ck_json_object>(subSubElem1)->get_object_contents()["label"] )->get_value().to_string();
     UT_ASSERT( str == "Open New"  );
 }

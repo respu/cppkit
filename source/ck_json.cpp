@@ -55,7 +55,17 @@ ck_json_item::ck_json_item() :
 {
 }
 
+bool ck_json_item::has_index( const ck_string& index )
+{
+   CK_STHROW(ck_json_exception,("Not Implemented"));
+}
+
 shared_ptr<ck_json_item> ck_json_item::index( const ck_string& index )
+{
+   CK_STHROW(ck_json_exception,("Not Implemented"));
+}
+
+bool ck_json_item::has_index( const size_t& index )
 {
    CK_STHROW(ck_json_exception,("Not Implemented"));
 }
@@ -252,7 +262,7 @@ ck_json_type ck_json_object::get_type()
     return CK_JSON_Object_Type;
 }
 
-unordered_map<std::string, shared_ptr<ck_json_item> >& ck_json_object::GetObjectContents()
+unordered_map<std::string, shared_ptr<ck_json_item> >& ck_json_object::get_object_contents()
 {
     return _objectDefinition;
 }
@@ -263,6 +273,13 @@ shared_ptr<ck_json_item> ck_json_object::get_object_member( const ck_string& nam
         return (*_objectDefinition.find(name)).second;
 
     return shared_ptr<ck_json_item>();
+}
+
+bool ck_json_object::has_index( const ck_string& index )
+{
+    if ( _objectDefinition.find(index) != _objectDefinition.end() )
+        return true;
+    return false;
 }
 
 shared_ptr<ck_json_item> ck_json_object::index( const ck_string& index )
@@ -358,6 +375,13 @@ ck_json_array::ck_json_array() :
 
 ck_json_array::~ck_json_array() throw()
 {
+}
+
+bool ck_json_array::has_index( const size_t& index )
+{
+    if( index < _arrayItems.size() )
+        return true;
+    return false;
 }
 
 shared_ptr<ck_json_item> ck_json_array::index( const size_t& index )

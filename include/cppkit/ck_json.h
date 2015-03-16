@@ -75,7 +75,9 @@ public:
 
     CK_API virtual size_t parse( ck_string& str )=0;
 
+    CK_API virtual bool has_index( const ck_string& index );
     CK_API virtual std::shared_ptr<ck_json_item> index( const ck_string& index );
+    CK_API virtual bool has_index( const size_t& index );
     CK_API virtual std::shared_ptr<ck_json_item> index( const size_t& index );
     CK_API virtual size_t size();
 
@@ -119,12 +121,13 @@ public:
 
     CK_API ck_json_type get_type();
 
-    CK_API std::unordered_map<std::string, std::shared_ptr<ck_json_item> >& GetObjectContents();
+    CK_API std::unordered_map<std::string, std::shared_ptr<ck_json_item> >& get_object_contents();
 
     CK_API std::shared_ptr<ck_json_item> get_object_member( const ck_string& name );
 
     CK_API size_t parse( ck_string& str );
 
+    CK_API bool has_index( const ck_string& index );
     CK_API std::shared_ptr<ck_json_item> index( const ck_string& index );
 };
 
@@ -142,6 +145,7 @@ public:
 
     CK_API size_t parse( ck_string& str );
 
+    CK_API bool has_index( const size_t& index );
     CK_API std::shared_ptr<ck_json_item> index( const size_t& index );
 
     CK_API size_t size();
