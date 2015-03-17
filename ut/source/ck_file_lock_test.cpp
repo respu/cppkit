@@ -69,3 +69,40 @@ void ck_file_lock_test::test_exclusive()
 
     fclose( otherFile );
 }
+
+void ck_file_lock_test::test_shared()
+{
+    FILE* otherFileA = fopen( "lockfile", "w+b" );
+    FILE* otherFileB = fopen( "lockfile", "w+b" );
+
+    int state = 42;  // initially state is 42,
+
+    // But then we fire up two threads with a shared lock
+
+    thread t1([&](){
+            ck_file_lock newLock( fileno( otherFileA ) );
+            ck_file_lock_guard g( newLock, false );
+            ++state;
+            ck_usleep( 500000 );
+        });
+    t1.detach();
+
+    thread t2([&](){
+            ck_file_lock newLock( fileno( otherFileB ) );
+            ck_file_lock_guard g( newLock, false );
+            ++state;
+            ck_usleep( 500000 );
+        });
+    t2.detach();
+
+    {
+        ck_file_lock newLock( fileno( lockFile ) );
+        ck_file_lock_guard g( newLock );
+        // since the above shared locks must be let go before an exclusive can be acquired, then we know at this point
+        // state should be 44.
+        UT_ASSERT( state == 44 );
+    }
+
+    fclose( otherFileB );
+    fclose( otherFileA );
+}

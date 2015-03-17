@@ -42,7 +42,7 @@ public:
     CK_API ck_file_lock( int fd );
     CK_API virtual ~ck_file_lock() noexcept;
 
-    CK_API void lock();
+    CK_API void lock( bool exclusive = true );
     CK_API void unlock();
 
 private:
@@ -55,7 +55,7 @@ private:
 class ck_file_lock_guard final
 {
 public:
-    CK_API ck_file_lock_guard( ck_file_lock& lok );
+    CK_API ck_file_lock_guard( ck_file_lock& lok, bool exclusive = true );
     CK_API ~ck_file_lock_guard() noexcept;
 
 private:

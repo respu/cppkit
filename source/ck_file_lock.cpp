@@ -21,7 +21,7 @@ ck_file_lock::~ck_file_lock() noexcept
 {
 }
 
-void ck_file_lock::lock()
+void ck_file_lock::lock( bool exclusive )
 {
 #ifdef IS_WINDOWS
     HANDLE fileHandle = (HANDLE)_get_osfhandle( _fd );
@@ -33,7 +33,7 @@ void ck_file_lock::lock()
     overlapped.OffsetHigh = 0;
 
     BOOL success = LockFileEx( fileHandle,
-                               LOCKFILE_EXCLUSIVE_LOCK,
+                               (exclusive)?LOCKFILE_EXCLUSIVE_LOCK:0,
                                0,
                                MAXDWORD,
                                MAXDWORD,
@@ -41,7 +41,7 @@ void ck_file_lock::lock()
     if( !success )
         CK_THROW(("Unable to acquire file lock: %s",ck_get_last_error_msg().c_str()));
 #else
-    int err = flock( _fd, LOCK_EX );
+    int err = flock( _fd, (exclusive)?LOCK_EX:LOCK_SH );
     if( err < 0 )
         CK_THROW(("Unable to acquire file lock: %s",ck_get_last_error_msg().c_str()));
 #endif
@@ -72,10 +72,10 @@ void ck_file_lock::unlock()
 #endif
 }
 
-ck_file_lock_guard::ck_file_lock_guard( ck_file_lock& lok ) :
+ck_file_lock_guard::ck_file_lock_guard( ck_file_lock& lok, bool exclusive ) :
     _lok( lok )
 {
-    _lok.lock();
+    _lok.lock( exclusive );
 }
 
 ck_file_lock_guard::~ck_file_lock_guard() noexcept
