@@ -135,8 +135,6 @@ if(MSVC)
                  CONFIGURATIONS Debug)
 endif(MSVC)
 
-
-
 install(TARGETS ARCHIVE DESTINATION "lib" COMPONENT library)
 
 IF(NOT DEFINED INSTALL_SKIP_HEADERS)
