@@ -33,22 +33,22 @@ void ck_lower_bound_test::test_before()
 {
     int target = 5;
 
-    const uint8_t* b = (uint8_t*)&_storage[0];
-    const uint8_t* e = (uint8_t*)&_storage[12];
+    uint8_t* b = (uint8_t*)&_storage[0];
+    uint8_t* e = (uint8_t*)&_storage[12];
 
-    const uint8_t* result = lower_bound_bytes( b,
-                                               e,
-                                               (uint8_t*)&target,
-                                               sizeof(int),
-                                               []( const uint8_t* p1, const uint8_t* p2 )->int {
-                                                   const int* pi1 = (const int*)p1;
-                                                   const int* pi2 = (const int*)p2;
-                                                   if( *(int*)p1 < *(int*)p2 )
-                                                       return -1;
-                                                   else if( *(int*)p1 > *(int*)p2 )
-                                                       return 1;
-                                                   return 0;
-                                               });
+    uint8_t* result = lower_bound_bytes( b,
+                                         e,
+                                         (uint8_t*)&target,
+                                         sizeof(int),
+                                         []( const uint8_t* p1, const uint8_t* p2 )->int {
+                                             const int* pi1 = (const int*)p1;
+                                             const int* pi2 = (const int*)p2;
+                                             if( *(int*)p1 < *(int*)p2 )
+                                                 return -1;
+                                             else if( *(int*)p1 > *(int*)p2 )
+                                                 return 1;
+                                             return 0;
+                                         });
 
     UT_ASSERT( result != e );
     UT_ASSERT( *(int*)result == 10 );
@@ -58,22 +58,22 @@ void ck_lower_bound_test::test_first_exact()
 {
     int target = 10;
 
-    const uint8_t* b = (uint8_t*)&_storage[0];
-    const uint8_t* e = (uint8_t*)&_storage[12];
+    uint8_t* b = (uint8_t*)&_storage[0];
+    uint8_t* e = (uint8_t*)&_storage[12];
 
-    const uint8_t* result = lower_bound_bytes( b,
-                                               e,
-                                               (uint8_t*)&target,
-                                               sizeof(int),
-                                               []( const uint8_t* p1, const uint8_t* p2 )->int {
-                                                   const int* pi1 = (const int*)p1;
-                                                   const int* pi2 = (const int*)p2;
-                                                   if( *(int*)p1 < *(int*)p2 )
-                                                       return -1;
-                                                   else if( *(int*)p1 > *(int*)p2 )
-                                                       return 1;
-                                                   return 0;
-                                               });
+    uint8_t* result = lower_bound_bytes( b,
+                                         e,
+                                         (uint8_t*)&target,
+                                         sizeof(int),
+                                         []( const uint8_t* p1, const uint8_t* p2 )->int {
+                                             const int* pi1 = (const int*)p1;
+                                             const int* pi2 = (const int*)p2;
+                                             if( *(int*)p1 < *(int*)p2 )
+                                                 return -1;
+                                             else if( *(int*)p1 > *(int*)p2 )
+                                                 return 1;
+                                             return 0;
+                                         });
 
     UT_ASSERT( result != e );
     UT_ASSERT( *(int*)result == 10 );
@@ -83,22 +83,22 @@ void ck_lower_bound_test::test_middle()
 {
     int target = 75;
 
-    const uint8_t* b = (uint8_t*)&_storage[0];
-    const uint8_t* e = (uint8_t*)&_storage[12];
+    uint8_t* b = (uint8_t*)&_storage[0];
+    uint8_t* e = (uint8_t*)&_storage[12];
 
-    const uint8_t* result = lower_bound_bytes( b,
-                                               e,
-                                               (uint8_t*)&target,
-                                               sizeof(int),
-                                               []( const uint8_t* p1, const uint8_t* p2 )->int {
-                                                   const int* pi1 = (const int*)p1;
-                                                   const int* pi2 = (const int*)p2;
-                                                   if( *(int*)p1 < *(int*)p2 )
-                                                       return -1;
-                                                   else if( *(int*)p1 > *(int*)p2 )
-                                                       return 1;
-                                                   return 0;
-                                               });
+    uint8_t* result = lower_bound_bytes( b,
+                                         e,
+                                         (uint8_t*)&target,
+                                         sizeof(int),
+                                         []( const uint8_t* p1, const uint8_t* p2 )->int {
+                                             const int* pi1 = (const int*)p1;
+                                             const int* pi2 = (const int*)p2;
+                                             if( *(int*)p1 < *(int*)p2 )
+                                                 return -1;
+                                             else if( *(int*)p1 > *(int*)p2 )
+                                                 return 1;
+                                             return 0;
+                                         });
 
     UT_ASSERT( result != e );
     UT_ASSERT( *(int*)result == 80 );
@@ -108,22 +108,22 @@ void ck_lower_bound_test::test_middle_exact()
 {
     int target = 80;
 
-    const uint8_t* b = (uint8_t*)&_storage[0];
-    const uint8_t* e = (uint8_t*)&_storage[12];
+    uint8_t* b = (uint8_t*)&_storage[0];
+    uint8_t* e = (uint8_t*)&_storage[12];
 
-    const uint8_t* result = lower_bound_bytes( b,
-                                               e,
-                                               (uint8_t*)&target,
-                                               sizeof(int),
-                                               []( const uint8_t* p1, const uint8_t* p2 )->int {
-                                                   const int* pi1 = (const int*)p1;
-                                                   const int* pi2 = (const int*)p2;
-                                                   if( *(int*)p1 < *(int*)p2 )
-                                                       return -1;
-                                                   else if( *(int*)p1 > *(int*)p2 )
-                                                       return 1;
-                                                   return 0;
-                                               });
+    uint8_t* result = lower_bound_bytes( b,
+                                         e,
+                                         (uint8_t*)&target,
+                                         sizeof(int),
+                                         []( const uint8_t* p1, const uint8_t* p2 )->int {
+                                             const int* pi1 = (const int*)p1;
+                                             const int* pi2 = (const int*)p2;
+                                             if( *(int*)p1 < *(int*)p2 )
+                                                 return -1;
+                                             else if( *(int*)p1 > *(int*)p2 )
+                                                 return 1;
+                                             return 0;
+                                         });
 
     UT_ASSERT( result != e );
     UT_ASSERT( *(int*)result == 80 );
@@ -133,22 +133,22 @@ void ck_lower_bound_test::test_greater()
 {
     int target = 121;
 
-    const uint8_t* b = (uint8_t*)&_storage[0];
-    const uint8_t* e = (uint8_t*)&_storage[12];
+    uint8_t* b = (uint8_t*)&_storage[0];
+    uint8_t* e = (uint8_t*)&_storage[12];
 
-    const uint8_t* result = lower_bound_bytes( b,
-                                               e,
-                                               (uint8_t*)&target,
-                                               sizeof(int),
-                                               []( const uint8_t* p1, const uint8_t* p2 )->int {
-                                                   const int* pi1 = (const int*)p1;
-                                                   const int* pi2 = (const int*)p2;
-                                                   if( *(int*)p1 < *(int*)p2 )
-                                                       return -1;
-                                                   else if( *(int*)p1 > *(int*)p2 )
-                                                       return 1;
-                                                   return 0;
-                                               });
+    uint8_t* result = lower_bound_bytes( b,
+                                         e,
+                                         (uint8_t*)&target,
+                                         sizeof(int),
+                                         []( const uint8_t* p1, const uint8_t* p2 )->int {
+                                             const int* pi1 = (const int*)p1;
+                                             const int* pi2 = (const int*)p2;
+                                             if( *(int*)p1 < *(int*)p2 )
+                                                 return -1;
+                                             else if( *(int*)p1 > *(int*)p2 )
+                                                 return 1;
+                                             return 0;
+                                         });
 
     UT_ASSERT( result == e );
 }
