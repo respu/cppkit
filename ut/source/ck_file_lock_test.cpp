@@ -95,6 +95,8 @@ void ck_file_lock_test::test_shared()
         });
     t2.detach();
 
+    ck_usleep( 250000 ); // give the above threads a chance to start...
+
     {
         ck_file_lock newLock( fileno( lockFile ) );
         ck_file_lock_guard g( newLock );
