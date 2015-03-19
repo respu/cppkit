@@ -90,6 +90,8 @@ public:
     /// Returns the minimum number of bits needed to represent the value of dword
     CK_API int needed_bits(uint32_t dword);
 
+    CK_API void skip_bits(int bitCount);
+
 private:
 
     inline void _inc_pos();
@@ -238,6 +240,20 @@ int ck_bitsy<iter>::needed_bits(uint32_t dword)
     }
 
     return bitsRequired;
+}
+
+template<typename iter>
+void ck_bitsy<iter>::skip_bits(int bitCount)
+{
+    for(int i = 0; i < bitCount && _pos < _end; ++i)
+    {
+        if(_currentMask == 1)
+        {
+            _currentMask = 128;
+            _inc_pos();
+        }
+        else _currentMask = _currentMask >> 1;
+    }
 }
 
 template<typename iter>
