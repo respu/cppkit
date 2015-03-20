@@ -29,7 +29,8 @@ set(SOURCES source/ck_library_id.cpp
             source/ck_timer.cpp
             source/ck_pool.cpp
             source/ck_file_lock.cpp
-            source/ck_lower_bound.cpp)
+            source/ck_lower_bound.cpp
+            source/ck_md5.cpp)
 
 set(WINDOWS_LIBS DbgHelp ws2_32 iphlpapi)
 set(LINUX_LIBS pthread rt dl)

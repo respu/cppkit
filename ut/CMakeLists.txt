@@ -28,7 +28,8 @@ set(SOURCES source/framework.cpp
             source/ck_bitsy_test.cpp
             source/ck_pool_test.cpp
             source/ck_file_lock_test.cpp
-            source/ck_lower_bound_test.cpp)
+            source/ck_lower_bound_test.cpp
+            source/ck_md5_test.cpp)
 
 set(COMMON_LIBS cppkit)
 set(WINDOWS_LIBS DbgHelp ws2_32 iphlpapi)
